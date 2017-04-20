@@ -1,0 +1,244 @@
+---
+
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ project_name }}'
+
+- name: create volumes
+  k8s_v1_persistent_volume_claim:
+    name: '{{ item }}'
+    namespace: '{{ project_name }}'
+    state: present
+    access_modes:
+      - ReadWriteMany
+    resources_requests:
+      storage: 1Gi
+  with_items:
+    - db-mysql-0
+    - db-mysql-1
+    - db-mysql-2
+
+- name: Service to expose the etcd endpoint for Percona XtraDB Cluster
+  k8s_v1_service:
+    name: etcd
+    namespace: '{{ project_name }}'
+    state: present
+    selector:
+      app: etcd
+    ports:
+      - name: etcd-2379
+        port: 2379
+        target_port: 2379
+        protocol: TCP
+      - name: etcd-4001
+        port: 4001
+        protocol: TCP
+        target_port: 4001
+      - name: etcd-7001
+        port: 7001
+        protocol: TCP
+        target_port: 7001
+
+- name: etcd pods
+  k8s_v1_pod:
+    name: '{{ item }}'
+    namespace: '{{ project_name }}'
+    state: present
+    labels:
+      app: etcd
+      etcd_node: '{{ item }}'
+    restart_policy: Never
+    containers:
+    - command:
+      - /usr/local/bin/etcd
+      - --name
+      - '{{ item }}'
+      - --initial-advertise-peer-urls
+      - http://{{ item }}:2380
+      - --listen-peer-urls
+      - http://0.0.0.0:2380
+      - --listen-client-urls
+      - http://0.0.0.0:2379
+      - --advertise-client-urls
+      - http://{{ item }}:2379
+      - --initial-cluster
+      - etcd-0=http://etcd-0:2380,etcd-1=http://etcd-1:2380,etcd-2=http://etcd-2:2380
+      - --initial-cluster-state
+      - new
+      image: "quay.io/coreos/etcd:latest"
+      name: '{{ item }}'
+      ports:
+      - container_port: 2379
+        name: client
+        protocol: TCP
+      - container_port: 2380
+        name: server
+        protocol: TCP
+      - container_port: 4001
+        name: etcd-4001
+        protocol: TCP
+      - container_port: 7001
+        name: etcd-7001
+        protocol: TCP
+  with_items:
+    - etcd-0
+    - etcd-1
+    - etcd-2
+
+
+- name: etcd services
+  k8s_v1_service:
+    name: '{{ item }}'
+    namespace: '{{ project_name }}'
+    labels:
+      etcd_node: '{{ item }}'
+    ports:
+    - name: client
+      port: 2379
+      protocol: TCP
+      target_port: 2379
+    - name: server
+      port: 2380
+      protocol: TCP
+      target_port: 2380
+    - name: etcd-4001
+      port: 4001
+      protocol: TCP
+      target_port: 4001
+    - name: etcd-7001
+      port: 7001
+      protocol: TCP
+      target_port: 7001
+    selector:
+      etcd_node: '{{ item }}'
+  with_items:
+    - etcd-0
+    - etcd-1
+    - etcd-2
+
+
+- name: Headless service used by WordPress
+  k8s_v1_service:
+    name: mysql
+    namespace: '{{ project_name }}'
+    labels:
+      name: mysql
+    ports:
+    - name: server
+      port: 3306
+      protocol: TCP
+      target_port: 3306
+    selector:
+      name: mysql
+
+- name: StatefulSet for mysql
+  k8s_v1beta1_stateful_set:
+    name: mysql
+    labels:
+      name: mysql
+    namespace: '{{ project_name }}'
+    service_name: mysql
+    replicas: '{{ database_replicas }}'
+    spec_template_metadata_labels:
+      name: mysql
+    spec_template_metadata_name: mysql
+    termination_grace_period_seconds: 10
+    containers:
+      - name: mysql
+        image: 'perconalab/percona-xtradb-cluster:5.6'
+        ports:
+        - container_port: 3306
+          name: mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: '{{ root_password }}'
+          - name: DISCOVERY_SERVICE
+            value: '{{ discovery_service }}'
+          - name: XTRABACKUP_PASSWORD
+            value: '{{ xtrabackup_password }}'
+          - name: CLUSTER_NAME
+            value: '{{ cluster_name }}'
+        volume_mounts:
+        - name: db
+          mountPath: /var/lib/mysql
+    spec_volume_claim_templates:
+      - metadata:
+          name: db
+        access_modes:
+        - ReadWriteOnce
+        resources_requests:
+          storage: 1Gi
+
+- name: Wordpress volume claim
+  k8s_v1_persistent_volume_claim:
+    name: wordpress-1
+    namespace: '{{ project_name }}'
+    state: present
+    access_modes:
+      - ReadWriteMany
+    resources_requests:
+      storage: 1Gi
+
+
+- name:  Wordpress HTTP service
+  k8s_v1_service:
+    name: wordpress
+    labels:
+      name: wordpress
+    namespace: '{{ project_name }}'
+    state: present
+    selector:
+      name: wordpress
+    type: NodePort
+    ports:
+      - port: 80
+
+- name: Wordpress autoscaler
+  k8s_v1_horizontal_pod_autoscaler:
+    name: wordpress-scaler
+    namespace: '{{ project_name }}'
+    scale_target_ref_kind: ReplicaSet
+    scale_target_ref_name: wordpress
+    min_replicas: '{{ min_wordpress_replicas }}'
+    max_replicas: '{{ max_wordpress_replicas }}'
+    target_cpu_utilization_percentage: 50
+
+- name: Wordpress replicaset
+  k8s_v1beta1_replica_set:
+    name: wordpress
+    namespace: '{{ project_name }}'
+    replicas: 3
+    # spec_selector_match_labels:
+    #   name: wordpress
+    # spec_selector_match_expressions:
+    #   - {key: name, operator: In, values: [wordpress]}
+    spec_template_metadata_labels:
+      name: wordpress
+    containers:
+    - name: wordpress
+      image: wordpress
+      ports:
+      - container_port: 80
+        name: wordpress
+      volume_mounts:
+      - mount_path: /var/www/html
+        name: wordpress-1
+      env:
+        - name: WORDPRESS_DB_PASSWORD
+          value: '{{ database_password }}'
+        - name: WORDPRESS_DB_USER
+          value: '{{ database_user }}'
+        - name: WORDPRESS_DB_HOST
+          value: '{{ database_host }}'
+    volumes:
+    - name: wordpress-1
+      persistent_volume_claim:
+        claim_name:  wordpress-1
+
+- name: create wordpress route
+  openshift_v1_route:
+    name: wordpress
+    namespace: '{{ project_name }}'
+    to_name: wordpress
+    port_target_port: 80
+

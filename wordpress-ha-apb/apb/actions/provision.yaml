@@ -1,0 +1,6 @@
+- name: Deploy wordpress-ha-apb to openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - wordpress_ha

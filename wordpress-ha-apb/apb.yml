@@ -1,0 +1,33 @@
+id: 9b70e6bf-26f8-4c1f-a57f-07501388c1e8
+name: apb/wordpress-ha-apb
+description: high availability wordpress deployment
+bindable: true
+async: "optional"
+parameters:
+  - name: project_name
+    description: Namespace to deploy containers to
+    default: wordpress-ha
+  - name: root_password
+    description: root database password
+    default: k8spassword
+  - name: xtrabackup_password
+    description: password for something no idea what
+    default: k8spassword
+  - name: cluster_name
+    description: name of percona cluster
+    default: percona
+  - name: database_password
+    description: password for database
+    default: k8spassword
+  - name: database_user
+    description: user for database
+    default: root
+  - name: database_replicas
+    description: number of database nodes to bring up
+    default: 3
+  - name: min_wordpress_replicas
+    description: minimum number of wordpress replicas to run
+    default: 5
+  - name: max_wordpress_replicas
+    description: maximum number of wordpress replicas to run
+    default: 10
