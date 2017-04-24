@@ -1,0 +1,12 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: "rds-{{ tds }}"
+spec:
+  ports:
+    - name: "{{ db_engine }}"
+      protocol: "TCP"
+      port: {{ port }}
+      targetPort: {{ port }}
+      nodePort: 0
+selector: {}

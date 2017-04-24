@@ -1,0 +1,10 @@
+kind: "Endpoints"
+apiVersion: "v1"
+metadata:
+  name: "rds-{{ tds }}" 
+subsets: 
+  - addresses:
+      - ip: "{{ rds_endpoint_ip.stdout }}" 
+    ports:
+      - port: {{ port }}
+        name: "{{ db_engine }}"

@@ -1,0 +1,7 @@
+- name: Deploy rds-apb to openshift
+  hosts: localhost
+  gather_facts: true
+  connection: local
+  roles:
+  - role: rds-apb-openshift
+    playbook_debug: false
