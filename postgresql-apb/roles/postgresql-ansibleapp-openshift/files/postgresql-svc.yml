@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgresql-ansibleapp
+    service: postgresql
+  name: postgresql
+spec:
+  ports:
+  - name: port-5432
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: postgresql-ansibleapp
+    service: postgresql
+  sessionAffinity: None
+  type: ClusterIP
+

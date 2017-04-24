@@ -1,0 +1,11 @@
+---
+# defaults for postgresql-ansibleapp-openshift
+
+playbook_debug: no
+namespace: "{{ lookup('env','NAMESPACE') | default('postgresql-ansibleapp', true) }}"
+openshift_target: "{{ lookup('env','OPENSHIFT_TARGET') }}"
+openshift_user: "{{ lookup('env','OPENSHIFT_USER') }}"
+openshift_pass: "{{ lookup('env','OPENSHIFT_PASS') }}"
+postgresql_database: "{{ lookup('env','POSTGRESQL_DATABASE') | default('admin', true) }}"
+postgresql_password: "{{ lookup('env','POSTGRESQL_PASSWORD') | default('admin', true) }}"
+postgresql_user: "{{ lookup('env','POSTGRESQL_USER') | default('admin', true) }}"

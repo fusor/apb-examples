@@ -1,0 +1,24 @@
+- name: login
+  shell: "oc login {{ openshift_target }} -u '{{ openshift_user }}' -p '{{ openshift_pass }}' --insecure-skip-tls-verify=true"
+
+- name: check if namespace exists
+  shell: "oc get project --no-headers=true | awk '{ print $1}' | grep -w {{ namespace }} | cat"
+  register: project
+
+- name: create namespace if it does not
+  shell: "oc new-project {{ namespace }}"
+  when: project.stdout.find( "{{ namespace }}" ) == -1
+
+- name: create pvc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/postgresql-pvc.yml"
+
+- name: create svc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/postgresql-svc.yml"
+
+- name: create dc resource template
+  template:
+    src: postgresql-dc.yml.j2
+    dest: /tmp/postgresql-dc.yml
+
+- name: create postgresql dc
+  shell: "oc create -n {{ namespace }} -f /tmp/postgresql-dc.yml"
