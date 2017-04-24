@@ -1,7 +1,7 @@
-- name: Deploy postgresql-ansibleapp to openshift
+- name: Deploy postgresql-apb to openshift
   hosts: localhost
   gather_facts: false
   connection: local
   roles:
-  - role: postgresql-ansibleapp-openshift
+  - role: postgresql-apb-openshift
     playbook_debug: false

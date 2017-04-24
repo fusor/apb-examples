@@ -1,7 +1,7 @@
-Postgresql-Ansibleapp-Openshift
+Postgresql-APB-Openshift
 ===
 
-Automates the deployment of postgresql-ansibleapp to Openshift.
+Automates the deployment of postgresql-apb to Openshift.
 
 
 Requirements
@@ -22,13 +22,13 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Running postgresql-ansibleapp-openshift is easy! Here's a sample playbook:
+Running postgresql-apb-openshift is easy! Here's a sample playbook:
 
     - hosts: localhost 
       gather_facts: no
       connection: local
       roles:
-         - { role: postgresql-ansibleapp-openshift }
+         - { role: postgresql-apb-openshift }
 
 License
 -------

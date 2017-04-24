@@ -1,0 +1,91 @@
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+
+- name: create volumes
+  k8s_v1_persistent_volume_claim:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+
+- name: create service
+  k8s_v1_service:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    state: present
+    labels:
+      app: postgresql-apb
+      service: postgresql
+    selector:
+      app: postgresql-apb
+      service: postgresql
+    ports:
+    - name: port-5432
+      port: 5432
+      protocol: TCP
+      target_port: 5432
+  register: postgres_service
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    labels:
+      app: postgresql-apb
+      service: postgresql
+    replicas: 1
+    selector:
+      app: postgresql-apb
+      service: postgresql
+    strategy_type: Rolling
+    strategy_rolling_params:
+      interval_seconds: 1
+      max_surge: 25%
+      max_unavailable: 25%
+      timeout_seconds: 600
+      update_period_seconds: 1
+    spec_template_metadata_labels:
+      app: postgresql-apb
+      service: postgresql
+    containers:
+    - env:
+      - name: POSTGRES_PASSWORD
+        value: '{{ postgresql_password }}'
+      - name: POSTGRES_USER
+        value: '{{ postgresql_user }}'
+      - name: POSTGRES_DB
+        value: '{{ postgresql_database }}'
+      image: docker.io/jmontleon/postgresql:centos7
+      image_pull_policy: IfNotPresent
+      name: postgresql
+      ports:
+      - container_port: 5432
+        protocol: TCP
+      resources: {}
+      security_context: {}
+      termination_message_path: /dev/termination-log
+      volume_mounts:
+      - mount_path: /var/lib/pgsql/data
+        name: postgresql
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    volumes:
+    - name: postgresql
+      persistent_volume_claim:
+        claim_name: postgresql
+      test: false
+      triggers:
+      - type: ConfigChange
+
+- name: encode bind credentials
+  shell: 'echo "{\"POSTGRES_HOST\": \"{{ postgres_service.service.spec.cluster_ip }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
+  register: encoded_bind_credentials
+
+- debug:
+    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"

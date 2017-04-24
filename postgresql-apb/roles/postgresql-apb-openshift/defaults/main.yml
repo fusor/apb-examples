@@ -1,8 +1,8 @@
 ---
-# defaults for postgresql-ansibleapp-openshift
+# defaults for postgresql-apb-openshift
 
 playbook_debug: no
-namespace: "{{ lookup('env','NAMESPACE') | default('postgresql-ansibleapp', true) }}"
+namespace: "{{ lookup('env','NAMESPACE') | default('postgresql-apb', true) }}"
 openshift_target: "{{ lookup('env','OPENSHIFT_TARGET') }}"
 openshift_user: "{{ lookup('env','OPENSHIFT_USER') }}"
 openshift_pass: "{{ lookup('env','OPENSHIFT_PASS') }}"
