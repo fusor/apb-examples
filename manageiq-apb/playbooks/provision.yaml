@@ -1,0 +1,7 @@
+- name: Deploy manageiq-apb to  openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: manageiq-apb-openshift
+    playbook_debug: false

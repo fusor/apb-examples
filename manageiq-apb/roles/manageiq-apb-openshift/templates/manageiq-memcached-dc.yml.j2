@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  generation: 1
+  labels:
+    app: manageiq-apb
+    service: manageiq-memcached
+  name: manageiq-memcached
+spec:
+  replicas: 1
+  selector:
+    app: manageiq-apb
+    service: manageiq-memcached
+  strategy:
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: manageiq-apb
+        service: manageiq-memcached
+    spec:
+      containers:
+      - env:
+        - name: MEMCACHED_MAX_MEMORY
+          value: '{{ memcached_max_memory }}'
+        - name: MEMCACHED_MAX_CONNECTIONS
+          value: '{{ memcached_max_connections }}'
+        - name: MEMCACHED_SLAB_PAGE_SIZE
+          value: '{{ memcached_slab_page_size }}'
+        image: docker.io/manageiq/manageiq-pods:memcached-latest
+        imagePullPolicy: IfNotPresent
+        name: manageiq-memcached
+        ports:
+        - containerPort: 11211
+          protocol: TCP
+        resources: {}
+        securityContext: {}
+        terminationMessagePath: /dev/termination-log
+        workingDir: /
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+status: {}

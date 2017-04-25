@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  generation: 1
+  labels:
+    app: manageiq-apb
+    service: manageiq-app
+  name: manageiq-app
+spec:
+  replicas: 1
+  selector:
+    app: manageiq-apb
+    service: manageiq-app
+  strategy:
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: manageiq-apb
+        service: manageiq-app
+    spec:
+      containers:
+      - env:
+        - name: MIQ_MEMCACHED_PORT_11211_TCP
+          value: '{{ manageiq_memcached_port_11211_tcp }}'
+        - name: DATABASE_SERVICE_NAME
+          value: '{{ database_service_name }}'
+        - name: MIQ_POSTGRESQL_PORT_5432_TCP_ADDR
+          value: '{{ manageiq_postgresql_5432_tcp_addr }}'
+        - name: MIQ_POSTGRESQL_PORT_5432_TCP
+          value: '{{ manageiq_postgresql_port_5432_tcp }}'
+        - name: DATABASE_REGION
+          value: '{{ database_region }}'
+        - name: MIQ_POSTGRESQL_SERVICE_HOST
+          value: '{{ manageiq_postgresql_service_host }}'
+        - name: MIQ_MEMCACHED_PORT_11211_TCP_ADDR
+          value: '{{ manageiq_memcached_port_11211_tcp_addr }}'
+        - name: POSTGRESQL_PASSWORD
+          value: '{{ postgresql_password }}'
+        - name: MEMCACHED_SERVICE_NAME
+          value: '{{ memcached_service_name }}'
+        - name: APPLICATION_INIT_DELAY
+          value: '{{ application_init_delay }}'
+        - name: MIQ_MEMCACHED_PORT
+          value: '{{ manageiq_memcached_port }}'
+        - name: MIQ_POSTGRESQL_PORT
+          value: '{{ manageiq_postgresql_port }}'
+        - name: MIQ_MEMCACHED_SERVICE_HOST
+          value: '{{ manageiq_memcached_service_host }}'
+        - name: POSTGRESQL_USER
+          value: '{{ postgresql_user }}'
+        - name: POSTGRESQL_DATABASE
+          value: '{{ postgresql_database }}'
+        image: docker.io/manageiq/manageiq-pods:app-latest
+        imagePullPolicy: IfNotPresent
+        name: manageiq-app
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /persistent
+          name: manageiq-app
+        workingDir: /
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: manageiq-app
+        persistentVolumeClaim:
+          claimName: manageiq-app
+  test: false
+  triggers:
+  - type: ConfigChange
+status: {}
+

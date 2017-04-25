@@ -1,0 +1,55 @@
+- name: login
+  shell: "oc login {{ openshift_target }} -u '{{ openshift_user }}' -p '{{ openshift_pass }}' --insecure-skip-tls-verify=true"
+
+- name: check if namespace exists
+  shell: "oc get project --no-headers=true | awk '{ print $1}' | grep -w {{ namespace }} | cat"
+  register: project
+
+- name: create namespace if it does not
+  shell: "oc new-project {{ namespace }}"
+  when: project.stdout.find("{{ namespace }}") == -1
+
+- name: oadm policy add
+  shell: "oadm policy add-scc-to-user privileged system:serviceaccount:{{ namespace }}:default"
+
+- name: create app pvc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-app-pvc.yml"
+
+- name: create postgresql pvc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-postgresql-pvc.yml"
+
+- name: create app svc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-app-svc.yml"
+
+- name: create memcached svc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-memcached-svc.yml" 
+
+- name: create postgresql svc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-postgresql-svc.yml"
+
+- name: create app route
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-app-route.yml"
+
+- name: create manageiq-app dc resource template
+  template:
+    src: manageiq-app-dc.yml.j2
+    dest: /tmp/manageiq-app-dc.yml
+
+- name: create manageiq-memcached dc resource template
+  template:
+    src: manageiq-memcached-dc.yml.j2
+    dest: /tmp/manageiq-memcached-dc.yml
+
+- name: create manageiq-postgresql dc resource template
+  template:
+    src: manageiq-postgresql-dc.yml.j2
+    dest: /tmp/manageiq-postgresql-dc.yml
+
+- name: create app dc
+  shell: "oc create -n {{ namespace }} -f /tmp/manageiq-app-dc.yml"
+
+- name: create memcached dc
+  shell: "oc create -n {{ namespace }} -f /tmp/manageiq-memcached-dc.yml" 
+
+- name: create postgresql dc
+  shell: "oc create -n {{ namespace }} -f /tmp/manageiq-postgresql-dc.yml"
