@@ -38,9 +38,6 @@
     - airports.sql
     - zipcodes.sql
 
-# - name: openshift login
-#   shell: "oc login {{ openshift_target }} -u '{{ openshift_user }}' -p '{{ openshift_pass }}' --insecure-skip-tls-verify=true"
-
 - name: create namespace
   openshift_v1_project:
     name: '{{ namespace }}'
