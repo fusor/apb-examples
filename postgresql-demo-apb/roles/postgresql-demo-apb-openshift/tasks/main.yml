@@ -92,11 +92,11 @@
 - name: seed database
   shell: "PGPASSWORD={{ postgresql_password }} psql -U {{ postgresql_user }} -d {{ postgresql_database }} -p 5432 -h  {{ postgres_service.service.spec.cluster_ip }} -f {{ role_path }}/files/{{ item }}"
   with_items:
-    # - parkcoord.sql
+    - parkcoord.sql
     - airports.ddl
-    # - zipcodes.ddl
-    # - airports.sql
-    # - zipcodes.sql
+    - zipcodes.ddl
+    - airports.sql
+    - zipcodes.sql
 
 - name: encode bind credentials
   shell: 'echo "{\"POSTGRES_HOST\": \"{{ postgres_service.service.spec.cluster_ip }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
