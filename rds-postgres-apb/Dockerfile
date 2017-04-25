@@ -1,4 +1,4 @@
-FROM ansibleplaybookbundle/apb-base
+FROM ansibleplaybookbundle/apb-src-base
 # MAINTAINER {{ $MAINTAINER }}
 
 LABEL "com.redhat.apb.version"="0.1.0"
