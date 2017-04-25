@@ -29,7 +29,8 @@ RUN mkdir -p /usr/share/ansible/openshift
 RUN mkdir /etc/ansible
 RUN cp _modules/*.py /usr/share/ansible/openshift
 RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts
-RUN echo 'roles_path = /opt/ansible/roles' > /etc/ansible/ansible.cfg
+RUN echo '[defaults]' > /etc/ansible/ansible.cfg
+RUN echo 'roles_path = /opt/ansible/roles' >> /etc/ansible/ansible.cfg
 RUN echo 'library = /usr/share/ansible/openshift' >> /etc/ansible/ansible.cfg
 
 RUN mkdir /opt/apb
