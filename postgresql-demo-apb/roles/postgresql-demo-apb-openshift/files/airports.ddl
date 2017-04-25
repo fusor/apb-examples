@@ -1,4 +1,4 @@
-﻿CREATE TABLE airports
+CREATE TABLE airports
 (
   name character varying(256),
   code character varying(256) NOT NULL,
@@ -14,5 +14,3 @@ CREATE INDEX geom_index_airports
   ON airports
   USING gist
   (the_geom );
-
-
