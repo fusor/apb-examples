@@ -59,7 +59,7 @@
         value: '{{ postgresql_user }}'
       - name: POSTGRES_DB
         value: '{{ postgresql_database }}'
-      image: docker.io/jmontleon/postgresql:centos7
+      image: docker.io/fabianvf/postgresql:postgis
       image_pull_policy: IfNotPresent
       name: postgresql
       ports:
