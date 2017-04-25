@@ -1,5 +1,5 @@
-FROM apb/apb-base
-# MAINTAINER {{ $MAINTAINER }}
+FROM ansibleplaybookbundle/apb-base
+MAINTAINER Ansible Playbook Bundle Community
 
 LABEL "com.redhat.apb.version"="0.1.0"
 LABEL "com.redhat.apb.spec"=\
@@ -8,9 +8,7 @@ L3dvcmRwcmVzcy1oYS1hbnNpYmxlYXBwCmRlc2NyaXB0aW9uOiBoaWdoIGF2YWlsYWJpbGl0eSB3\
 b3JkcHJlc3MgZGVwbG95bWVudApiaW5kYWJsZTogdHJ1ZQphc3luYzogIm9wdGlvbmFsIgpwYXJh\
 bWV0ZXJzOgogIC0gbmFtZTogcHJvamVjdF9uYW1lCiAgICBkZXNjcmlwdGlvbjogTmFtZXNwYWNl\
 IHRvIGRlcGxveSBjb250YWluZXJzIHRvCiAgICBkZWZhdWx0OiB3b3JkcHJlc3MtaGEK"
-ADD roles /opt/ansible/roles
-ADD playbooks /opt/apb/actions
+COPY roles /opt/ansible/roles
+COPY playbooks /opt/apb/actions
 
-RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
-RUN chown -R 1001:0 /opt/{ansible,apb}
-USER 1001
+USER apb

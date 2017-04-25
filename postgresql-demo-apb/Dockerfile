@@ -1,5 +1,5 @@
 FROM ansibleplaybookbundle/apb-src-base
-# MAINTAINER {{ $MAINTAINER }}
+MAINTAINER Ansible Playbook Bundle Community
 
 LABEL "com.redhat.apb.version"="0.1.0"
 LABEL "com.redhat.apb.spec"=\
@@ -21,12 +21,10 @@ ICAgZGVmYXVsdDogYWRtaW4KICAtIG5hbWU6IHBvc3RncmVzcWxfdXNlcgogICAgZGVzY3JpcHRp\
 b246IHBvc3RncmVzcWwgZGF0YWJhc2UgdXNlcm5hbWUKICAgIHR5cGU6IHN0cmluZwogICAgZGVm\
 YXVsdDogYWRtaW4K"
 
-ADD roles /opt/ansible/roles
-ADD playbooks /opt/apb/actions
+COPY roles /opt/ansible/roles
+COPY playbooks /opt/apb/actions
 
 RUN yum install -y postgresql && yum clean all
 RUN pip install urllib3 boto
 
-RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
-RUN chown -R 1001:0 /opt/{ansible,apb}
-USER 1001
+USER apb
