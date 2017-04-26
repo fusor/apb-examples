@@ -1,0 +1,30 @@
+id: 26355d1a-0301-4841-85af-536a4d3afaa9
+name: postgresql-demo-apb
+image: ansibleplaybookbundle/postgresql-demo-apb
+description: PostgreSQL apb implementation
+bindable: true
+async: optional
+tags:
+  - database
+metadata:
+  displayName: "Postgresql demo"
+  longDescription: "An apb demo that deploys postgresql and loads it with sample data"
+  imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/64px-Postgresql_elephant.svg.png"
+  documentationUrl: "https://www.postgresql.org/docs/"
+parameters:
+  - name: namespace
+    description: Namespace to deploy the cluster to
+    type: string
+    default: postgresql-demo-apb
+  - name: postgresql_database
+    description: postgresql database name
+    type: string
+    default: admin
+  - name: postgresql_password
+    description: postgresql database password
+    type: string
+    default: admin
+  - name: postgresql_user
+    description: postgresql database username
+    type: string
+    default: admin

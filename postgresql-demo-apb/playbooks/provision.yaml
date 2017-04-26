@@ -1,0 +1,7 @@
+- name: Deploy postgresql-demo-apb to openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: postgresql-demo-apb-openshift
+    playbook_debug: false

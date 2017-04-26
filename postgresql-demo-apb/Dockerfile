@@ -1,0 +1,32 @@
+FROM ansibleplaybookbundle/apb-src-base
+# MAINTAINER {{ $MAINTAINER }}
+
+LABEL "com.redhat.apb.version"="0.1.0"
+LABEL "com.redhat.apb.spec"=\
+"aWQ6IDI2MzU1ZDFhLTAzMDEtNDg0MS04NWFmLTUzNmE0ZDNhZmFhOQpuYW1lOiBwb3N0Z3Jlc3Fs\
+LWRlbW8tYXBiCmltYWdlOiBhbnNpYmxlcGxheWJvb2tidW5kbGUvcG9zdGdyZXNxbC1kZW1vLWFw\
+YgpkZXNjcmlwdGlvbjogUG9zdGdyZVNRTCBhcGIgaW1wbGVtZW50YXRpb24KYmluZGFibGU6IHRy\
+dWUKYXN5bmM6IG9wdGlvbmFsCnRhZ3M6CiAgLSBkYXRhYmFzZQptZXRhZGF0YToKICBkaXNwbGF5\
+TmFtZTogIlBvc3RncmVzcWwgZGVtbyIKICBsb25nRGVzY3JpcHRpb246ICJBbiBhcGIgZGVtbyB0\
+aGF0IGRlcGxveXMgcG9zdGdyZXNxbCBhbmQgbG9hZHMgaXQgd2l0aCBzYW1wbGUgZGF0YSIKICBp\
+bWFnZVVybDogImh0dHBzOi8vdXBsb2FkLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2NvbW1vbnMv\
+dGh1bWIvMi8yOS9Qb3N0Z3Jlc3FsX2VsZXBoYW50LnN2Zy82NHB4LVBvc3RncmVzcWxfZWxlcGhh\
+bnQuc3ZnLnBuZyIKICBkb2N1bWVudGF0aW9uVXJsOiAiIgpwYXJhbWV0ZXJzOgogIC0gbmFtZTog\
+bmFtZXNwYWNlCiAgICBkZXNjcmlwdGlvbjogTmFtZXNwYWNlIHRvIGRlcGxveSB0aGUgY2x1c3Rl\
+ciB0bwogICAgdHlwZTogc3RyaW5nCiAgICBkZWZhdWx0OiBwb3N0Z3Jlc3FsLWRlbW8tYXBiCiAg\
+LSBuYW1lOiBwb3N0Z3Jlc3FsX2RhdGFiYXNlCiAgICBkZXNjcmlwdGlvbjogcG9zdGdyZXNxbCBk\
+YXRhYmFzZSBuYW1lCiAgICB0eXBlOiBzdHJpbmcKICAgIGRlZmF1bHQ6IGFkbWluCiAgLSBuYW1l\
+OiBwb3N0Z3Jlc3FsX3Bhc3N3b3JkCiAgICBkZXNjcmlwdGlvbjogcG9zdGdyZXNxbCBkYXRhYmFz\
+ZSBwYXNzd29yZAogICAgdHlwZTogc3RyaW5nCiAgICBkZWZhdWx0OiBhZG1pbgogIC0gbmFtZTog\
+cG9zdGdyZXNxbF91c2VyCiAgICBkZXNjcmlwdGlvbjogcG9zdGdyZXNxbCBkYXRhYmFzZSB1c2Vy\
+bmFtZQogICAgdHlwZTogc3RyaW5nCiAgICBkZWZhdWx0OiBhZG1pbgo="
+
+ADD roles /opt/ansible/roles
+ADD playbooks /opt/apb/actions
+
+RUN yum install -y postgresql && yum clean all
+RUN pip install urllib3 boto
+
+RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
+RUN chown -R 1001:0 /opt/{ansible,apb}
+USER 1001
