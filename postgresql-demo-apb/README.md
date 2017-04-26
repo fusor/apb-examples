@@ -13,7 +13,7 @@ An apb for deploying [PostgreSQL](https://www.postgresql.org).
 * POSTGRESQL_DATABASE, default 'admin', Postgresql database name.
 * POSTGRESQL_PASSWORD, default 'admin', Postgresql database password.
 * POSTGRESQL_USER, default 'admin', Postgresql database username.
-* OPENSHIFT_TARTET: Required, target openshift deployment
+* OPENSHIFT_TARGET: Required, target openshift deployment
 * OPENSHIFT_USER: Required, openshift user to login as
 * OPENSHIFT_PASS: Required, openshift users password
 

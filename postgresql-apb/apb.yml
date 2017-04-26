@@ -1,8 +1,16 @@
 id: 26355d1a-0301-4841-85af-536a4d3afaa9
-name: ansibleplaybookbundle/postgresql-apb
+name: postgresql-apb
+image: ansibleplaybookbundle/postgresql-apb
 description: PostgreSQL apb implementation
-bindable: false
+bindable: true
 async: optional
+tags:
+  - database
+metadata:
+  displayName: "postgresql"
+  longDescription: "Deploys a bindable postgres instance"
+  imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/64px-Postgresql_elephant.svg.png"
+  documentationUrl: ""
 parameters:
   - name: namespace
     description: Namespace to deploy the cluster to
