@@ -1,4 +1,4 @@
-id: 26355d1a-0301-4841-85af-536a4d3afaa9
+id: 64297e88-657c-46ab-bb50-2af7f84e5ec5
 name: postgresql-demo-apb
 image: ansibleplaybookbundle/postgresql-demo-apb
 description: PostgreSQL apb implementation
