@@ -1,7 +1,7 @@
 id: b4325aea-0479-4f8d-b502-1922bbaee13e
 name: manageiq-apb
-name: ansibleplaybookbundle/manageiq-apb
-description: ManageIQ apb implementation
+image: ansibleplaybookbundle/manageiq-apb
+description: "ManageIQ is an open source management platform for Hybrid IT."
 bindable: false
 async: optional
 parameters:
@@ -49,3 +49,10 @@ parameters:
     description: postgresql database username
     type: string
     default: admin
+tags:
+ - networking
+metadata:
+ - displayName: "ManageIQ"
+ - imageUrl: "https://s3.amazonaws.com/fusor/2017demo/ManageIQ.png"
+ - documentationUrl: "https://manageiq.org/docs/"
+ - longDescription: "ManageIQ is an open source management platform for Hybrid IT. It can manage small and large environments, and supports multiple technologies such as virtual machines, public clouds and containers."
