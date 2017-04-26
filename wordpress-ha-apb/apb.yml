@@ -1,5 +1,5 @@
 id: 9b70e6bf-26f8-4c1f-a57f-07501388c1e8
-name: apb/wordpress-ha-apb
+name: ansibleplaybookbundle/wordpress-ha-apb
 description: high availability wordpress deployment
 bindable: true
 async: "optional"
