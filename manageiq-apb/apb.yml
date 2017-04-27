@@ -49,8 +49,6 @@ parameters:
     description: postgresql database username
     type: string
     default: admin
-tags:
- - networking
 metadata:
  displayName: "ManageIQ"
  imageUrl: "https://s3.amazonaws.com/fusor/2017demo/ManageIQ.png"
