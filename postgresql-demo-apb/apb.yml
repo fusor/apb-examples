@@ -4,8 +4,6 @@ image: ansibleplaybookbundle/postgresql-demo-apb
 description: PostgreSQL apb implementation
 bindable: true
 async: optional
-tags:
-  - database
 metadata:
   displayName: "Postgresql demo"
   longDescription: "An apb demo that deploys postgresql and loads it with sample data"
