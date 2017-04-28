@@ -1,7 +1,7 @@
 manageiq-apb
 ======================
 
-An AnsibleApp for deploying [ManageIQ](http://manageiq.org/).
+An APB for deploying [ManageIQ](http://manageiq.org/).
 
 ## What it does
 * Deploys a ManageIQ installation to the (optionally) specified namespace. The installation consists of 1 postgresql, 1 memcached, and one application pod.
