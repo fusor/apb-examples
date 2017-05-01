@@ -1,0 +1,83 @@
+- name: Deploy wordpress-ha-apb to openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: remove wordpress route
+    openshift_v1_route:
+      name: wordpress
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: remove wordpress replicaset
+    k8s_v1beta1_replica_set:
+      name: wordpress
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: Wordpress autoscaler
+    k8s_v1_horizontal_pod_autoscaler:
+      name: wordpress-scaler
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name:  Wordpress HTTP service
+    k8s_v1_service:
+      name: wordpress
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: Wordpress volume claim
+    k8s_v1_persistent_volume_claim:
+      name: wordpress-1
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: StatefulSet for mysql
+    k8s_v1beta1_stateful_set:
+      name: mysql
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: Headless service used by WordPress
+    k8s_v1_service:
+      name: mysql
+      namespace: '{{ project_name }}'
+      state: absent
+
+  - name: etcd services
+    k8s_v1_service:
+      name: '{{ item }}'
+      namespace: '{{ project_name }}'
+      state: absent
+    with_items:
+      - etcd-0
+      - etcd-1
+      - etcd-2
+
+  - name: etcd pods
+    k8s_v1_pod:
+      name: '{{ item }}'
+      namespace: '{{ project_name }}'
+      state: absent
+    with_items:
+      - etcd-0
+      - etcd-1
+      - etcd-2
+
+  - name: Service to expose the etcd endpoint for Percona XtraDB Cluster
+    k8s_v1_service:
+      name: etcd
+      namespace: '{{ project_name }}'
+      state: absent
+
+
+  - name: create volumes
+    k8s_v1_persistent_volume_claim:
+      name: '{{ item }}'
+      namespace: '{{ project_name }}'
+      state: absent
+    with_items:
+      - db-mysql-0
+      - db-mysql-1
+      - db-mysql-2
