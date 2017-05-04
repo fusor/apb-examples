@@ -1,5 +1,4 @@
 ---
-
 - name: create namespace
   openshift_v1_project:
     name: '{{ project_name }}'
@@ -241,4 +240,3 @@
     namespace: '{{ project_name }}'
     to_name: wordpress
     port_target_port: 80
-

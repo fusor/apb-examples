@@ -1,5 +1,5 @@
 FROM ansibleplaybookbundle/apb-src-base
-# MAINTAINER {{ $MAINTAINER }}
+MAINTAINER Ansible Playbook Bundle Community
 
 LABEL "com.redhat.apb.version"="0.1.0"
 LABEL "com.redhat.apb.spec"=\
@@ -51,10 +51,9 @@ b3JhLCBQb3N0Z3JlU1FMLCBNeVNRTCwgTWFyaWFEQiwgT3JhY2xlLCBhbmQgTWljcm9zb2Z0IFNR\
 TCBTZXJ2ZXIuIgogIGltYWdlVXJsOiAiaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL2Z1c29yLzIw\
 MTdkZW1vL0RhdGFiYXNlX0FtYXpvblJEU19Qb3N0Z3JlU1FMaW5zdGFuY2UucG5nIgogIGRvY3Vt\
 ZW50YXRpb25Vcmw6ICJodHRwczovL2F3cy5hbWF6b24uY29tL3Jkcy8iCg=="
-ADD roles /opt/ansible/roles
-ADD playbooks /opt/apb/actions
+COPY roles /opt/ansible/roles
+COPY playbooks /opt/apb/actions
 
-RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
-RUN chown -R 1001:0 /opt/{ansible,apb}
 RUN yum -y install python-boto postgresql && yum clean all
-USER 1001
+
+USER apb
