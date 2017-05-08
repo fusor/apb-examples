@@ -1,0 +1,20 @@
+---
+# defaults for foreman-apb-openshift
+
+playbook_debug: no
+certificate_cn: "{{ lookup('env','CERTIFICATE_CN') | default('foreman', true) }}"
+create_pvs: "{{ lookup('env','CREATE_PVS') | bool | default(false, true) }}"
+deploy_postgresql: "{{ lookup('env','DEPLOY_POSTGRESQL') | bool | default(true, true) }}"
+db_encryption_key: "{{ lookup('env','DB_ENCRYPTION_KEY') }}"
+foreman_admin_password: "{{ lookup('env','FOREMAN_ADMIN_PASSWORD') | default('changeme', true) }}"
+namespace: "{{ lookup('env','NAMESPACE') | default('foreman-apb', true) }}"
+openshift_target: "{{ lookup('env','OPENSHIFT_TARGET') }}"
+openshift_user: "{{ lookup('env','OPENSHIFT_USER') }}"
+openshift_pass: "{{ lookup('env','OPENSHIFT_PASS') }}"
+postgresql_database: "{{ lookup('env','POSTGRESQL_DATABASE') | default('foreman', true) }}"
+postgresql_hostname: "{{ lookup('env','POSTGRESQL_HOSTNAME') | default('tfm-postgresql', true) }}"
+postgresql_password: "{{ lookup('env','POSTGRESQL_PASSWORD') | default('admin', true) }}"
+postgresql_user: "{{ lookup('env','POSTGRESQL_USER') | default('admin', true) }}"
+pv_base_path: "{{ lookup('env','PV_BASE_PATH') | default('/opt/k8s', true) }}"
+use_cn_for_route_hostname: "{{ lookup('env','USE_CN_FOR_ROUTE_HOSTNAME') | bool | default(false, true) }}"
+version: "{{ lookup('env', 'VERSION') | default('1.14', true) }}"

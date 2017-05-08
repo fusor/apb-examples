@@ -1,0 +1,28 @@
+- name: login
+  shell: "oc login {{ openshift_target }} -u '{{ openshift_user }}' -p '{{ openshift_pass }}' --insecure-skip-tls-verify=true"
+
+- name: delete old dc resource
+  shell: oc delete -n {{ namespace }} dc $(oc get --no-headers=true -n {{ namespace }} dc -l 'app=foreman-apb,service=foreman' | awk '{ print $1 }')
+
+- name: create foreman dc resource template
+  template:
+    src: foreman-dc.yml.j2
+    dest: /tmp/foreman-dc.yml
+
+- name: create migrate job definition
+  template:
+    src: templates/foreman-migrate.yml.j2
+    dest: /tmp/foreman-migrate.yml
+
+- name: create migrate job
+  shell: "oc -n {{ namespace }} create -f /tmp/foreman-migrate.yml"
+
+- name: wait for db migration and seed to complete
+  shell: "oc -n {{ namespace }} get pods | grep foreman-migrate-{{ version }}"
+  register: job_result
+  until: "'Completed' in job_result.stdout"
+  retries: 24
+  delay: 5
+
+- name: create foreman dc
+  shell: "oc create -n {{ namespace }} -f /tmp/foreman-dc.yml"

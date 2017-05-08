@@ -1,0 +1,22 @@
+---
+### File managed with puppet ###
+## Module:           'foreman'
+
+:unattended: true
+:login: true
+:require_ssl: true
+:locations_enabled: true
+:organizations_enabled: true
+:puppetrun: false
+
+:websockets_encrypt: on
+:websockets_ssl_key: /etc/foreman/httpd.key
+:websockets_ssl_cert: /etc/foreman/httpd.crt
+
+# Log settings for the current environment can be adjusted by adding them
+# here. For example, if you want to increase the log level.
+:logging:
+  :level: info
+
+# Individual logging types can be toggled on/off here
+:loggers:

@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: foreman-migrate-{{ version }}
+  namespace: "{{ namespace }}"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: "docker.io/jmontleon/foreman-centos7:{{ version }}"
+          name: main
+          command: ["/bin/bash", "-c", "foreman-rake db:migrate"]
+          volumeMounts:
+          - name: foreman-config
+            mountPath: /etc/foreman
+            readOnly: true
+          - mountPath: /var/log/foreman
+            name: foreman
+          env: {}
+      volumes:
+      - name: foreman-config
+        secret:
+          secretName: foreman-config
+      - name: foreman
+        persistentVolumeClaim:
+          claimName: foreman

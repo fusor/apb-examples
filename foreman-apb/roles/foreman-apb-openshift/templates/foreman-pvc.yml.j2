@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: foreman
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{% if create_pvs == true %}
+  selector:
+    matchLabels:
+      name: foreman
+{% endif %}
