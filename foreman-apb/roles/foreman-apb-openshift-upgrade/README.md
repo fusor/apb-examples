@@ -1,7 +1,7 @@
-Foreman-apb-Openshift
+Foreman-APB-Openshift-Upgrade
 ===
 
-Automates the deployment of foreman-apb to Openshift.
+Upgrades a previously deployed Foreman instance on OpenShift
 
 
 Requirements

@@ -1,7 +1,7 @@
-Foreman-apb-Openshift
+Foreman-APB-Openshift
 ===
 
-Automates the deployment of foreman-apb to Openshift.
+Automates the deployment of Foreman with PostgreSQL to Openshift.
 
 
 Requirements

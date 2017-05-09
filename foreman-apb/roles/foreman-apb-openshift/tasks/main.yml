@@ -92,13 +92,6 @@
     src: foreman-dc.yml.j2
     dest: /tmp/foreman-dc.yml
 
-- name: DEBUG PRINT OUT DC
-  shell: cat /tmp/foreman-dc.yml
-  register: pri
-
-- debug:
-    msg: "{{ pri.stdout }}"
-
 - name: create postgresql dc
   shell: "oc create -n {{ namespace }} -f /tmp/tfm-postgresql-dc.yml"
   when: deploy_postgresql
