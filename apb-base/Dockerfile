@@ -3,8 +3,19 @@ MAINTAINER Ansible Playbook Bundle Community
 
 LABEL "com.redhat.apb.version"="0.1.0"
 
+ENV USER_NAME=apb \
+    USER_UID=1001 \
+    BASE_DIR=/opt/apb
+ENV HOME=${BASE_DIR}
+
 RUN mkdir -p /root/.kube /usr/share/ansible/openshift \
-            /etc/ansible /opt/apb /opt/ansible
+             /etc/ansible /opt/ansible \
+             ${BASE_DIR} ${BASE_DIR}/etc \
+             ${BASE_DIR}/.kube ${BASE_DIR}/.ansible/tmp && \
+             useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} && \
+             chown -R ${USER_NAME}:0 /opt/{ansible,apb} && \
+             chmod -R g+rw /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
+
 COPY config /root/.kube/config
 RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
@@ -22,7 +33,7 @@ RUN ansible-galaxy install ansible.kubernetes-modules
 
 COPY oc-login.sh entrypoint.sh /usr/bin/
 
-RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
-RUN chown -R apb: /opt/{ansible,apb}
 
+USER ${USER_UID}
+RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${BASE_DIR}/etc/passwd.template
 ENTRYPOINT ["entrypoint.sh"]
