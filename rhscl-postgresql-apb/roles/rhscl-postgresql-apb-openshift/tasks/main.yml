@@ -1,0 +1,118 @@
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+- name: set volume state to {{ state }}
+  k8s_v1_persistent_volume_claim:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+    state: "{{ state }}"
+
+- name: set service state to {{ state }}
+  k8s_v1_service:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    ports:
+    - name: port-5432
+      port: 5432
+      protocol: TCP
+      target_port: 5432
+    state: "{{ state }}"
+  register: postgres_service
+
+- name: scale deployment down
+  openshift_v1_deployment_config:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    replicas: 0
+    state: present
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+  when: state == 'absent'
+
+- name: set deployment config state to {{ state }}
+  openshift_v1_deployment_config:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    replicas: 1
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    strategy_type: Rolling
+    strategy_rolling_params:
+      interval_seconds: 1
+      max_surge: 25%
+      max_unavailable: 25%
+      timeout_seconds: 600
+      update_period_seconds: 1
+    spec_template_metadata_labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    containers:
+    - env:
+      - name: POSTGRESQL_PASSWORD
+        value: '{{ postgresql_password }}'
+      - name: POSTGRESQL_USER
+        value: '{{ postgresql_user }}'
+      - name: POSTGRESQL_DATABASE
+        value: '{{ postgresql_database }}'
+      image: registry.access.redhat.com/rhscl/{{ image }}
+      image_pull_policy: IfNotPresent
+      name: postgresql
+      ports:
+      - container_port: 5432
+        protocol: TCP
+      termination_message_path: /dev/termination-log
+      volume_mounts:
+      - mount_path: /var/lib/pgsql/data
+        name: postgresql
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    volumes:
+    - name: postgresql
+      persistent_volume_claim:
+        claim_name: postgresql
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"
+
+- name: delete replication controller
+  k8s_v1_replication_controller:
+    name: postgresql-1
+    namespace: '{{ namespace }}'
+    state: absent
+  when: state == 'absent'
+
+- name: Wait for postgres to come up
+  wait_for:
+    port: 5432
+    host: "{{ postgres_service.service.spec.cluster_ip }}"
+    timeout: 300
+  when: state == 'present'
+
+- name: encode bind credentials
+  shell: 'echo "{\"POSTGRES_HOST\": \"postgresql\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
+  register: encoded_bind_credentials
+  when: state == 'present'
+
+- debug:
+    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+  when: state == 'present'
