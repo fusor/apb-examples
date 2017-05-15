@@ -1,0 +1,52 @@
+---
+- name: create namespace if it doesn't exist
+  openshift_v1_project:
+    name: '{{ namespace }}'
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    labels:
+      app: hello-world
+      service: hello-world
+    replicas: 1
+    selector:
+      app: hello-world
+      service: hello-world
+    spec_template_metadata_labels:
+      app: hello-world
+      service: hello-world
+    containers:
+    - env:
+      image: docker.io/cfchase/hello-world:latest
+      name: hello-world
+      ports:
+      - container_port: 80
+        protocol: TCP
+
+- name: create hello-world service
+  k8s_v1_service:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    labels:
+      app: hello-world
+      service: hello-world
+    selector:
+      app: hello-world
+      service: hello-world
+    ports:
+      - name: web
+        port: 80
+        target_port: 80
+
+- name: create hello-world route
+  openshift_v1_route:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: hello-world
+      service: hello-world
+    to_name: hello-world
+    state: present
