@@ -53,13 +53,13 @@
       service: postgresql
     containers:
     - env:
-      - name: POSTGRES_PASSWORD
+      - name: POSTGRESQL_PASSWORD
         value: '{{ postgresql_password }}'
-      - name: POSTGRES_USER
+      - name: POSTGRESQL_USER
         value: '{{ postgresql_user }}'
-      - name: POSTGRES_DB
+      - name: POSTGRESQL_DATABASE
         value: '{{ postgresql_database }}'
-      image: docker.io/jmontleon/postgresql:centos7
+      image: docker.io/centos/postgresql-94-centos7
       image_pull_policy: IfNotPresent
       name: postgresql
       ports:
