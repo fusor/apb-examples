@@ -1,0 +1,6 @@
+id: 55c53a5d-65a6-4c27-88fc-e027410b1882
+name: hello-world-apb
+image: ansibleplaybookbundle/hello-world-apb
+description: "hello-world-apb description"
+bindable: false
+async: optional
