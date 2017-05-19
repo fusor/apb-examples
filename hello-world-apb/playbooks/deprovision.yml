@@ -1,0 +1,9 @@
+- name: hello-world-apb deprovision
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: deprovision-hello-world-apb
+    playbook_debug: false

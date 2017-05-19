@@ -1,0 +1,15 @@
+---
+- openshift_v1_route:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    state: absent
+
+- k8s_v1_service:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    state: absent
+
+- openshift_v1_deployment_config:
+    name: hello-world
+    namespace: '{{ namespace }}'
+    state: absent

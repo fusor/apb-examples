@@ -19,7 +19,7 @@
       service: hello-world
     containers:
     - env:
-      image: docker.io/cfchase/hello-world:latest
+      image: docker.io/ansibleplaybookbundle/hello-world:latest
       name: hello-world
       ports:
       - container_port: 80
@@ -49,4 +49,3 @@
       app: hello-world
       service: hello-world
     to_name: hello-world
-    state: present
