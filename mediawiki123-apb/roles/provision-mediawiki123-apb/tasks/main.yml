@@ -1,0 +1,84 @@
+---
+- name: create namespace if it does not exist
+  openshift_v1_project:
+    name: '{{ namespace }}'
+
+- name: create mediawiki123 route
+  openshift_v1_route:
+    name: mediawiki123
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: mediawiki123
+      service: mediawiki123
+    to_name: mediawiki123
+    state: present
+  register: route
+
+- name: create persistent volume claim
+  k8s_v1_persistent_volume_claim:
+    name: mediawiki123-pvc
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteMany
+    resources_requests:
+      storage: 1Gi
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: mediawiki123
+    namespace: '{{ namespace }}'
+    labels:
+      app: mediawiki123
+      service: mediawiki123
+    replicas: 1
+    selector:
+      app: mediawiki123
+      service: mediawiki123
+    spec_template_metadata_labels:
+      app: mediawiki123
+      service: mediawiki123
+    containers:
+    - env:
+      - name: MEDIAWIKI_SITE_SERVER
+        value: '{{ route.route.spec.host }}'
+      - name: MEDIAWIKI_DB_HOST
+        value: '{{ mediawiki_db_host }}'
+      - name: MEDIAWIKI_DB_NAME 
+        value: '{{ mediawiki_db_name }}'
+      - name: MEDIAWIKI_DB_SCHEMA
+        value: 'mediawiki'
+      - name: MEDIAWIKI_DB_PORT
+        value: '{{ mediawiki_db_port }}'
+      - name: MEDIAWIKI_DB_USER
+        value: '{{ mediawiki_db_user }}'
+      - name: MEDIAWIKI_DB_PASSWORD
+        value: '{{ mediawiki_db_password }}'
+      image: docker.io/jmontleon/mediawiki123:latest
+      name: mediawiki123
+      ports:
+      - container_port: 8080
+        protocol: TCP
+      volume_mounts:
+        - mount_path: /persistent
+          name: mediawiki123-volume
+    volumes:
+      - name: mediawiki123-volume
+        persistent_volume_claim:
+          claim_name: mediawiki123-pvc
+
+- name: create mediawiki123 service
+  k8s_v1_service:
+    name: mediawiki123
+    namespace: '{{ namespace }}'
+    labels:
+      app: mediawiki123
+      service: mediawiki123
+    selector:
+      app: mediawiki123
+      service: mediawiki123
+    ports:
+      - name: web
+        port: 8080
+        target_port: 8080
