@@ -4,3 +4,4 @@ image: ansibleplaybookbundle/hello-world-apb
 description: "hello-world-apb description"
 bindable: false
 async: optional
+parameters: []
