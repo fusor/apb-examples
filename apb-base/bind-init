@@ -1,0 +1,10 @@
+#!/bin/bash
+
+CREDS="/etc/ansible-service-broker/bind-creds"
+
+while [ -e $CREDS ]; do
+    echo "Waiting for Broker to gather the bind credendials..."
+    sleep 2
+done
+
+echo "Broker has received bind credendials."

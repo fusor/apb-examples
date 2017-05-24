@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CREDS="/etc/ansible-service-broker/bind-creds"
+RETRIES=10
+
+for r in $(seq 1 $RETRIES); do
+    if [ ! -s $CREDS ]; then
+	echo "Bind credentials not available. Sleep for $r"
+	sleep $r
+    else
+	cat $CREDS
+	rm $CREDS
+	exit 0
+    fi
+done
+
+echo "Broker never found bind credentials"
+exit 1
