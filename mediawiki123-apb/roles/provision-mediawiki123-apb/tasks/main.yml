@@ -55,16 +55,6 @@
         value: postgres
       - name: MEDIAWIKI_SITE_SERVER
         value: '{{ route.route.spec.host }}'
-      - name: POSTGRESQL_HOST
-        value: '{{ postgresql_host }}'
-      - name: POSTGRESQL_DATABASE
-        value: '{{ postgresql_database }}'
-      - name: POSTGRESQL_PORT
-        value: '{{ postgresql_port }}'
-      - name: POSTGRESQL_USER
-        value: '{{ postgresql_user }}'
-      - name: POSTGRESQL_PASSWORD
-        value: '{{ postgresql_password }}'
       image: docker.io/jmontleon/mediawiki123:latest
       name: mediawiki123
       ports:

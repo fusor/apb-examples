@@ -1,2 +1,1 @@
 ---
-namespace: "{{ lookup('env','NAMESPACE') | default('mediawiki123', true) }}"
