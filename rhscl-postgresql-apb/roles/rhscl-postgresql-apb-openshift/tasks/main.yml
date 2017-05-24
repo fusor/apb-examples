@@ -109,7 +109,7 @@
   when: state == 'present'
 
 - name: encode bind credentials
-  shell: 'echo "{\"POSTGRES_HOST\": \"postgresql\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
+  shell: 'echo "{\"POSTGRESQL_HOST\": \"postgresql\", \"POSTGRESQL_PORT\": \"5432\", \"POSTGRESQL_USER\": \"{{ postgresql_user }}\", \"POSTGRESQL_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRESQL_DATABASE\": \"{{ postgresql_database }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
   when: state == 'present'
 
