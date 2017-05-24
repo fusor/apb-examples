@@ -10,22 +10,28 @@ metadata:
   imageUrl: "https://wiki.postgresql.org/images/a/a4/PostgreSQL_logo.3colors.svg"
   documentationUrl: "https://www.postgresql.org/docs/"
 parameters:
-  - name: namespace
-    description: Namespace to deploy the cluster to
-    type: string
-    default: rhscl-postgresql-apb
-  - name: postgresql_database
-    description: postgresql database name
-    type: string
-    default: admin
-  - name: postgresql_password
-    description: postgresql database password
-    type: string
-    default: admin
-  - name: postgresql_user
-    description: postgresql database username
-    type: string
-  - name: postgresql_version
-    description: postgresql database version
-    type: string
-    default: admin
+  - namespace:
+    - title: namespace
+      description: Namespace to deploy the cluster to
+      type: string
+      default: rhscl-postgresql-apb
+  - postgresql_database:
+    - title: postgresql_database
+      description: postgresql database name
+      type: string
+      default: admin
+  - postgresql_password:
+    - title: postgresql_password
+      description: postgresql database password
+      type: string
+      default: admin
+  - postgresql_user:
+    - title: postgresql_user
+      description: postgresql database username
+      type: string
+  - postgresql_version:
+    - title: postgresql_version
+      description: postgresql database version
+      type: enum
+      default: 9.5
+      enum: ["9.5", "9.4"]
