@@ -55,7 +55,7 @@
         value: postgres
       - name: MEDIAWIKI_SITE_SERVER
         value: '{{ route.route.spec.host }}'
-      - name: POSTGRESL_HOST
+      - name: POSTGRESQL_HOST
         value: '{{ postgresql_host }}'
       - name: POSTGRESQL_DATABASE
         value: '{{ postgresql_database }}'
