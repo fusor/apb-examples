@@ -70,5 +70,6 @@
   shell: 'echo "{\"POSTGRES_HOST\": \"{{ endpoint_ip.stdout }}\", \"POSTGRES_PORT\": \"{{ port }}\", \"POSTGRES_USER\": \"{{ db_username }}\", \"POSTGRES_PASSWORD\": \"{{ db_password }}\", \"POSTGRES_DB\": \"{{ db_name }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
 
-- debug:
-    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+- copy:
+   content="<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+   dest=/etc/ansible-service-broker/bind-creds
