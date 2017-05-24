@@ -29,6 +29,7 @@ parameters:
     - title: postgresql_user
       description: postgresql database username
       type: string
+      maxlength: 63
   - postgresql_version:
     - title: postgresql_version
       description: postgresql database version
