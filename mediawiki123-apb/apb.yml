@@ -10,56 +10,28 @@ metadata:
   imageURL: "https://upload.wikimedia.org/wikipedia/commons/0/01/MediaWiki-smaller-logo.png"
   documentationURL: "https://www.mediawiki.org/wiki/Documentation"
 parameters:
-  - namespace:
-    - title: namespace
-      description: Namespace to deploy the cluster to
-      type: string
-      default: mediawiki123
   - mediawiki_db_schema:
-    - title: mediawiki_db_schema
-      description: Schema name to use.
+    - title: Mediawiki DB Schema
       type: string
       default: mediawiki
   - mediawiki_site_name:
-    - title: mediawiki_site_name
-      description: Name for the Mediawiki Site
+    - title: Mediawiki Site Name
       type: string
       default: MediaWiki
   - mediawiki_site_lang:
-    - title: mediawiki_site_lang
-      description: Language to use
+    - title: Mediawiki Site Language
       type: string
       default: en
   - mediawiki_admin_user:
-    - title: mediawiki_admin_user
-      description: Mediawiki Admin User
+    - title: Mediawiki Admin User
       type: string
       default: admin
   - mediawiki_admin_pass:
-    - title: mediawiki_admin_pass
-      description: Mediawiki Admin User's Password
+    - title: Mediawiki Admin User Password
       type: string
-      default: rosebud
-  - postgresql_host:
-    - title: postgresql_host
-      description: Hostname for the postgres server
-      type:
-  - postgresql_database:
-    - title: postgresql_database
-      description: Postgres database name for mediawiki
-      type: string
-  - postgresql_port:
-    - title: postgresql_port
-      description: Post the postgres server is listening on
-      type: string
-      pattern: "^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"
-      default: 5432
-  - postgresql_user:
-    - title: postgresql_user
-      description: Postgres username for mediawiki to use
-      type: string
-      maxlength: 63
-  - postgresql_password:
-    - title: postgresql_password
-      description: Postgres users password
-      type: string
+required:
+  - mediawiki_db_schema
+  - mediawiki_site_name
+  - mediawiki_site_lang
+  - mediawiki_admin_user
+  - mediawiki_admin_pass
