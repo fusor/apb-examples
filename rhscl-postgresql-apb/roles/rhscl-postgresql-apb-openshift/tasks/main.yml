@@ -10,7 +10,7 @@
     access_modes:
       - ReadWriteOnce
     resources_requests:
-      storage: 1Gi
+      storage: '{{ postgresql_volume_size }}'
     state: "{{ state }}"
 
 - name: set service state to {{ state }}

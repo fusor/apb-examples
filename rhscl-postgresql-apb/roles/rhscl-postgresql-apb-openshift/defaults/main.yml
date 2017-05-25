@@ -1,4 +1,7 @@
 ---
 postgresql_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
+postgresql_user: "admin"
+postgresql_volume_size: "1Gi"
+postgresql_version: "9.5"
 image: "postgresql-{{ postgresql_version | replace('.', '') }}-rhel7"
 state: present
