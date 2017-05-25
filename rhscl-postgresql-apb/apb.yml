@@ -5,34 +5,31 @@ description: SCL PostgreSQL apb implementation
 bindable: true
 async: optional
 metadata:
-  displayName: "Red Hat SCL Postgresql"
+  displayName: "Red Hat SCL PostgreSQL"
   longDescription: "An apb that deploys postgresql 9.4 or 9.5."
   imageUrl: "https://wiki.postgresql.org/images/a/a4/PostgreSQL_logo.3colors.svg"
   documentationUrl: "https://www.postgresql.org/docs/"
 parameters:
-  - namespace:
-    - title: namespace
-      description: Namespace to deploy the cluster to
-      type: string
-      default: rhscl-postgresql-apb
   - postgresql_database:
-    - title: postgresql_database
-      description: postgresql database name
+    - title: PostgreSQL Database Name
       type: string
       default: admin
   - postgresql_password:
-    - title: postgresql_password
-      description: postgresql database password
+    - title: PostgreSQL Password
+      description: A random alphanumeric string if left blank
       type: string
       default: admin
   - postgresql_user:
-    - title: postgresql_user
-      description: postgresql database username
+    - title: PostgreSQL User
       type: string
+      default: admin
       maxlength: 63
   - postgresql_version:
-    - title: postgresql_version
-      description: postgresql database version
+    - title: PostgreSQL Version
       type: enum
       default: 9.5
       enum: ["9.5", "9.4"]
+required:
+  - postgresql_database
+  - postgresql_user
+  - postgresql_version
