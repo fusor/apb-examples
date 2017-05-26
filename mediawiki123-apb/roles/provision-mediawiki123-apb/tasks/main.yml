@@ -23,7 +23,7 @@
     access_modes:
       - ReadWriteMany
     resources_requests:
-      storage: 1Gi
+      storage: '{{ mediawiki_volume_size }}'
 
 - name: create deployment config
   openshift_v1_deployment_config:

@@ -1,0 +1,36 @@
+- connection: local
+  gather_facts: false
+  hosts: localhost
+  name: Deprovision mediawiki123-apb from openshift
+  post_tasks:
+  - openshift_v1_route:
+      name: mediawiki123
+      namespace: '{{ namespace }}'
+      state: absent
+  - k8s_v1_persistent_volume_claim:
+      name: mediawiki123-pvc
+      namespace: '{{ namespace }}'
+      state: absent
+  - openshift_v1_deployment_config:
+      name: mediawiki123
+      namespace: '{{ namespace }}'
+      replicas: 0
+      state: present
+  - k8s_v1_replication_controller:
+      name: mediawiki123-1
+      namespace: '{{ namespace }}'
+      state: absent
+  - openshift_v1_deployment_config:
+      name: mediawiki123
+      namespace: '{{ namespace }}'
+      state: absent
+  - k8s_v1_service:
+      name: mediawiki123
+      namespace: '{{ namespace }}'
+      state: absent
+  roles:
+  - install_python_requirements: false
+    role: ansible.kubernetes-modules
+  vars:
+    namespace: mediawiki123-apb
+
