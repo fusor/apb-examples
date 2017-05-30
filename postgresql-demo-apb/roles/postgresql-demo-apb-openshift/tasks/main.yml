@@ -30,6 +30,14 @@
       target_port: 5432
   register: postgres_service
 
+- name: create image stream
+  openshift_v1_image_stream:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    tags:
+      - name: postgis
+    docker_image_repository: docker.io/fabianvf/postgresql
+
 - name: create deployment config
   openshift_v1_deployment_config:
     name: postgresql
@@ -79,9 +87,17 @@
     - name: postgresql
       persistent_volume_claim:
         claim_name: postgresql
-      test: false
-      triggers:
-      - type: ConfigChange
+    test: false
+    triggers:
+    - type: ImageChange
+      image_change_params:
+        automatic: true
+        container_names:
+        - postgresql
+        _from:
+          kind: ImageStreamTag
+          name: postgresql:postgis
+
 
 - name: Wait for postgres to come up
   wait_for:
