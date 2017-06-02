@@ -23,6 +23,7 @@ ZGlhd2lraV9kYl9zY2hlbWEKICAtIG1lZGlhd2lraV9zaXRlX25hbWUKICAtIG1lZGlhd2lraV9z\
 aXRlX2xhbmcKICAtIG1lZGlhd2lraV9hZG1pbl91c2VyCiAgLSBtZWRpYXdpa2lfYWRtaW5fcGFz\
 cwo="
 
-RUN yum -y install mediawiki-apb-role && yum clean all
+ADD playbooks /opt/apb/actions
+ADD roles /opt/ansible/roles
 
 USER apb

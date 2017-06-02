@@ -8,10 +8,10 @@ ENV USER_NAME=apb \
     BASE_DIR=/opt/apb
 ENV HOME=${BASE_DIR}
 
-RUN curl https://copr.fedorainfracloud.org/coprs/jmontleon/asb/repo/epel-7/jmontleon-asb-epel-7.repo -o /etc/yum.repos.d/asb.repo
+RUN curl https://copr.fedorainfracloud.org/coprs/g/ansible-service-broker/ansible-service-broker/repo/epel-7/group_ansible-service-broker-ansible-service-broker-epel-7.repo -o /etc/yum.repos.d/asb.repo
 RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
-    && yum -y install origin-clients python-openshift ansible ansible-kubernetes-modules \
+    && yum -y install origin-clients python-openshift ansible ansible-kubernetes-modules apb-base-scripts \
     && yum clean all
 
 RUN mkdir -p /usr/share/ansible/openshift \
@@ -22,12 +22,9 @@ RUN mkdir -p /usr/share/ansible/openshift \
              chown -R ${USER_NAME}:0 /opt/{ansible,apb} && \
              chmod -R g+rw /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
 
-COPY oc-login.sh entrypoint.sh /usr/bin/
-
 RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
     && echo '[defaults]' > /etc/ansible/ansible.cfg \
     && echo 'roles_path = /etc/ansible/roles:/opt/ansible/roles' >> /etc/ansible/ansible.cfg
 
-USER ${USER_UID}
 RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${BASE_DIR}/etc/passwd.template
 ENTRYPOINT ["entrypoint.sh"]
