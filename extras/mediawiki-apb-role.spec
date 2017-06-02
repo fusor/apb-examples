@@ -13,7 +13,7 @@ Source0:	https://github.com/fusor/apb-examples/archive/apb-examples-%{version}.t
 %{summary}
 
 %prep
-%setup -q -n apb-examples-%{version}
+%setup -q -n %{name}-%{version}
 
 %install
 mkdir -p %{buildroot}/opt/apb/ %{buildroot}/opt/ansible/
