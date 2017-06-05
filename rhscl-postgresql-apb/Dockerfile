@@ -22,7 +22,6 @@ CiAgICAtIHRpdGxlOiBQb3N0Z3JlU1FMIFZlcnNpb24KICAgICAgdHlwZTogZW51bQogICAgICBk\
 ZWZhdWx0OiA5LjUKICAgICAgZW51bTogWyI5LjUiLCAiOS40Il0KcmVxdWlyZWQ6CiAgLSBwb3N0\
 Z3Jlc3FsX2RhdGFiYXNlCiAgLSBwb3N0Z3Jlc3FsX3VzZXIKICAtIHBvc3RncmVzcWxfdmVyc2lv\
 bgo="
-dGVyczoge30K"
 
 COPY roles /opt/ansible/roles
 COPY playbooks/* /opt/apb/actions/
