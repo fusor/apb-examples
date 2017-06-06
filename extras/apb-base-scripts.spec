@@ -1,8 +1,12 @@
-%define build_timestamp %(date +"%Y%m%d%H%M%%S")
+%if 0%{?copr}
+%define build_timestamp .%(date +"%Y%m%d%H%M%%S")
+%else
+%define build_timestamp %{nil}
+%endif
 
 Name: apb-base-scripts
 Version:	1.0.0
-Release:	1.%{build_timestamp}%{?dist}
+Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
 License:	ASL 2.0

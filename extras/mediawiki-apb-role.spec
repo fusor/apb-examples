@@ -1,8 +1,12 @@
-%define build_timestamp %(date +"%Y%m%d%H%M%%S")
+%if 0%{?copr}
+%define build_timestamp .%(date +"%Y%m%d%H%M%%S")
+%else
+%define build_timestamp %{nil}
+%endif
 
 Name: mediawiki-apb-role
 Version:	1.0.0
-Release:	1.%{build_timestamp}%{?dist}
+Release:	1%{build_timestamp}%{?dist}
 Summary:	Ansible Playbook for Mediawiki APB
 
 License:	ASL 2.0
