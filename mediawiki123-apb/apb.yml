@@ -11,23 +11,23 @@ metadata:
   documentationURL: "https://www.mediawiki.org/wiki/Documentation"
 parameters:
   - mediawiki_db_schema:
-    - title: Mediawiki DB Schema
+      title: Mediawiki DB Schema
       type: string
       default: mediawiki
   - mediawiki_site_name:
-    - title: Mediawiki Site Name
+      title: Mediawiki Site Name
       type: string
       default: MediaWiki
   - mediawiki_site_lang:
-    - title: Mediawiki Site Language
+      title: Mediawiki Site Language
       type: string
       default: en
   - mediawiki_admin_user:
-    - title: Mediawiki Admin User
+      title: Mediawiki Admin User
       type: string
       default: admin
   - mediawiki_admin_pass:
-    - title: Mediawiki Admin User Password
+      title: Mediawiki Admin User Password
       type: string
 required:
   - mediawiki_db_schema
