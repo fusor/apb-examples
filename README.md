@@ -44,7 +44,7 @@ my-apb/
             └── main.yml
 ```
 ### Directory Structure with Optional Files
-The directory structure with `optional/additional` files, may look like this:
+The directory structure with _optional/additional_ files, may look like this:
 ```bash
 my-apb/
 ├── apb.yml
@@ -78,6 +78,7 @@ ADD roles /opt/ansible/roles
 
 USER apb
 ```
+- [Hello World Dockerfile](hello-world-apb/Dockerfile)
 
 #### Spec File (`apb.yml`)
 ```bash
@@ -89,6 +90,7 @@ bindable: false
 async: optional
 parameters: []
 ```
+- [Hello World apb.yml](hello-world-apb/apb.yml)
 
 #### `provision.yml`
 ```bash
@@ -102,6 +104,7 @@ parameters: []
   - role: my-apb-openshift
     playbook_debug: false
 ```
+- [Hello World provision.yml](hello-world-apb/playbooks/provision.yml)
 
 #### `deprovision.yml`
 ```bash
