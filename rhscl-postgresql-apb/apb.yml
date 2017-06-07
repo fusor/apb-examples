@@ -11,21 +11,21 @@ metadata:
   documentationUrl: "https://www.postgresql.org/docs/"
 parameters:
   - postgresql_database:
-    - title: PostgreSQL Database Name
+      title: PostgreSQL Database Name
       type: string
       default: admin
   - postgresql_password:
-    - title: PostgreSQL Password
+      title: PostgreSQL Password
       description: A random alphanumeric string if left blank
       type: string
       default: admin
   - postgresql_user:
-    - title: PostgreSQL User
+      title: PostgreSQL User
       type: string
       default: admin
       maxlength: 63
   - postgresql_version:
-    - title: PostgreSQL Version
+      title: PostgreSQL Version
       type: enum
       default: 9.5
       enum: ["9.5", "9.4"]
