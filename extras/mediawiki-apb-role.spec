@@ -12,6 +12,7 @@ Summary:	Ansible Playbook for Mediawiki APB
 License:	ASL 2.0
 URL:		https://github.com/fusor/apb-examples
 Source0:	https://github.com/fusor/apb-examples/archive/apb-examples-%{version}.tar.gz
+BuildArch:  noarch
 
 %description
 %{summary}
