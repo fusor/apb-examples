@@ -1,0 +1,10 @@
+:default:
+  :colorize: false
+  :console_inline: false
+  :log_trace: false
+  :level: info
+  :type: file
+  :pattern: "%d [%c] [%.1l] %m\n"
+
+:production:
+  :filename: "production.log"

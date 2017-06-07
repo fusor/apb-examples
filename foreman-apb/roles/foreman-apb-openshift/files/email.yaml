@@ -1,0 +1,7 @@
+production:
+  delivery_method: :smtp
+  smtp_settings:
+    address: smtp.example.com
+    port: 25
+    domain: example.com
+    authentication: :none

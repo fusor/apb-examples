@@ -1,0 +1,27 @@
+{% if deploy_postgresql == true %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tfm-postgresql
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ pv_base_path }}/tfm-postgresql"
+
+---
+{% endif %}
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: foreman
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ pv_base_path }}/foreman"

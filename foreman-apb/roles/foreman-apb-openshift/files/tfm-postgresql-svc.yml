@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foreman-apb
+    service: tfm-postgresql
+  name: tfm-postgresql
+spec:
+  ports:
+  - name: port-5432
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: foreman-apb
+    service: tfm-postgresql
+  sessionAffinity: None
+  type: ClusterIP
+

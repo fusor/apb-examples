@@ -1,0 +1,59 @@
+id: e1b60302-a711-4e2a-8a2e-404e95f9df63
+name: foreman-apb
+image: ansibleplaybookbundle/foreman-apb
+description: Foreman APB implementation
+bindable: false
+async: optional
+parameters:
+  - name: certificate_cn
+    description: Common Name for SSL Certificate
+    type: string
+    default: foreman
+  - name: create_pvs
+    description: Create hostPath PV
+    type: boolean
+    default: false
+  - name: deploy_postgresql
+    description: Deploy a dedicated postgresql instance
+    type: boolean
+    default: true
+  - name: db_encryption_key
+    description: DB Encryption key
+    default: ''
+    required: false
+  - name: foreman_admin_password 
+    description: foreman admin password
+    type: string
+    default: changeme
+  - name: namespace
+    description: Namespace to deploy the cluster to
+    type: string
+    default: foreman-apb
+  - name: postgresql_database
+    description: postgresql database name
+    type: string
+    default: foreman
+  - name: postgresql_hostname
+    description: hostname of postgresql database. Use default if deploying a dedicated instance
+    type: string
+    default: tfm-postgresql
+  - name: postgresql_password
+    description: postgresql database password
+    type: string
+    default: admin
+  - name: postgresql_user
+    description: postgresql database username
+    type: string
+    default: admin
+  - name: pv_base_path
+    description: Base path for hostPath pv's if created
+    type: string
+    default: /opt/k8s
+  - name: use_cn_for_route_hostname
+    description: Change the route hostname to match the certificate_cn
+    type: boolean
+    default: false
+  - name: version
+    description: Change the route hostname to match the certificate_cn
+    type: string
+    default: 1.14

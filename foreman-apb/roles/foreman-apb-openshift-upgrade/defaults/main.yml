@@ -1,0 +1,9 @@
+---
+# defaults for foreman-apb-openshift
+
+playbook_debug: no
+namespace: "{{ lookup('env','NAMESPACE') }}"
+openshift_target: "{{ lookup('env','OPENSHIFT_TARGET') }}"
+openshift_user: "{{ lookup('env','OPENSHIFT_USER') }}"
+openshift_pass: "{{ lookup('env','OPENSHIFT_PASS') }}"
+version: "{{ lookup('env', 'VERSION') | default('1.14', true) }}"

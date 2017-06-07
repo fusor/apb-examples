@@ -1,0 +1,148 @@
+- name: login
+  shell: "oc login {{ openshift_target }} -u '{{ openshift_user }}' -p '{{ openshift_pass }}' --insecure-skip-tls-verify=true"
+
+- name: check if namespace exists
+  shell: "oc get project --no-headers=true | awk '{ print $1}' | grep -E '^{{ namespace }}( |$)' | cat"
+  register: project
+
+- name: create namespace if it does not
+  shell: "oc new-project {{ namespace }}"
+  when: project.stdout.find(namespace) == -1
+
+- name: create database.yml
+  template:
+    src: database.yml.j2
+    dest: /tmp/database.yml
+
+- name: get random key for db_encryption
+  shell: "python -c 'import os, binascii; print(binascii.hexlify(os.urandom(20)))'"
+  when: db_encryption_key == ""
+  register: key
+
+- set_fact:
+    db_encryption_key: "{{ key.stdout }}"
+  when: db_encryption_key == ""
+
+- name: create encryption_key.rb 
+  template:
+    src: encryption_key.rb.j2
+    dest: /tmp/encryption_key.rb
+
+- name: make certs
+  shell: "./make-certs.sh"
+  args:
+    chdir: /opt/foreman/secrets
+
+- name: create foreman-config secret
+  shell: oc -n {{ namespace }} create secret generic foreman-config \
+         --from-file=/tmp/database.yml \
+         --from-file={{ role_path }}/files/settings.yaml \
+         --from-file={{ role_path }}/files/email.yaml \
+         --from-file={{ role_path }}/files/foreman-debug.conf \
+         --from-file={{ role_path }}/files/logging.yaml \
+         --from-file=/tmp/encryption_key.rb \
+         --from-file=/opt/foreman/secrets/certs/ca.crt \
+         --from-file=/opt/foreman/secrets/certs/ca.key \
+         --from-file=/opt/foreman/secrets/certs/httpd.crt \
+         --from-file=/opt/foreman/secrets/certs/httpd.key
+
+- name: create pv resource template
+  template:
+    src: pvs.yml.j2
+    dest: /tmp/pvs.yml
+  when: create_pvs
+
+- name: create tfm-postgresql pvc resource template
+  template:
+    src: tfm-postgresql-pvc.yml.j2
+    dest: /tmp/tfm-postgresql-pvc.yml
+  when: deploy_postgresql
+
+- name: create foreman pvc resource template
+  template:
+    src: foreman-pvc.yml.j2
+    dest: /tmp/foreman-pvc.yml
+
+- name: create pv's
+  shell: "oc create -n {{ namespace }} -f /tmp/pvs.yml"
+  when: create_pvs
+
+- name: create postgresql pvc
+  shell: "oc create -n {{ namespace }} -f /tmp/tfm-postgresql-pvc.yml"
+  when: deploy_postgresql
+
+- name: create foreman pvc
+  shell: "oc create -n {{ namespace }} -f /tmp/foreman-pvc.yml"
+
+- name: create postgresql svc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/tfm-postgresql-svc.yml"
+  when: deploy_postgresql
+
+- name: create foreman pvc
+  shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/foreman-svc.yml"
+
+- name: create tfm-postgresql dc resource template
+  template:
+    src: tfm-postgresql-dc.yml.j2
+    dest: /tmp/tfm-postgresql-dc.yml
+  when: deploy_postgresql
+
+- name: create foreman dc resource template
+  template:
+    src: foreman-dc.yml.j2
+    dest: /tmp/foreman-dc.yml
+
+- name: create postgresql dc
+  shell: "oc create -n {{ namespace }} -f /tmp/tfm-postgresql-dc.yml"
+  when: deploy_postgresql
+
+- name: create migrate job definition
+  template:
+    src: templates/foreman-migrate.yml.j2
+    dest: /tmp/foreman-migrate.yml
+
+- name: wait for postgresql container to be running
+  shell: "oc -n {{ namespace }} get pods --no-headers=true | grep ^tfm-postgresql | grep -v deploy | cat"
+  register: postgresql_start
+  until: "'Running' in postgresql_start.stdout"
+  retries: 24
+  delay: 5
+  when: deploy_postgresql
+
+- name: create migrate job
+  shell: "oc -n {{ namespace }} create -f /tmp/foreman-migrate.yml"
+
+- name: wait for db migration and seed to complete
+  shell: "oc -n {{ namespace }} get pods | grep foreman-migrate-{{ version }}"
+  register: job_result
+  until: "'Completed' in job_result.stdout"
+  retries: 24
+  delay: 5
+
+- name: create foreman dc
+  shell: "oc create -n {{ namespace }} -f /tmp/foreman-dc.yml"
+
+- name: gather ca for route
+  shell: cat /opt/foreman/secrets/certs/ca.crt | sed 's,^,      ,'
+  register: ca_output
+
+- name: gather cert for route
+  shell: cat /opt/foreman/secrets/certs/httpd.crt | sed 's,^,      ,'
+  register: crt_output
+
+- name: gather key for route
+  shell: cat /opt/foreman/secrets/certs/httpd.key | sed 's,^,      ,'
+  register: key_output
+
+- set_fact:
+    ca: "{{ ca_output.stdout }}"
+    crt: "{{ crt_output.stdout }}"
+    key: "{{ key_output.stdout }}"
+
+- name: create foreman route resource template
+  template:
+    src: foreman-route.yml.j2
+    dest: /tmp/foreman-route.yml
+
+- name: create foreman route
+  shell: "oc create -n {{ namespace }} -f /tmp/foreman-route.yml"
