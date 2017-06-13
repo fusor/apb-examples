@@ -3,9 +3,9 @@ MAINTAINER Ansible Playbook Bundle Community
 
 LABEL "com.redhat.apb.version"="0.1.0"
 
-RUN mkdir -p /root/.kube /usr/share/ansible/openshift \
+RUN mkdir -p /usr/share/ansible/openshift \
             /etc/ansible /opt/apb /opt/ansible
-COPY config /root/.kube/config
+
 RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
     && yum -y install origin origin-clients net-tools bind-utils \
