@@ -5,10 +5,13 @@ description: SCL PostgreSQL apb implementation
 bindable: true
 async: optional
 metadata:
-  displayName: "Red Hat SCL PostgreSQL"
+  displayName: "PostgreSQL (APB)"
   longDescription: "An apb that deploys postgresql 9.4 or 9.5."
-  imageUrl: "https://wiki.postgresql.org/images/a/a4/PostgreSQL_logo.3colors.svg"
+  console.openshift.io/iconClass: icon-postgresql
   documentationUrl: "https://www.postgresql.org/docs/"
+tags:
+  - databases
+  - postgresql
 parameters:
   - postgresql_database:
       title: PostgreSQL Database Name
