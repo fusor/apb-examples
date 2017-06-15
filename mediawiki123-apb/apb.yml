@@ -5,7 +5,7 @@ description: "Mediawiki123 apb implementation"
 bindable: false
 async: optional
 metadata:
-  displayName: "Red Hat Mediawiki"
+  displayName: "Mediawiki (APB)"
   longDescription: "An apb that deploys Mediawiki 1.23"
   imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/01/MediaWiki-smaller-logo.png"
   documentationUrl: "https://www.mediawiki.org/wiki/Documentation"
