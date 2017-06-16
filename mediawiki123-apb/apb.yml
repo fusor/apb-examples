@@ -7,7 +7,7 @@ async: optional
 metadata:
   displayName: "Mediawiki (APB)"
   longDescription: "An apb that deploys Mediawiki 1.23"
-  imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/01/MediaWiki-smaller-logo.png"
+  console.openshift.io/iconClass: icon-mediawiki
   documentationUrl: "https://www.mediawiki.org/wiki/Documentation"
 parameters:
   - mediawiki_db_schema:
