@@ -1,0 +1,169 @@
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+- name: mariadb storage volume claim
+  k8s_v1_persistent_volume_claim:
+    name: mariadb-storage
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+    state: "{{ state }}"
+
+- name: mariadb logs volume claim
+  k8s_v1_persistent_volume_claim:
+    name: mariadb-logs
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+    state: "{{ state }}"
+
+- name: mariadb service 
+  k8s_v1_service:
+    name: mariadb
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
+    labels:
+      app: etherpad-apb
+      service: mariadb
+    selector:
+      app: etherpad-apb
+      service: mariadb
+    ports:
+      - name: port-3306
+        port: 3306
+        protocol: TCP
+        target_port: 3306
+
+- name: etherpad service 
+  k8s_v1_service:
+    name: etherpad
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
+    labels:
+      app: etherpad-apb
+      service: etherpad
+    selector:
+      app: etherpad-apb
+      service: etherpad
+    ports:
+      - name: port-9001
+        port: 9001
+        protocol: TCP
+        target_port: 9001
+
+- name: create etherpad route
+  openshift_v1_route:
+    name: etherpad
+    namespace: '{{ namespace }}'
+    spec_port_target_port: port-9001
+    labels:
+      app: etherpad
+      service: etherpad
+    to_name: etherpad
+    state: "{{ state }}"
+
+
+- name: create mariadb deployment config
+  openshift_v1_deployment_config:
+    name: mariadb
+    namespace: '{{ namespace }}'
+    labels:
+      app: etherpad-apb
+      service: mariadb
+    replicas: 1
+    selector:
+      app: etherpad-apb
+      service: mariadb
+    spec_template_metadata_labels:
+      app: etherpad-apb
+      service: mariadb
+    containers:
+    - env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: '{{ mariadb_root_password }}'
+      - name: MYSQL_DATABASE
+        value: '{{ mariadb_name }}'
+      - name: MYSQL_USER
+        value: '{{ mariadb_user }}'
+      - name: MYSQL_PASSWORD
+        value: '{{ mariadb_password }}'
+      image: docker.io/mariadb:latest
+      image_pull_policy: IfNotPresent
+      name: mariadb
+      ports:
+      - container_port: 3306
+        protocol: TCP
+      termination_message_path: /dev/termination-log
+      volume_mounts:
+      - mount_path: /var/lib/mysql
+        name: mariadb-storage
+      - mount_path: /var/log/mysql
+        name: mariadb-logs
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    volumes:
+    - name: mariadb-logs
+      persistent_volume_claim:
+        claim_name: mariadb-logs
+    - name: mariadb-storage
+      persistent_volume_claim:
+        claim_name: mariadb-storage
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"
+
+- name: create etherpad deployment config
+  openshift_v1_deployment_config:
+    name: etherpad
+    namespace: '{{ namespace }}'
+    state: present
+    labels:
+      app: etherpad-apb
+      service: etherpad
+    spec_template_metadata_labels:
+      app: etherpad-apb
+      service: etherpad
+    selector:
+      app: etherpad-apb
+      service: etherpad
+    replicas: 1
+    containers:
+    - env:
+      - name: ETHERPAD_ADMIN_PASSWORD
+        value: '{{ etherpad_admin_password }}'
+      - name: ETHERPAD_ADMIN_USER
+        value: '{{ etherpad_admin_user }}'
+      - name: ETHERPAD_DB_HOST
+        value: '{{ etherpad_db_host }}'
+      - name: ETHERPAD_DB_PASSWORD
+        value: '{{ mariadb_password }}'
+      - name: ETHERPAD_DB_USER
+        value: '{{ mariadb_user }}'
+      - name: ETHERPAD_DB_NAME
+        value: '{{ mariadb_name }}'
+      - name: ETHERPAD_PORT
+        value: '9001'
+      image: docker.io/tvelocity/etherpad-lite:latest
+      image_pull_policy: IfNotPresent
+      name: etherpad-apb
+      ports:
+      - container_port: 9001
+        protocol: TCP
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"
