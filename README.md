@@ -1,4 +1,6 @@
 # apb-examples
+[![Build Status](https://travis-ci.org/fusor/apb-examples.svg?branch=master)](https://travis-ci.org/fusor/apb-examples)
+
 A repository of example ansible-playbook bundles (APBs)
 
 # APB Documentation
