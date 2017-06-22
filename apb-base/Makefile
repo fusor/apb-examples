@@ -26,13 +26,12 @@ openshift-test:
 	$(eval PROJ_RANDOM=test-$(shell shuf -i 100000-999999 -n 1))
 	oc login -u ${OC_USER} -p ${OC_PASS}
 	oc new-project ${PROJ_RANDOM}
-	oc new-project ${APB_APP}
 	oc adm policy add-role-to-user admin system:serviceaccount:${PROJ_RANDOM}:default
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}:5000
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} -- provision --extra-vars 'namespace=${APB_APP}'
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc rollout status -w dc/${IMAGE_NAME}
 	oc describe dc/${IMAGE_NAME}
 	oc logs -f dc/${IMAGE_NAME}
