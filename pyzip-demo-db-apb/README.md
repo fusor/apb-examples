@@ -13,6 +13,6 @@ postgresql_password | admin | No | Postgresql database password
 
 ## Environment Variables
 Name | Default Value | Description
----|---|---|---
+---|---|---
 NAMESPACE | pyzip-demo-db-apb | Namespace to deploy the cluster in
 POSTGRESQL_SERVICE_NAME | postgresql | Service name for PostgreSQL
