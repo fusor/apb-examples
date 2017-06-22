@@ -3,6 +3,7 @@ dist: trusty
 group: deprecated-2017Q2
 
 env:
+  - VARIANT=apb-base TARGET=centos7
   - VARIANT=hello-world-apb TARGET=centos7
 #  - VARIANT=rhscl-postgresql-apb TARGET=centos7
 
@@ -25,7 +26,6 @@ before_script:
   - sudo mount --make-shared /
   - sudo service docker restart
 #  - make lint -C ${VARIANT}
-  - make -C apb-base TARGET=${TARGET}
 
 script:
   - make -C ${VARIANT} TARGET=${TARGET}
@@ -39,3 +39,4 @@ script:
   - export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`
   - make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}
   - oc version
+  
