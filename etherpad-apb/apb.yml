@@ -30,5 +30,5 @@ parameters:
       type: string
       default: admin
 required:
-  - mariadb_database
+  - mariadb_name
   - mariadb_user
