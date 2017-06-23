@@ -4,7 +4,7 @@
 
 - name: create volumes
   k8s_v1_persistent_volume_claim:
-    name: postgresql
+    name: demodb
     namespace: '{{ namespace }}'
     state: present
     access_modes:
@@ -14,15 +14,15 @@
 
 - name: create service
   k8s_v1_service:
-    name: '{{ postgresql_service_name }}'
+    name: '{{ dbservice_name }}'
     namespace: '{{ namespace }}'
     state: present
     labels:
-      app: postgresql-demo-apb
-      service: postgresql
+      app: pyzip-demo-db-apb
+      service: '{{ dbservice_name }}'
     selector:
-      app: postgresql-demo-apb
-      service: postgresql
+      app: pyzip-demo-db-apb
+      service: '{{ dbservice_name }}'
     ports:
     - name: port-5432
       port: 5432
@@ -39,15 +39,15 @@
 
 - name: create deployment config
   openshift_v1_deployment_config:
-    name: postgresql
+    name: demodb
     namespace: '{{ namespace }}'
     labels:
-      app: postgresql-demo-apb
-      service: postgresql
+      app: pyzip-demo-db-apb
+      service: '{{ dbservice_name }}'
     replicas: 1
     selector:
-      app: postgresql-demo-apb
-      service: postgresql
+      app: pyzip-demo-db-apb
+      service: '{{ dbservice_name }}'
     strategy_type: Rolling
     strategy_rolling_params:
       interval_seconds: 1
@@ -56,19 +56,19 @@
       timeout_seconds: 600
       update_period_seconds: 1
     spec_template_metadata_labels:
-      app: postgresql-demo-apb
-      service: postgresql
+      app: pyzip-demo-db-apb
+      service: '{{ dbservice_name }}'
     containers:
     - env:
       - name: POSTGRES_PASSWORD
-        value: '{{ postgresql_password }}'
+        value: '{{ database_password }}'
       - name: POSTGRES_USER
-        value: '{{ postgresql_user }}'
+        value: '{{ database_user }}'
       - name: POSTGRES_DB
-        value: '{{ postgresql_database }}'
+        value: '{{ database_name }}'
       image: docker.io/fabianvf/postgresql:postgis
       image_pull_policy: IfNotPresent
-      name: postgresql
+      name: demodb
       ports:
       - container_port: 5432
         protocol: TCP
@@ -77,35 +77,35 @@
       termination_message_path: /dev/termination-log
       volume_mounts:
       - mount_path: /var/lib/pgsql/data
-        name: postgresql
+        name: demodb
       working_dir: /
     dns_policy: ClusterFirst
     restart_policy: Always
     termination_grace_period_seconds: 30
     volumes:
-    - name: postgresql
+    - name: demodb
       persistent_volume_claim:
-        claim_name: postgresql
+        claim_name: demodb
     test: false
     triggers:
     - type: ImageChange
       image_change_params:
         automatic: true
         container_names:
-        - postgresql
+        - demodb
         _from:
           kind: ImageStreamTag
           name: postgresql:postgis
 
 
-- name: Wait for postgres to come up
+- name: Wait for the database to come up
   wait_for:
     port: 5432
-    host: "{{ postgresql_service_name }}"
+    host: "{{ dbservice_name }}"
     timeout: 300
 
 - name: seed database
-  shell: "PGPASSWORD={{ postgresql_password }} psql -U {{ postgresql_user }} -d {{ postgresql_database }} -p 5432 -h  {{ postgresql_service_name }} -f {{ role_path }}/files/{{ item }}"
+  shell: "PGPASSWORD={{ database_password }} psql -U {{ database_user }} -d {{ database_name }} -p 5432 -h  {{ dbservice_name }} -f {{ role_path }}/files/{{ item }}"
   with_items:
     - parkcoord.sql
     - airports.ddl
@@ -114,7 +114,7 @@
     - zipcodes.sql
 
 - name: encode bind credentials
-  shell: 'echo "{\"POSTGRES_HOST\": \"{{ postgresql_service_name }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
+  shell: 'echo "{\"POSTGRES_HOST\": \"{{ dbservice_name }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ database_user }}\", \"POSTGRES_PASSWORD\": \"{{ database_password }}\", \"POSTGRES_DB\": \"{{ database_name }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
 
 - debug:
