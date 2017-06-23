@@ -1,0 +1,63 @@
+- name: create project if it doesn't exist
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+- name: create pyzip-demo route
+  openshift_v1_route:
+    name: pyzip-demo
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    to_name: pyzip-demo
+    state: "{{ state }}"
+
+- name: create pyzip-demo service
+  k8s_v1_service:
+    name: pyzip-demo
+    namespace: '{{ namespace }}'
+    labels:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    selector:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    ports:
+      - name: web
+        port: 8080
+        protocol: TCP
+        target_port: 8080
+    state: "{{ state }}"
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: pyzip-demo
+    namespace: '{{ namespace }}'
+    labels:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    replicas: 1
+    selector:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    spec_template_metadata_labels:
+      app: pyzip-demo-apb
+      service: pyzip-demo
+    containers:
+    - env:
+      image: docker.io/ansibleplaybookbundle/py-zip-demo:latest
+      image_pull_policy: IfNotPresent
+      name: pyzip-demo
+      ports:
+      - container_port: 8080
+        protocol: TCP
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"
+
