@@ -1,0 +1,30 @@
+##############################################################################
+## Deprovision mysql-apb
+## This role executes much of the needed functionality to deprovision an
+## application using an Ansible Playbook Bundle and delete resources created
+##############################################################################
+
+## Deprovision the service
+- name: remove the service
+  k8s_v1_service:
+    name: "{{ service_name }}"
+    namespace: '{{ namespace }}'
+    state: absent
+
+## Deprovision the deployment config
+- name: remove the deployment config
+  openshift_v1_deployment_config:
+    name: "{{ service_name }}"
+    namespace: '{{ namespace }}'
+    state: absent
+
+## Deprovision storage
+- name: remove the persistent volume claim
+  k8s_v1_persistent_volume_claim:
+    name: "{{ service_name }}"
+    namespace: '{{ namespace }}'
+    state: absent
+  when: persistent_storage
+
+
+# TODO: can't we clean up resources by label?

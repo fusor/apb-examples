@@ -1,0 +1,121 @@
+---
+- name: create namespace if it does not exist
+  openshift_v1_project:
+    name: "{{ namespace }}"
+
+- name: create a volume claim
+  k8s_v1_persistent_volume_claim:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: "{{ volume_size }}"
+  when: persistent_storage
+
+- name: create MySQL deployment using Persistent Volume
+  openshift_v1_deployment_config:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    replicas: 1
+    selector:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    spec_template_metadata_labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    containers:
+    - name: mysql
+      image: "{{ image }}"
+      env:
+      - name: MYSQL_USER
+        value: "{{ mysql_user }}"
+      - name: MYSQL_PASSWORD
+        value: "{{ mysql_password }}"
+      - name: MYSQL_DATABASE
+        value: "{{ mysql_database }}"
+      ports:
+      - name: mysql
+        protocol: TCP
+        container_port: 3306
+      volume_mounts:
+      - mount_path: /var/lib/mysql/data
+        name: mysql-data
+      # TODO: add health checks
+    volumes:
+    - name: mysql-data
+      persistent_volume_claim:
+        claim_name: "{{ service_name }}"
+    triggers:
+    - type: ConfigChage
+    # TODO: add ImageChange trigger?
+  when: persistent_storage
+
+- name: create MySQL deployment with ephemeral storage
+  openshift_v1_deployment_config:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    replicas: 1
+    selector:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    spec_template_metadata_labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    containers:
+    - name: mysql
+      image: "{{ image }}"
+      env:
+      - name: MYSQL_USER
+        value: "{{ mysql_user }}"
+      - name: MYSQL_PASSWORD
+        value: "{{ mysql_password }}"
+      - name: MYSQL_DATABASE
+        value: "{{ mysql_database }}"
+      ports:
+      - name: mysql
+        protocol: TCP
+        container_port: 3306
+      volume_mounts:
+      - mount_path: /var/lib/mysql/data
+        name: mysql-data
+    volumes:
+    - name: mysql-data
+      emptyDir: []
+    triggers:
+    - type: ConfigChage
+    # TODO: add ImageChange trigger?
+  when: not persistent_storage
+
+- name: create a service
+  k8s_v1_service:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    selector:
+      apb: "{{ service_name }}"
+      service: "{{ service_name }}"
+    ports:
+    - name: mysql
+      port: 3306
+      target_port: 3306
+  register: mysql_service
+
+- name: encode bind credentials
+  shell: 'echo "{\"MYSQL_HOST\": \"{{ mysql_service.service.spec.cluster_ip }}\", \"MYSQL_PORT\": \"3306\", \"MYSQL_USER\": \"{{ mysql_user }}\", \"MYSQL_PASSWORD\": \"{{ mysql_password }}\", \"MYSQL_DATABASE\": \"{{ mysql_database }}\"}" | base64 -w 0'
+  register: encoded_bind_credentials
+
+- debug:
+    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"

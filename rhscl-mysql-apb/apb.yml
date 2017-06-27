@@ -1,0 +1,49 @@
+id: 57fd8715-7c41-4a0d-87a7-8b2831182506
+name: mysql-apb
+image: ansibleplaybookbundle/mysql-apb
+description: "MySQL APB"
+bindable: true
+async: optional
+tags:
+  - databases
+  - mysql
+metadata:
+  displayName: "MySQL (APB)"
+  longDescription: "An Ansible Playbook Bundle (APB) that deploys MySQL"
+  console.openshift.io/iconClass: icon-mysql-database
+  documentationUrl: "https://github.com/sclorg/mysql-container/"
+parameters:
+  - service_name:
+      description: The name of the service. Used to name and label resources
+      type: string
+      default: mysql
+  - persistent_storage:
+      description: Use a Persistent Volume to store MySQL data
+      type: bool
+      default: true
+  - volume_size:
+      description: The size of the requested Persistent Volume Claim
+      type: string
+      default: 1Gi
+  - mysql_version:
+      description: Version of MySQL to deploy
+      type: enum
+      enum: ["5.6", "5.7"]
+      default: "5.7"
+  - mysql_database:
+      description: The name of the MySQL database
+      type: string
+      default: devel
+  - mysql_user:
+      description: Username that will be used to connect to MySQL
+      type: string
+      default: devel
+  - mysql_password:
+      description: Password to connect to MySQL (generated if blank)
+      type: string
+required:
+  - service_name
+  - persistent_storage
+  - mysql_user
+  - mysql_database
+  - mysql_version
