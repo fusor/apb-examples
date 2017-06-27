@@ -1,0 +1,39 @@
+id: dc2189ac-0e42-4523-a8c2-0a9b9ba51d05
+name: rocketchat-apb
+image: ansibleplaybookbundle/rocketchat-apb
+description: This APB deploys RocketChat backed by MongoDB
+bindable: False
+async: optional
+metadata:
+  displayName: "RocketChat (APB)"
+  longDescription: "An APB that deploys RocketChat to OpenShift backed by MongoDB"
+  imageUrl: "https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true"
+  documentationUrl: "https://rocket.chat"
+parameters:
+  - mongodb_user:
+      title: MongoDB Username
+      type: string
+      default: rocketchat
+  - mongodb_pass:
+      title: MongoDB Password
+      type: string
+      default: changeme
+  - mongodb_name:
+      title: MongoDB Database Name
+      type: string
+      default: rocketchat
+  - mongodb_admin_pass:
+      title: MongoDB Admin Password
+      type: string
+      default: changeme
+  - mongodb_version:
+      title: MongoDB Version
+      type: enum
+      default: 3.2
+      enum: ["3.2", "3.4", "3.5"]
+required:
+  - mongodb_user
+  - mongodb_pass
+  - mongodb_name
+  - mongodb_admin_pass
+  - mongodb_version
