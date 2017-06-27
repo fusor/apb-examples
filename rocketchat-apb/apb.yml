@@ -31,9 +31,16 @@ parameters:
       type: enum
       default: 3.2
       enum: ["3.2", "3.4", "3.5"]
+  - rocketchat_version:
+      title: RocketChat Version
+      type: enum
+      default: latest
+      enum: ["latest", "0.56.0"]
+
 required:
   - mongodb_user
   - mongodb_pass
   - mongodb_name
   - mongodb_admin_pass
   - mongodb_version
+  - rocketchat_version

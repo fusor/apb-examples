@@ -37,7 +37,7 @@
         value: "http://{{ route.route.spec.host }}"
       - name: MONGO_URL
         value: "mongodb://0.0.0.0:27017/{{ mongodb_name }}"
-      image: docker.io/dymurray/rocketchat:latest
+      image: rocket.chat:{{ rocketchat_version }}
       name: rocketchat-apb
       ports:
       - container_port: 3000
