@@ -11,7 +11,7 @@ if [ ${USER_UID} != ${USER_ID} ]; then
 fi
 oc-login.sh
 
-touch /etc/ansible-service-broker/bind-creds
+touch /etc/apb/bind-creds
 if [[ -e "$playbooks/$ACTION.yaml" || -e "$playbooks/$ACTION.yml" ]]; then
   ansible-playbook $playbooks/$ACTION.yml "$@" || ansible-playbook $playbooks/$ACTION.yaml "$@"
 

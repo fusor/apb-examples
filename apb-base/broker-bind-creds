@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CREDS="/etc/ansible-service-broker/bind-creds"
+CREDS="/etc/apb/bind-creds"
 RETRIES=10
 
 for r in $(seq 1 $RETRIES); do

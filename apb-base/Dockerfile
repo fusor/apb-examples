@@ -14,13 +14,13 @@ RUN yum -y install epel-release centos-release-openshift-origin \
     && yum clean all
 
 RUN mkdir -p /usr/share/ansible/openshift \
-             /etc/ansible-service-broker \
+             /etc/apb \
              /etc/ansible /opt/ansible \
              ${BASE_DIR} ${BASE_DIR}/etc \
              ${BASE_DIR}/.kube ${BASE_DIR}/.ansible/tmp && \
              useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} && \
              chown -R ${USER_NAME}:0 /opt/{ansible,apb} && \
-             chown -R ${USER_NAME}:0 /etc/ansible-service-broker && \
+             chown -R ${USER_NAME}:0 /etc/apb && \
              chmod -R g+rw /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
 
 RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
