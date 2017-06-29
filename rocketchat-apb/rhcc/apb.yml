@@ -1,0 +1,46 @@
+id: 0630cefe-7cbf-460d-a9c6-465b1b5d8bf3
+name: rocketchat-rh-apb
+image: openshift3/rocketchat-rh-apb
+description: This APB deploys RocketChat backed by MongoDB
+bindable: False
+async: optional
+metadata:
+  displayName: "RocketChat RH (APB)"
+  longDescription: "An APB that deploys RocketChat to OpenShift backed by MongoDB"
+  imageUrl: "https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true"
+  documentationUrl: "https://rocket.chat"
+parameters:
+  - mongodb_user:
+      title: MongoDB Username
+      type: string
+      default: rocketchat
+  - mongodb_pass:
+      title: MongoDB Password
+      type: string
+      default: changeme
+  - mongodb_name:
+      title: MongoDB Database Name
+      type: string
+      default: rocketchat
+  - mongodb_admin_pass:
+      title: MongoDB Admin Password
+      type: string
+      default: changeme
+  - mongodb_version:
+      title: MongoDB Version
+      type: enum
+      default: 3.2
+      enum: ["3.2", "2.6"]
+  - rocketchat_version:
+      title: RocketChat Version
+      type: enum
+      default: latest
+      enum: ["latest", "0.56.0"]
+
+required:
+  - mongodb_user
+  - mongodb_pass
+  - mongodb_name
+  - mongodb_admin_pass
+  - mongodb_version
+  - rocketchat_version

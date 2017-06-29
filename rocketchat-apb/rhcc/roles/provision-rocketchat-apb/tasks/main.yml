@@ -1,0 +1,91 @@
+##############################################################################
+## Provision rocketchat-apb
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+- name: create rocketchat-apb route
+  openshift_v1_route:
+    name: rocketchat-apb
+    namespace: '{{ namespace }}'
+    spec_port_target_port: rocketchat-3000
+    labels:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    to_name: rocketchat-apb
+  register: route
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: rocketchat-apb
+    namespace: '{{ namespace }}'
+    labels:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    replicas: 1
+    selector:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    spec_template_metadata_labels:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    containers:
+    - env:
+      - name: ROOT_URL
+        value: "http://{{ route.route.spec.host }}"
+      - name: MONGO_URL
+        value: "mongodb://{{ mongodb_user }}:{{ mongodb_pass}}@0.0.0.0:27017/{{ mongodb_name }}"
+      image: registry.connect.redhat.com/rocketchat/rocketchat:{{ rocketchat_version }}
+      imagePullPolicy: IfNotPresent
+      name: rocketchat-apb
+      ports:
+      - container_port: 3000
+        name: rocketchat-3000
+        protocol: TCP
+    - env:
+      - name: MONGODB_USER
+        value: "{{ mongodb_user }}"
+      - name: MONGODB_PASSWORD
+        value: "{{ mongodb_pass }}"
+      - name: MONGODB_DATABASE
+        value: "{{ mongodb_name }}"
+      - name: MONGODB_ADMIN_PASSWORD
+        value: "{{ mongodb_admin_pass }}"
+      image: "{{ mongodb_image }}"
+      name: db
+      ports:
+      - container_port: 27017
+        protocol: TCP
+        name: mongo-27017
+
+- name: create rocketchat-apb service
+  k8s_v1_service:
+    name: rocketchat-apb
+    namespace: '{{ namespace }}'
+    labels:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    selector:
+      app: rocketchat-apb
+      service: rocketchat-apb
+    ports:
+      - name: rocketchat-3000
+        port: 3000
+        target_port: 3000
+
+- name: create mongo service
+  k8s_v1_service:
+    name: db
+    namespace: '{{ namespace }}'
+    labels:
+      app: rocketchat-apb
+      service: db
+    selector:
+      app: rocketchat-apb
+      service: db
+    ports:
+      - name: mongo-27017
+        port: 27017
+        target_port: 27017
