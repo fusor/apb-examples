@@ -1,9 +1,9 @@
 ---
 namespace: "{{ lookup('env','NAMESPACE') | default('rhscl-mariadb-apb', true) }}"
 mysql_database: "{{ lookup('env','MYSQL_DATABASE') | default('', true) }}"
-mysql_password: "{{ lookup('env','MYSQL_ROOT_PASSWORD') | default('', true) }}"
+mysql_password: "{{ lookup('env','MYSQL_PASSWORD') | default('admin', true) }}"
 mysql_root_password: "{{ lookup('env','MYSQL_ROOT_PASSWORD') | default('', true) }}"
-mysql_user: "{{ lookup('env','MYSQL_USER') | default('root', true) }}"
+mysql_user: "{{ lookup('env','MYSQL_USER') | default('admin', true) }}"
 mariadb_volume_size: "1Gi"
 mariadb_version: "{{ lookup('env','MARIADB_VERSION') | default('10.0', true) }}"
 image: "mariadb-{{ mariadb_version | replace('.', '') }}-rhel7"
