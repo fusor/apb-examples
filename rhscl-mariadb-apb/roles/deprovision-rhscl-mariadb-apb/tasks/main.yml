@@ -1,0 +1,14 @@
+- k8s_v1_service:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: absent
+
+- openshift_v1_deployment_config:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: absent
+
+  k8s_v1_replication_controller:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: absent

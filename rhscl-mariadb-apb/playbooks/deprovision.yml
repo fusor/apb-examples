@@ -1,0 +1,11 @@
+- name: Deprovision rhscl-mariadb-apb to openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    state: absent
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: deprovision-rhscl-mariadb-apb
+    playbook_debug: false

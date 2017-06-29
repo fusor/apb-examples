@@ -1,0 +1,98 @@
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+- name: create volumes
+  k8s_v1_persistent_volume_claim:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: '{{ mariadb_volume_size }}'
+    state: "{{ state }}"
+
+- name: create service
+  k8s_v1_service:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: present
+    labels:
+      app: rhscl-mariadb-apb
+      service: rhscl-mariadb
+    selector:
+      app: rhscl-mariadb-apb
+      service: rhscl-mariadb
+    ports:
+    - name: port-3306
+      port: 3306
+      protocol: TCP
+      target_port: 3306
+  register: mariadb_service
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    labels:
+      app: rhscl-mariadb-apb
+      service: rhscl-mariadb
+    replicas: 1
+    selector:
+      app: rhscl-mariadb-apb
+      service: rhscl-mariadb
+    strategy_type: Rolling
+    strategy_rolling_params:
+      interval_seconds: 1
+      max_surge: 25%
+      max_unavailable: 25%
+      timeout_seconds: 600
+      update_period_seconds: 1
+    spec_template_metadata_labels:
+      app: rhscl-mariadb-apb
+      service: rhscl-mariadb
+    containers:
+    - env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: '{{ mysql_root_password }}'
+      - name: MYSQL_USER
+        value: '{{ mysql_user }}'
+      - name: MYSQL_PASSWORD
+        value: '{{ mysql_root_password }}'
+      - name: MYSQL_DATABASE
+        value: '{{ mysql_database }}'
+      image: registry.access.redhat.com/rhscl/{{ image }}
+      image_pull_policy: IfNotPresent
+      name: rhscl-mariadb
+      ports:
+      - container_port: 3306
+        protocol: TCP
+      resources: {}
+      security_context: {}
+      termination_message_path: /dev/termination-log
+      volume_mounts:
+      - mount_path: /var/lib/mysql
+        name: rhscl-mariadb-home
+      - mount_path: /var/lib/mysql/data
+        name: rhscl-mariadb-data
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    volumes:
+    - name: rhscl-mariadb
+      persistent_volume_claim:
+        claim_name: rhscl-mariadb
+      test: false
+      triggers:
+      - type: ConfigChange
+    state: "{{ state }}"
+
+- name: encode bind credentials
+  shell: 'echo "{\"MARIADB_HOST\": \"{{ mariadb_service.service.spec.cluster_ip }}\", \"MARIADB_PORT\": \"3306\", \"MARIADB_USER\": \"{{ mysql_user }}\", \"MARIADB_PASSWORD\": \"{{ mysql_password }}\", \"MARIADB_DB\": \"{{ mysql_database }}\"}" | base64 -w 0'
+  register: encoded_bind_credentials
+
+- debug:
+    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
