@@ -72,4 +72,4 @@
 
 - copy:
    content="<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
-   dest=/etc/ansible-service-broker/bind-creds
+   dest=/etc/apb/bind-creds
