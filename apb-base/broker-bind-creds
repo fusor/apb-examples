@@ -1,18 +1,14 @@
 #!/bin/bash
 
 CREDS="/etc/apb/bind-creds"
-RETRIES=10
 
-for r in $(seq 1 $RETRIES); do
+while true; do
     if [ ! -s $CREDS ]; then
-	echo "Bind credentials not available. Sleep for $r"
-	sleep $r
+	echo "Bind credentials not available. Sleep for 2 seconds."
+	sleep 2
     else
 	cat $CREDS
 	rm $CREDS
 	exit 0
     fi
 done
-
-echo "Broker never found bind credentials"
-exit 1

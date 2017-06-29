@@ -1,8 +1,18 @@
 #!/bin/bash
 
-while [ -e $CREDS ]; do
-    echo "Waiting for Broker to gather the bind credendials..."
-    sleep 2
+# Pod will stay up for 5 minutes
+RETRIES=150
+CREDS="/etc/apb/bind-creds"
+
+for r in $(seq 1 $RETRIES); do
+    if [ -f $CREDS ]; then
+        echo "Waiting for Broker to gather the bind credendials..."
+        sleep 2
+    else
+        echo "Broker has received bind credendials."
+        exit 0
+    fi
 done
 
-echo "Broker has received bind credendials."
+echo "bind-init timed out after ${RETRIES} retries."
+exit 1
