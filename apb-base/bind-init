@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CREDS="/etc/apb/bind-creds"
-
 while [ -e $CREDS ]; do
     echo "Waiting for Broker to gather the bind credendials..."
     sleep 2
