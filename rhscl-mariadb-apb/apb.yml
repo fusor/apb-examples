@@ -1,8 +1,7 @@
 id: a8e652c1-11e0-4202-b6df-09517f75ef9a
 name: rhscl-mariadb-apb
-image: registry.access.redhat.com/rhscl/mariadb-101-rhel7
-#image: ansibleplaybookbundle/rhscl-mariadb-apb
-description: mariadb apb implementation
+image: ansibleplaybookbundle/rhscl-mariadb-apb
+description: Mariadb apb implementation
 bindable: true
 async: optional
 tags:
@@ -40,4 +39,3 @@ required:
   - mariadb_version
   - mysql_database
   - mysql_user
-  - mariadb_version

@@ -63,7 +63,7 @@
         value: '{{ mysql_root_password }}'
       - name: MYSQL_DATABASE
         value: '{{ mysql_database }}'
-      image: registry.access.redhat.com/rhscl/{{ image }}
+      image: {{ image }}
       image_pull_policy: IfNotPresent
       name: rhscl-mariadb
       ports:
