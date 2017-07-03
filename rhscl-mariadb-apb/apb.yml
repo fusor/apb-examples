@@ -6,34 +6,31 @@ description: mariadb apb implementation
 bindable: true
 async: optional
 tags:
-  - database
-  - rhscl-mariadb
+  - databases
+  - mariadb
 metadata:
-  displayName: "RHSCL MariaDB"
+  displayName: "RHSCL MariaDB (APB)"
   longDescription: "Deploys a bindable mariadb instance"
-  imageUrl: "https://raw.githubusercontent.com/docker-library/docs/74e3b3d4d60389208732dbd2c95145868111d959/mariadb/logo.png"
+  console.openshift.io/iconClass: icon-mariadb
   documentationUrl: "https://mariadb.com/kb/en/mariadb/documentation/"
 parameters:
-  - name: namespace
-    description: Namespace to deploy the cluster to
-    type: string
-    default: rhscl-mariadb-apb
-  - name: mysql_database
-    description: mariadb database name
-    type: string
-    default: admin
-  - name: mysql_root_password
-    description: password for the root account
-    type: string
-    default: admin
-  - name: mysql_user
-    description: mariadb database username
-    type: string
-    default: admin
-  - name: mysql_password
-    description: user's password
-    type: string
-    default: admin
+  - mysql_database:
+        title: MariaDB Database name
+        description: MariaDB default database name
+        type: string
+        default: admin
+  - mysql_root_password:
+        description: A random alphanumeric string if left blank
+        type: string
+        default: admin
+  - mysql_user:
+        description: MariaDB User
+        type: string
+        default: admin
+  - mysql_password:
+        description: A random alphanumeric string if left blank
+        type: string
+        default: admin
   - mariadb_version:
         title: MariaDB Version
         type: enum
@@ -43,5 +40,4 @@ required:
   - mariadb_version
   - mysql_database
   - mysql_user
-  - mysql_password
   - mariadb_version
