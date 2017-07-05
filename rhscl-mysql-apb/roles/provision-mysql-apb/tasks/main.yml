@@ -8,7 +8,7 @@
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
     labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     state: present
     access_modes:
@@ -22,14 +22,14 @@
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
     labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     replicas: 1
     selector:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     spec_template_metadata_labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     containers:
     - name: mysql
@@ -63,14 +63,14 @@
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
     labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     replicas: 1
     selector:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     spec_template_metadata_labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     containers:
     - name: mysql
@@ -102,10 +102,10 @@
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
     labels:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     selector:
-      apb: "{{ service_name }}"
+      app: rhscl-mysql-apb
       service: "{{ service_name }}"
     ports:
     - name: mysql
