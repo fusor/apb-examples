@@ -79,9 +79,9 @@
     - name: postgresql
       persistent_volume_claim:
         claim_name: postgresql
-      test: false
-      triggers:
-      - type: ConfigChange
+    test: false
+    triggers:
+    - type: ConfigChange
 
 - name: encode bind credentials
   shell: 'echo "{\"POSTGRES_HOST\": \"{{ postgres_service.service.spec.cluster_ip }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ postgresql_user }}\", \"POSTGRES_PASSWORD\": \"{{ postgresql_password }}\", \"POSTGRES_DB\": \"{{ postgresql_database }}\"}" | base64 -w 0'
