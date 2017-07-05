@@ -2,12 +2,12 @@
 # TODO:
 #  - centos vs rhel
 #  - reference standard image streams?
-image: "centos/mysql-{{ mysql_version | replace('.', '')}}-centos7"
-volume_size: 1Gi
 namespace: "{{ lookup('env','NAMESPACE') | default('rhscl-mysql-apb', true) }}"
-persistent_storage: true
-service_name: mysql
-mysql_user: devel
-mysql_database: devel
-mysql_version: "5.7"
+service_name: "{{ lookup('env','SERVICE_NAME') | default('mysql', true) }}"
+persistent_storage: "{{ lookup('env','PERSISTENT_STORAGE') | default('true', true) | bool }}"
+volume_size: "{{ lookup('env','VOLUME_SIZE') | default('1Gi', true) }}"
+mysql_user: "{{ lookup('env','MYSQL_USER') | default('devel', true) }}"
+mysql_database: "{{ lookup('env','MYSQL_DATABASE') | default('devel', true) }}"
+mysql_version: "{{ lookup('env','MYSQL_VERSION') | default('5.7', true) }}"
 mysql_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
+image: "centos/mysql-{{ mysql_version | replace('.', '')}}-centos7"
