@@ -1,13 +1,13 @@
 ---
-mysql_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
 # TODO:
 #  - centos vs rhel
 #  - reference standard image streams?
 image: "centos/mysql-{{ mysql_version | replace('.', '')}}-centos7"
 volume_size: 1Gi
 namespace: "{{ lookup('env','NAMESPACE') | default('rhscl-mysql-apb', true) }}"
-# TODO: confirm that these are not necessary, as they are required params
-#service_name: mysql
-#mysql_user: devel
-#mysql_database: devel
-#mysql_version: "5.7"
+persistent_storage: true
+service_name: mysql
+mysql_user: devel
+mysql_database: devel
+mysql_version: "5.7"
+mysql_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
