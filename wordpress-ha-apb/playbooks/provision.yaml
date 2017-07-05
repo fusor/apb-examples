@@ -1,8 +1,9 @@
-- name: Deploy wordpress-ha-apb to openshift
+- name: wordpress-ha-apb playbook to provision the application
   hosts: localhost
   gather_facts: false
   connection: local
   roles:
-    - role: ansible.kubernetes-modules
-      install_python_requirements: no
-    - wordpress_ha
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: wordpress_ha
+    playbook_debug: false
