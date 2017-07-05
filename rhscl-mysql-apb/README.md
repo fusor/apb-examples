@@ -22,7 +22,7 @@ An Ansible Playbook Bundle (APB) to deploy [MySQL](https://www.mysql.com).
 * NAMESPACE: Optional, default 'rhscl-mysql-apb', Namespace to deploy the cluster in.
 
 ## Running the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/mysql-apb provision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" -e "OPENSHIFT_TOKEN=<token>" ansibleplaybookbundle/mysql-apb provision`
 
 ## Tearing down the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/mysql-apb deprovision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" -e "OPENSHIFT_TOKEN=<token>" ansibleplaybookbundle/mysql-apb deprovision`
