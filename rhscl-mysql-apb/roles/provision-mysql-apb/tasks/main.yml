@@ -45,10 +45,23 @@
       - name: mysql
         protocol: TCP
         container_port: 3306
+      liveness_probe:
+        timeout_seconds: 1
+        inital_delay_seconds: 30
+        tcp_socket:
+          port: 3306
+      readiness_probe:
+        timeout_seconds: 1
+        initial_delay_seconds: 5
+        _exec:
+          command:
+          - "/bin/sh"
+          - "-i"
+          - "-c"
+          - "MYSQL_PWD=\"$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
       volume_mounts:
       - mount_path: /var/lib/mysql/data
         name: mysql-data
-      # TODO: add health checks
     volumes:
     - name: mysql-data
       persistent_volume_claim:
@@ -86,6 +99,20 @@
       - name: mysql
         protocol: TCP
         container_port: 3306
+      liveness_probe:
+        timeout_seconds: 1
+        inital_delay_seconds: 30
+        tcp_socket:
+          port: 3306
+      readiness_probe:
+        timeout_seconds: 1
+        initial_delay_seconds: 5
+        _exec:
+          command:
+          - "/bin/sh"
+          - "-i"
+          - "-c"
+          - "MYSQL_PWD=\"$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
       volume_mounts:
       - mount_path: /var/lib/mysql/data
         name: mysql-data
