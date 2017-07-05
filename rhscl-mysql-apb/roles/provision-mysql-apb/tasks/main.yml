@@ -54,7 +54,7 @@
       persistent_volume_claim:
         claim_name: "{{ service_name }}"
     triggers:
-    - type: ConfigChage
+    - type: ConfigChange
     # TODO: add ImageChange trigger?
   when: persistent_storage
 
@@ -93,7 +93,7 @@
     - name: mysql-data
       emptyDir: []
     triggers:
-    - type: ConfigChage
+    - type: ConfigChange
     # TODO: add ImageChange trigger?
   when: not persistent_storage
 
