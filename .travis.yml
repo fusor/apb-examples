@@ -6,7 +6,7 @@ env:
   - VARIANT=apb-base TARGET=centos7
   - VARIANT=hello-world-apb TARGET=centos7
   - VARIANT=jenkins-apb TARGET=centos7
-  - VARIANT=mysql-apb TARGET=centos7
+  - VARIANT=rhscl-mysql-apb TARGET=centos7
 
 services:
  - docker
