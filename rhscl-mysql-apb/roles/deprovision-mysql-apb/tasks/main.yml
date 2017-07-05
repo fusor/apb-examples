@@ -1,9 +1,9 @@
 ##############################################################################
-## Deprovision mysql-apb
+## Deprovision rhscl-mysql-apb
 ## This role executes much of the needed functionality to deprovision an
 ## application using an Ansible Playbook Bundle and delete resources created
 ##############################################################################
-
+---
 ## Deprovision the service
 - name: remove the service
   k8s_v1_service:
