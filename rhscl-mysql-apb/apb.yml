@@ -1,5 +1,5 @@
 id: 57fd8715-7c41-4a0d-87a7-8b2831182506
-name: mysql-apb
+name: rhscl-mysql-apb
 image: ansibleplaybookbundle/rhscl-mysql-apb
 description: "MySQL APB"
 bindable: true
