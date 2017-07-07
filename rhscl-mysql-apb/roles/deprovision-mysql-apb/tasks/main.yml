@@ -24,7 +24,7 @@
     name: "{{ service_name }}"
     namespace: '{{ namespace }}'
     state: absent
-  when: persistent_storage
+  when: plan == "prod"
 
 
 # TODO: can't we clean up resources by label?

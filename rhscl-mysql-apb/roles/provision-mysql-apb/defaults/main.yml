@@ -4,8 +4,7 @@
 #  - reference standard image streams?
 namespace: "{{ lookup('env','NAMESPACE') | default('rhscl-mysql-apb', true) }}"
 service_name: "{{ lookup('env','SERVICE_NAME') | default('mysql', true) }}"
-persistent_storage: "{{ lookup('env','PERSISTENT_STORAGE') | default('true', true) | bool }}"
-volume_size: "{{ lookup('env','VOLUME_SIZE') | default('1Gi', true) }}"
+volume_size: "{{ lookup('env','VOLUME_SIZE') | default('10Gi', true) }}"
 mysql_user: "{{ lookup('env','MYSQL_USER') | default('devel', true) }}"
 mysql_database: "{{ lookup('env','MYSQL_DATABASE') | default('devel', true) }}"
 mysql_version: "{{ lookup('env','MYSQL_VERSION') | default('5.7', true) }}"

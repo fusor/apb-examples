@@ -17,14 +17,6 @@ parameters:
       description: The name of the service. Used to name and label resources
       type: string
       default: mysql
-  - persistent_storage:
-      description: Use a Persistent Volume to store MySQL data
-      type: bool
-      default: true
-  - volume_size:
-      description: The size of the requested Persistent Volume Claim
-      type: string
-      default: 1Gi
   - mysql_version:
       description: Version of MySQL to deploy
       type: enum
@@ -43,7 +35,22 @@ parameters:
       type: string
 required:
   - service_name
-  - persistent_storage
   - mysql_user
   - mysql_database
   - mysql_version
+plans:
+  - dev:
+      description: A MySQL server with ephemeral storage
+      free: true
+      default: true
+      metadata:
+        displayName: Development
+        longDescription: This plan provides a single non-HA MySQL server without persistent storage
+        cost: $0.00
+  - prod:
+      description: A MySQL server with persistent storage
+      free: false
+      metadata:
+        displayName: Production
+        longDescription: This plan provides a single non-HA MySQL server with 10 GiB of persistent storage
+        cost: $5.99 monthly
