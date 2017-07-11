@@ -59,7 +59,7 @@ spec:
           value: '{{ postgresql_user }}'
         - name: POSTGRESQL_DATABASE
           value: '{{ postgresql_database }}'
-        image: docker.io/manageiq/manageiq-pods:app-latest
+        image: docker.io/manageiq/manageiq-pods:app-latest-fine
         imagePullPolicy: IfNotPresent
         name: manageiq-app
         ports:
