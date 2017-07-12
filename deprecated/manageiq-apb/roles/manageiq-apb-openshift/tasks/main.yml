@@ -9,8 +9,8 @@
   shell: "oc new-project {{ namespace }}"
   when: project.stdout.find("{{ namespace }}") == -1
 
-- name: oadm policy add
-  shell: "oadm policy add-scc-to-user privileged system:serviceaccount:{{ namespace }}:default"
+- name: oc adm policy add
+  shell: "oc adm policy add-scc-to-user privileged system:serviceaccount:{{ namespace }}:default"
 
 - name: create app pvc
   shell: "oc create -n {{ namespace }} -f {{ role_path }}/files/manageiq-app-pvc.yml"
