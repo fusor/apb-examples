@@ -1,0 +1,16 @@
+
+# NOTE: This module is buggy and does not function correctly
+#- name: Create RoleBinding
+#  openshift_v1_role_binding:
+#    name: "{{ jenkins_service_name }}_edit"
+#    namespace: "{{ namespace }}"
+#    src: "{{ rolebinding.dest | default(rolebinding.path) }}"
+  #- name: Create RoleBinding
+  #  openshift_v1_role_binding:
+  #    name: "{{ jenkins_service_name }}_edit"
+  #    namespace: "{{ namespace }}"
+  #    role_ref_name: edit
+  #    subjects:
+  #      - kind: "ServiceAccount"
+  #        name: "{{ jenkins_service_name }}"
+  #

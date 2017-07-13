@@ -1,0 +1,49 @@
+---
+id: e731d13e-22b2-44e2-9d49-f6796a9ed21d
+name: jenkins-apb
+image: ansibleplaybookbund/jenkins-apb
+description: Jenkins service with optional persistent storage and S2I build
+tags:
+  - jenkins
+metadata:
+  displayName: "Jenkins (APB)"
+  console.openshift.io/iconClass: icon-jenkins
+  documentationUrl: https://docs.openshift.org/latest/using_images/other_images/jenkins.html
+  longDescription: This APB deploys a Jenkins server capable of managing OpenShift Pipeline builds and supporting OpenShift-based oauth login.
+bindable: False
+async: optional
+parameters:
+  - persistent:
+        title: Persistent
+        type: boolean
+        default: false
+  - enable_oauth:
+        title: Enable OpenShift OAuth
+        type: boolean
+        default: true
+  - memory_limit:
+        title: Memory Limit
+        type: string
+        default: 512Mi
+  - source_git_uri:
+        title: Source Git Uri
+        type: string
+  - source_git_ref:
+        title: Source Git Branch
+        type: string
+  - source_context_dir:
+        title: Source Context Directory
+        type: string
+  - jenkins_image_stream_tag:
+        title: Jenkins ImageStreamTag
+        type: string
+        default: jenkins:latest
+  - jenkins_service_name:
+        title: Jenkins Service Name
+        type: string
+        default: jenkins
+  - jnlp_service_name:
+        title: JNLP Service Name
+        type: string
+        default: jenkins-jnlp
+

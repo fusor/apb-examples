@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: "{{ jenkins_service_name }}"
+spec:
+  replicas: 1
+  selector:
+    name: "{{ jenkins_service_name }}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: "{{ jenkins_service_name }}"
+    spec:
+      containers:
+      - capabilities: {}
+        env:
+        - name: OPENSHIFT_ENABLE_OAUTH
+          value: "{{ enable_oauth }}"
+        - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+          value: "true"
+        - name: KUBERNETES_MASTER
+          value: https://kubernetes.default:443
+        - name: KUBERNETES_TRUST_CERTIFICATES
+          value: "true"
+        - name: JNLP_SERVICE_NAME
+          value: "{{ jnlp_service_name }}"
+        image: ' '
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 420
+          timeoutSeconds: 3
+        name: jenkins
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 3
+          timeoutSeconds: 3
+        resources:
+          limits:
+            memory: "{{ memory_limit }}"
+        securityContext:
+          capabilities: {}
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /var/lib/jenkins
+          name: "{{ jenkins_service_name }}-data"
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      serviceAccountName: "{{ jenkins_service_name }}"
+      volumes:
+      - name: "{{ jenkins_service_name }}-data"
+{% if persistent %}
+        persistentVolumeClaim:
+          claimName: "{{ jenkins_service_name }}"
+{% else %}
+        emptyDir:
+          medium: ""
+{% endif %}
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - jenkins
+      from:
+        kind: ImageStreamTag
+        name: "{{ jenkins_image_stream_tag }}"
+{% if source_git_uri is defined %}
+        namespace: "{{ namespace }}"
+{% else %}
+        namespace: "openshift"
+{% endif %}
+      lastTriggeredImage: ""
+    type: ImageChange
+  - type: ConfigChange

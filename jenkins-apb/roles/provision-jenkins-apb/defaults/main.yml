@@ -1,0 +1,9 @@
+---
+persistent: False
+volume_capacity: 1Gi
+enable_oauth: True
+memory_limit: "512Mi"
+jenkins_image_stream_tag: "jenkins:latest"
+jenkins_service_name: "jenkins"
+jnlp_service_name: "jenkins-jnlp"
+state: "present"

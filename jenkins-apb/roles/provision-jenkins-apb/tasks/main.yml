@@ -1,0 +1,178 @@
+---
+# ----------------------------
+# Jenkins APB
+# ----------------------------
+# This role uses the OpenShift template that is included as the basis
+# for the tasks listed below.  It includes both ephemeral and persistent
+# versions.  It also includes the ability to use source-to-image to customize
+# the Jenkins instance with jobs and plugins.
+# See https://github.com/openshift/jenkins#installing-using-s2i-build for more information.
+#
+# There are a number of workarounds required which are noted in comments
+# near the action.
+# ----------------------------
+- name: Create Namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+# ----------------------------
+# Create Jenkins Services
+# ----------------------------
+# NOTE: In annotations to_json is a workaround.  There is an
+# issue with annotations that contain JSON string.
+# ----------------------------
+- name: Create Jenkins Service
+  k8s_v1_service:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    annotations:
+      service.alpha.openshift.io/dependencies: "{{ service_dependencies | to_json }}"
+      service.openshift.io/infrastructure: "true"
+    spec_ports:
+      - name: web
+        node_port: 0
+        port: 80
+        protocol: TCP
+        target_port: 8080
+    spec_selector:
+      name: "{{ jenkins_service_name }}"
+    spec_session_affinity: "None"
+    spec_type: "ClusterIP"
+    state: "{{ state }}"
+
+- name: Create JNLP Service
+  k8s_v1_service:
+    name: "{{ jnlp_service_name }}"
+    namespace: "{{ namespace }}"
+    spec_ports:
+      - name: agent
+        node_port: 0
+        port: 50000
+        protocol: "TCP"
+        target_port: 50000
+    spec_selector:
+      name: "{{ jenkins_service_name }}"
+    spec_session_affinity: "None"
+    spec_type: "ClusterIP"
+    state: "{{ state }}"
+
+- name: Create Route
+  openshift_v1_route:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    spec_tls_insecure_edge_termination_policy: "Redirect"
+    spec_tls_termination: "edge"
+    spec_to_kind: "Service"
+    spec_to_name: "{{ jenkins_service_name }}"
+    state: "{{ state }}"
+
+- name: Create PersistentVolumeClaim
+  k8s_v1_persistent_volume_claim:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    spec_access_modes:
+      - "ReadWriteOnce"
+    spec_resources_requests:
+      storage: "{{ volume_capacity }}"
+    state: "{{ state }}"
+  when: persistent
+
+# ----------------------------
+# Create ServiceAccount
+# ----------------------------
+# NOTE: This module has the "AttributeError: 'V1ServiceAccount' object has no attribute 'status' bug.
+# ignore_errors is a work around.
+#
+# NOTE: In annotations to_json is a workaround.  There is an
+# issue with annotations that contain JSON string.
+# ----------------------------
+
+- name: Create ServiceAccount
+  k8s_v1_service_account:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: "{{ oauth_redirect_reference_jenkins | to_json }}"
+    state: "{{ state }}"
+  ignore_errors: True
+
+- name: Create RoleBinding from Ansible Template
+  template:
+    src: rolebinding.yaml.j2
+    dest: /tmp/rolebinding.yaml
+  register: rolebinding
+
+# Create RoleBinding
+# ----------------------------
+# NOTE: The openshift_v1_role_binding module does not function correctly.
+# Using the src it cannot determine the correct parameter to use
+# for roleRef.name
+#
+# Using the module parameters the role_ref_name contains the name of the object
+# which is incorrect.
+#
+# Workaround: use the command module and oc. This will error if ran more than once
+# so ignore_errors
+# ----------------------------
+
+- name: Create RoleBinding
+  command: "oc create -f {{ rolebinding.dest | default(rolebinding.path) }} -n {{ namespace }}"
+  ignore_errors: True
+
+# ----------------------------
+# Create S2I build of Jenkins
+# ----------------------------
+# If source_git_uri is defined let's create an ImageStream and BuildConfig
+# so that we can create a customized version of Jenkins.
+# ----------------------------
+
+- name: Create ImageStream
+  openshift_v1_image_stream:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+  when: source_git_uri is defined and
+        source_git_ref is defined and
+        source_context_dir is defined
+
+- name: Create BuildConfig
+  openshift_v1_build_config:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    spec_output_to_kind: "ImageStreamTag"
+    spec_output_to_name: "jenkins:latest"
+    spec_source_context_dir: "{{ source_context_dir }}"
+    spec_source_git_uri: "{{ source_git_uri }}"
+    spec_source_git_ref: "{{ source_git_ref }}"
+    spec_source_type: "Git"
+    spec_strategy_source_strategy__from_kind: "ImageStreamTag"
+    spec_strategy_source_strategy__from_name: "jenkins:2"
+    spec_strategy_source_strategy__from_namespace: "openshift"
+    spec_triggers:
+      - type: ConfigChange
+      - type: ImageChange
+    state: "{{ state }}"
+  when: source_git_uri is defined and
+        source_git_ref is defined and
+        source_context_dir is defined
+
+# ----------------------------
+# DeploymentConfig
+# ----------------------------
+# An ansible template is used to support the ability for
+# this APB to deploy a persistent or ephemeral Jenkins instance.
+# ----------------------------
+- name: Create DeploymentConfig from Template
+  template:
+    src: dc.yaml.j2
+    dest: /tmp/dc.yaml
+  register: dc
+
+- name: Create DeploymentConfig
+  openshift_v1_deployment_config:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    src: "{{ dc.dest | default(dc.path) }}"
+    state: "{{ state }}"
+

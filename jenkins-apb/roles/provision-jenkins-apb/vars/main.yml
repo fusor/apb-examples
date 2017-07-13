@@ -1,0 +1,13 @@
+---
+
+service_dependencies:
+  - name: "{{ jnlp_service_name }}"
+    namespace: "{{ namespace }}"
+    kind: "Service"
+
+oauth_redirect_reference_jenkins:
+  kind: "OAuthRedirectReference"
+  apiVersion: "v1"
+  reference:
+    kind: "Route"
+    name: "{{ jenkins_service_name }}"
