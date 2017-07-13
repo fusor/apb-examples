@@ -5,7 +5,7 @@
 %endif
 
 Name: mediawiki-apb-role
-Version:	1.0.0
+Version:	1.0.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Ansible Playbook for Mediawiki APB
 
@@ -31,3 +31,8 @@ mv mediawiki123-apb/roles %{buildroot}/opt/ansible/roles
 /opt/ansible/roles
 
 %changelog
+* Fri Jul 07 2017 Jason Montleon <jmontleo@redhat.com> 1.0.1-1
+- 1468199 Change Mediawiki PVC to ReadWriteOnce
+
+* Tue Jun 06 2017 Jason Montleon <jmontleo@redhat.com> 1.0.0-1
+- Initial Build
