@@ -1,37 +1,47 @@
 id: 55c53a5d-65a6-4c27-88fc-e027410b1337
 name: mediawiki123-apb
 image: ansibleplaybookbundle/mediawiki123-apb
-description: "Mediawiki123 apb implementation"
-bindable: false
+description: Mediawiki123 apb implementation
+bindable: False
 async: optional
 metadata:
-  displayName: "Mediawiki (APB)"
-  longDescription: "An apb that deploys Mediawiki 1.23"
-  console.openshift.io/iconClass: icon-mediawiki
-  documentationUrl: "https://www.mediawiki.org/wiki/Documentation"
+  displayName: Mediawiki (APB)
+  longDescription: An apb that deploys Mediawiki 1.23
+  imageUrl: 
+  documentationUrl: https://www.mediawiki.org/wiki/Documentation
+  dependencies:
+    - docker.io/jmontleon/mediawiki123:latest
+    
 parameters:
   - mediawiki_db_schema:
-      title: Mediawiki DB Schema
-      type: string
       default: mediawiki
+      type: string
+      title: Mediawiki DB Schema
+      
   - mediawiki_site_name:
-      title: Mediawiki Site Name
-      type: string
       default: MediaWiki
+      type: string
+      title: Mediawiki Site Name
+      
   - mediawiki_site_lang:
-      title: Mediawiki Site Language
-      type: string
       default: en
+      type: string
+      title: Mediawiki Site Language
+      
   - mediawiki_admin_user:
-      title: Mediawiki Admin User
-      type: string
       default: admin
-  - mediawiki_admin_pass:
-      title: Mediawiki Admin User Password
       type: string
+      title: Mediawiki Admin User
+      
+  - mediawiki_admin_pass:
+      type: string
+      title: Mediawiki Admin User Password
+      
+  
 required:
   - mediawiki_db_schema
   - mediawiki_site_name
   - mediawiki_site_lang
   - mediawiki_admin_user
   - mediawiki_admin_pass
+  
