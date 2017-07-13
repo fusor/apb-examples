@@ -113,6 +113,6 @@
   register: encoded_bind_credentials
   when: state == 'present'
 
-- debug:
-    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
-  when: state == 'present'
+- copy:
+   content="<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+   dest=/etc/apb/bind-creds
