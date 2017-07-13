@@ -5,38 +5,48 @@ description: This APB deploys RocketChat backed by MongoDB
 bindable: False
 async: optional
 metadata:
-  displayName: "RocketChat (APB)"
-  longDescription: "An APB that deploys RocketChat to OpenShift backed by MongoDB"
-  imageUrl: "https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true"
-  documentationUrl: "https://rocket.chat"
+  displayName: RocketChat (APB)
+  longDescription: An APB that deploys RocketChat to OpenShift backed by MongoDB
+  imageUrl: https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true
+  documentationUrl: https://rocket.chat
+  dependencies:
+    - rocket.chat:latest
+    - mongo:3.2
+    
 parameters:
   - mongodb_user:
+      default: rocketchat
+      type: string
       title: MongoDB Username
-      type: string
-      default: rocketchat
+      
   - mongodb_pass:
+      default: changeme
+      type: string
       title: MongoDB Password
-      type: string
-      default: changeme
+      
   - mongodb_name:
-      title: MongoDB Database Name
-      type: string
       default: rocketchat
-  - mongodb_admin_pass:
-      title: MongoDB Admin Password
       type: string
+      title: MongoDB Database Name
+      
+  - mongodb_admin_pass:
       default: changeme
+      type: string
+      title: MongoDB Admin Password
+      
   - mongodb_version:
-      title: MongoDB Version
-      type: enum
       default: 3.2
-      enum: ["3.2", "3.4", "3.5"]
-  - rocketchat_version:
-      title: RocketChat Version
+      enum: ['3.2', '3.4', '3.5']
       type: enum
+      title: MongoDB Version
+      
+  - rocketchat_version:
       default: latest
-      enum: ["latest", "0.56.0"]
-
+      enum: ['latest', '0.56.0']
+      type: enum
+      title: RocketChat Version
+      
+  
 required:
   - mongodb_user
   - mongodb_pass
@@ -44,3 +54,4 @@ required:
   - mongodb_admin_pass
   - mongodb_version
   - rocketchat_version
+  
