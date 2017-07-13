@@ -2,13 +2,11 @@
 
 CREDS="/etc/apb/bind-creds"
 
-while true; do
-    if [ ! -s $CREDS ]; then
-	echo "Bind credentials not available. Sleep for 2 seconds."
-	sleep 2
-    else
-	cat $CREDS
-	rm $CREDS
-	exit 0
-    fi
-done
+if [ ! -s $CREDS ]; then
+    echo "Bind credentials not available."
+    exit 1
+else
+    cat $CREDS
+    rm $CREDS
+    exit 0
+fi
