@@ -5,7 +5,7 @@ description: hello-world-apb description
 bindable: False
 async: optional
 metadata:
-  displayName: []
+  displayName: Hello World (APB)
   longDescription: []
   imageUrl: []
   documentationUrl: []
