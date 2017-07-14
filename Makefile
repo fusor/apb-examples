@@ -1,7 +1,7 @@
 DIRS = \
 apb-base \
 jenkins-apb \
-hello-world-apb
+rhscl-mysql-apb
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),rhel7)

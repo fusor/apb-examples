@@ -1,6 +1,6 @@
 CONTEXT = ansibleplaybookbundle
 VERSION = v0.1
-IMAGE_NAME = mysql-apb
+IMAGE_NAME = rhscl-mysql-apb
 TARGET = centos7
 REGISTRY = docker-registry.default.svc.cluster.local
 OC_USER = developer
@@ -32,18 +32,55 @@ openshift-test:
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}:5000
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
+
+####### Test 1: Provision the "dev" plan (no storage)
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} -- provision --extra-vars 'namespace=${APB_APP}'
-	oc rollout status -w dc/${IMAGE_NAME}
-	oc describe dc/${IMAGE_NAME}
-	oc logs -f dc/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=OnFailure -- provision -e namespace=${APB_APP} -e plan=dev
+# With --restart=OnFailure it creates a Job instead of a DC, so the following won't work:
+#	oc rollout status -w dc/${IMAGE_NAME}
+#	oc describe dc/${IMAGE_NAME}
+#	oc logs -f dc/${IMAGE_NAME}
+# FIXME: it's creating a pod, not a Job. Also fix the 'delete pod's below
+# FIXME: wait for the Job to complete with something better than a sleep/logs
+	sleep 3
+	oc logs -f pod/${IMAGE_NAME}
+	oc delete pod/${IMAGE_NAME}
 	oc project ${APB_APP}
 	oc rollout status -w dc/${APB_APP}
 	oc status
-	sleep 5
 	oc describe `oc get pod -o name`
-	curl `oc get svc/${APB_APP} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
+# not needed as the DC has health checks built in:
+#	curl `oc get svc/${APB_APP} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
+	oc describe dc/${APB_APP}
+	oc logs dc/${APB_APP}
 	oc exec `oc get pod --template '{{(index .items 0).metadata.name }}'` ps aux
+
+####### Test 2: Derovision the "dev" plan
+	oc project ${PROJ_RANDOM}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=OnFailure -- deprovision -e namespace=${APB_APP} -e plan=dev
+	sleep 3
+	oc logs -f pod/${IMAGE_NAME}
+	oc delete pod/${IMAGE_NAME}
+
+####### Test 3: Provision the "prod" plan (persistent storage via PVC)
+	oc project ${PROJ_RANDOM}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=OnFailure -- provision -e namespace=${APB_APP} -e plan=prod
+	sleep 3
+	oc logs -f pod/${IMAGE_NAME}
+	oc delete pod/${IMAGE_NAME}
+	oc project ${APB_APP}
+	oc rollout status -w dc/${APB_APP}
+	oc status
+	oc get pvc
+	oc describe dc/${APB_APP}
+	oc logs dc/${APB_APP}
+
+####### Test 2: Derovision the "prod" plan
+	oc project ${PROJ_RANDOM}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=OnFailure -- deprovision -e namespace=${APB_APP} -e plan=prod
+	sleep 3
+	oc logs -f pod/${IMAGE_NAME}
+	oc delete pod/${IMAGE_NAME}
 
 #run:
 #	docker run -tdi -u $(shell shuf -i 1000010000-1000020000 -n 1) ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION}
