@@ -4,14 +4,12 @@ image: ansibleplaybookbundle/pyzip-demo-apb
 description: Python Zip Demo APB Implementation
 bindable: False
 async: optional
-metadata:
+metadata: 
+  documentationUrl: https://github.com/fusor/apb-examples/tree/master/pyzip-demo-apb
+  dependencies: ['docker.io/ansibleplaybookbundle/py-zip-demo:latest']
   displayName: Pyzip Demo (APB)
   longDescription: APB Implementation of the Python webapp, https://github.com/fusor/py-zip-demo
-  imageUrl: []
-  documentationUrl: https://github.com/fusor/apb-examples/tree/master/pyzip-demo-apb
-  dependencies:
-    - docker.io/ansibleplaybookbundle/py-zip-demo:latest
-    
+  
 parameters: []
   
 required: []

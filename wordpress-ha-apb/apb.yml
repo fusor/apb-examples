@@ -4,16 +4,14 @@ image: ansibleplaybookbundle/wordpress-ha-apb
 description: High Availability Wordpress APB
 bindable: True
 async: optional
-metadata:
-  displayName: Wordpress-HA (APB)
-  longDescription: An apb that deploys High Availability Wordpress
+metadata: 
   documentationUrl: https://wordpress.org/
-  dependencies:
-    - quay.io/coreos/etcd:latest
-    - perconalab/percona-xtradb-cluster:5.6
-    - wordpress
-    
-parameters:
+  longDescription: An apb that deploys High Availability Wordpress
+  dependencies: ['quay.io/coreos/etcd:latest', 'perconalab/percona-xtradb-cluster:5.6', 'wordpress']
+  displayName: Wordpress-HA (APB)
+  console.openshift.io/iconClass: icon-wordpress
+  
+parameters: 
   - root_password:
       default: k8spassword
       type: string
@@ -55,7 +53,7 @@ parameters:
       title: maximum wordpress replicas
       
   
-required:
+required: 
   - cluster_name
   - database_user
   - database_replicas
