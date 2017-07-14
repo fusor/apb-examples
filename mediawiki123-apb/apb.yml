@@ -4,15 +4,14 @@ image: ansibleplaybookbundle/mediawiki123-apb
 description: Mediawiki123 apb implementation
 bindable: False
 async: optional
-metadata:
-  displayName: Mediawiki (APB)
-  longDescription: An apb that deploys Mediawiki 1.23
-  imageUrl: 
+metadata: 
   documentationUrl: https://www.mediawiki.org/wiki/Documentation
-  dependencies:
-    - docker.io/jmontleon/mediawiki123:latest
-    
-parameters:
+  longDescription: An apb that deploys Mediawiki 1.23
+  dependencies: ['docker.io/jmontleon/mediawiki123:latest']
+  displayName: Mediawiki (APB)
+  console.openshift.io/iconClass: icon-mediawiki
+  
+parameters: 
   - mediawiki_db_schema:
       default: mediawiki
       type: string
@@ -38,10 +37,13 @@ parameters:
       title: Mediawiki Admin User Password
       
   
-required:
+required: 
   - mediawiki_db_schema
   - mediawiki_site_name
   - mediawiki_site_lang
   - mediawiki_admin_user
   - mediawiki_admin_pass
+  
+dependencies: 
+  - docker.io/jmontleon/mediawiki123:latest
   

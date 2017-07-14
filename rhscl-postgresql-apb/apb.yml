@@ -4,15 +4,14 @@ image: ansibleplaybookbundle/rhscl-postgresql-apb
 description: SCL PostgreSQL apb implementation
 bindable: True
 async: optional
-metadata:
-  displayName: PostgreSQL (APB)
-  longDescription: An apb that deploys postgresql 9.4 or 9.5.
-  imageUrl: None
+metadata: 
   documentationUrl: https://www.postgresql.org/docs/
-  dependencies:
-    - registry.access.redhat.com/rhscl/postgresql-95-rhel7
-    
-parameters:
+  longDescription: An apb that deploys postgresql 9.4 or 9.5.
+  dependencies: ['registry.access.redhat.com/rhscl/postgresql-95-rhel7']
+  displayName: PostgreSQL (APB)
+  console.openshift.io/iconClass: icon-postgresql
+  
+parameters: 
   - postgresql_database:
       default: admin
       type: string
@@ -36,8 +35,12 @@ parameters:
       title: PostgreSQL Version
       
   
-required:
+required: 
   - postgresql_database
   - postgresql_user
   - postgresql_version
+  
+dependencies: 
+  - postgresql_version
+  - registry.access.redhat.com/rhscl/{{
   

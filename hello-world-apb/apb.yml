@@ -4,15 +4,13 @@ image: ansibleplaybookbundle/hello-world-apb
 description: hello-world-apb description
 bindable: False
 async: optional
-metadata:
-  displayName: 
-  longDescription: 
-  imageUrl: 
-  documentationUrl: 
-  dependencies:
-    - docker.io/ansibleplaybookbundle/hello-world:latest
-    
+metadata: 
+  dependencies: ['docker.io/ansibleplaybookbundle/hello-world:latest']
+  
 parameters: []
   
 required: []
+  
+dependencies: 
+  - docker.io/ansibleplaybookbundle/hello-world:latest
   
