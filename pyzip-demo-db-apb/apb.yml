@@ -4,15 +4,13 @@ image: ansibleplaybookbundle/pyzip-demo-db-apb
 description: Python Zip Demo Database APB Implementation
 bindable: True
 async: optional
-metadata:
+metadata: 
+  documentationUrl: https://github.com/fusor/apb-examples/tree/master/pyzip-demo-db-apb
+  dependencies: ['docker.io/fabianvf/postgresql:postgis']
   displayName: Pyzip Demo Database (APB)
   longDescription: A database with GIS support and seeded data for a demonstration python webapp, https://github.com/fusor/py-zip-demo
-  imageUrl: 
-  documentationUrl: https://github.com/fusor/apb-examples/tree/master/pyzip-demo-db-apb
-  dependencies:
-    - docker.io/fabianvf/postgresql:postgis
-    
-parameters:
+  
+parameters: 
   - database_name:
       default: admin
       type: string
@@ -31,7 +29,10 @@ parameters:
       maxlength: 63
       
   
-required:
+required: 
   - database_name
   - database_user
+  
+dependencies: 
+  - docker.io/fabianvf/postgresql:postgis
   
