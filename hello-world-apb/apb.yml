@@ -5,10 +5,10 @@ description: hello-world-apb description
 bindable: False
 async: optional
 metadata:
-  displayName: 
-  longDescription: 
-  imageUrl: 
-  documentationUrl: 
+  displayName: []
+  longDescription: []
+  imageUrl: []
+  documentationUrl: []
   dependencies:
     - docker.io/ansibleplaybookbundle/hello-world:latest
     

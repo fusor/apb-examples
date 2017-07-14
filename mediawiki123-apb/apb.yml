@@ -7,7 +7,7 @@ async: optional
 metadata:
   displayName: Mediawiki (APB)
   longDescription: An apb that deploys Mediawiki 1.23
-  imageUrl: 
+  imageUrl: []
   documentationUrl: https://www.mediawiki.org/wiki/Documentation
   dependencies:
     - docker.io/jmontleon/mediawiki123:latest

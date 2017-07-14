@@ -7,7 +7,6 @@ async: optional
 metadata:
   displayName: Wordpress-HA (APB)
   longDescription: An apb that deploys High Availability Wordpress
-  imageUrl: 
   documentationUrl: https://wordpress.org/
   dependencies:
     - quay.io/coreos/etcd:latest
