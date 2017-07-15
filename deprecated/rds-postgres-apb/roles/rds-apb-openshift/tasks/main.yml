@@ -1,0 +1,75 @@
+- set_fact:
+    tds: "{{ ansible_date_time.epoch }}"
+
+- rds:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    command: create
+    backup_retention: "{{ backup_retention }}"
+    instance_name: "{{ ansible_user_id }}-{{ db_engine }}-{{ tds }}"
+    region: "{{ region }}"
+    wait: yes
+    wait_timeout: 1200
+    db_engine: "{{ db_engine }}"
+    size: "{{ db_size }}"
+    instance_type: "{{ instance_type }}"
+    username: "{{ db_username }}"
+    password: "{{ db_password }}"
+    db_name: "{{ db_name }}"
+    port: "{{ port }}"
+    vpc_security_groups: "{{ vpc_security_groups }}"
+    publicly_accessible: yes
+    subnet: "{{ subnet }}"
+    tags:
+      Application: ansible-rds
+      Description: "{{ ansible_user_id }} RDS {{ db_engine }} {{ tds }}"
+  register: rds
+
+- name: retrieve rds endpoint IP
+  shell: "dig +short {{ rds.instance.endpoint }} | tail -n 1"
+  register: rds_endpoint_ip
+
+- name: seed database
+  shell: "PGPASSWORD={{ db_password }} psql -U {{ db_username }} -d {{ db_name }} -p {{ port }} -h {{ rds_endpoint_ip.stdout }} -f {{ role_path }}/files/{{ item }}"
+  with_items:
+    - parkcoord.sql
+    - airports.ddl
+    - zipcodes.ddl
+    - airports.sql
+    - zipcodes.sql
+
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+
+- name: create openshift endpoint
+  k8s_v1_endpoint:
+    name: "rds-{{ tds }}"
+    subsets:
+    - addresses:
+        - ip: "{{ rds_endpoint_ip.stdout }}"
+      ports:
+        - port: "{{ port }}"
+          name: "{{ db_engine }}"
+
+- name: create openshift service
+  k8s_v1_service:
+    name: "rds-{{ tds }}"
+    ports:
+    - name: "{{ db_engine }}"
+      protocol: "TCP"
+      port: "{{ port }}"
+      target_port: "{{ port }}"
+      node_port: 0
+
+- name: retrieve openshift endpoint ip
+  shell: "oc get svc -n {{ namespace }} rds-{{ tds }} --no-headers=true | awk '{ print $2 }'"
+  register: endpoint_ip
+
+- name: encode bind credentials
+  shell: 'echo "{\"POSTGRES_HOST\": \"{{ endpoint_ip.stdout }}\", \"POSTGRES_PORT\": \"{{ port }}\", \"POSTGRES_USER\": \"{{ db_username }}\", \"POSTGRES_PASSWORD\": \"{{ db_password }}\", \"POSTGRES_DB\": \"{{ db_name }}\"}" | base64 -w 0'
+  register: encoded_bind_credentials
+
+- copy:
+   content="<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+   dest=/etc/apb/bind-creds
