@@ -1,13 +1,14 @@
 ---
 - name: create namespace
   openshift_v1_project:
-    name: '{{ project_name }}'
+    name: '{{ namespace }}'
+  when: state == 'present'
 
 - name: create volumes
   k8s_v1_persistent_volume_claim:
     name: '{{ item }}'
-    namespace: '{{ project_name }}'
-    state: present
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     access_modes:
       - ReadWriteMany
     resources_requests:
@@ -20,8 +21,8 @@
 - name: Service to expose the etcd endpoint for Percona XtraDB Cluster
   k8s_v1_service:
     name: etcd
-    namespace: '{{ project_name }}'
-    state: present
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     selector:
       app: etcd
     ports:
@@ -41,8 +42,8 @@
 - name: etcd pods
   k8s_v1_pod:
     name: '{{ item }}'
-    namespace: '{{ project_name }}'
-    state: present
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     labels:
       app: etcd
       etcd_node: '{{ item }}'
@@ -88,7 +89,8 @@
 - name: etcd services
   k8s_v1_service:
     name: '{{ item }}'
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     labels:
       etcd_node: '{{ item }}'
     ports:
@@ -119,7 +121,8 @@
 - name: Headless service used by WordPress
   k8s_v1_service:
     name: mysql
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     labels:
       name: mysql
     ports:
@@ -135,7 +138,8 @@
     name: mysql
     labels:
       name: mysql
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     service_name: mysql
     replicas: '{{ database_replicas }}'
     spec_template_metadata_labels:
@@ -171,8 +175,8 @@
 - name: Wordpress volume claim
   k8s_v1_persistent_volume_claim:
     name: wordpress-1
-    namespace: '{{ project_name }}'
-    state: present
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     access_modes:
       - ReadWriteMany
     resources_requests:
@@ -184,18 +188,20 @@
     name: wordpress
     labels:
       name: wordpress
-    namespace: '{{ project_name }}'
-    state: present
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     selector:
       name: wordpress
     type: NodePort
     ports:
-      - port: 80
+      - name: web
+        port: 80
 
 - name: Wordpress autoscaler
   k8s_v1_horizontal_pod_autoscaler:
     name: wordpress-scaler
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     scale_target_ref_kind: ReplicaSet
     scale_target_ref_name: wordpress
     min_replicas: '{{ min_wordpress_replicas }}'
@@ -205,7 +211,8 @@
 - name: Wordpress replicaset
   k8s_v1beta1_replica_set:
     name: wordpress
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
     replicas: 3
     # spec_selector_match_labels:
     #   name: wordpress
@@ -219,6 +226,9 @@
       ports:
       - container_port: 80
         name: wordpress
+      resources:
+        requests:
+          cpu: 400m
       volume_mounts:
       - mount_path: /var/www/html
         name: wordpress-1
@@ -237,6 +247,10 @@
 - name: create wordpress route
   openshift_v1_route:
     name: wordpress
-    namespace: '{{ project_name }}'
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: wordpress
+      service: wordpress
     to_name: wordpress
-    port_target_port: 80
+    state: "{{ state }}"

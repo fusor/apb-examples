@@ -4,7 +4,8 @@ MAINTAINER Ansible Playbook Bundle Community
 LABEL "com.redhat.apb.version"="0.1.0"
 
 RUN mkdir -p /usr/share/ansible/openshift \
-            /etc/ansible /opt/apb /opt/ansible
+             /etc/ansible /opt/apb /opt/ansible \
+             /etc/apb
 
 RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
@@ -30,9 +31,10 @@ RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
     && echo 'roles_path = /opt/ansible/roles' >> /etc/ansible/ansible.cfg \
     && echo 'library = /usr/share/ansible/openshift' >> /etc/ansible/ansible.cfg
 
-COPY oc-login.sh entrypoint.sh /usr/bin/
+COPY oc-login.sh entrypoint.sh broker-bind-creds bind-init /usr/bin/
 
 RUN useradd -u 1001 -r -g 0 -M -b /opt/apb -s /sbin/nologin -c "apb user" apb
-RUN chown -R apb: /opt/{ansible,apb}
+RUN chown -R apb: /opt/{ansible,apb} && \
+    chown -R apb: /etc/apb
 
 ENTRYPOINT ["entrypoint.sh"]

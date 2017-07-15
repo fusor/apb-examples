@@ -1,33 +1,50 @@
 id: 9b70e6bf-26f8-4c1f-a57f-07501388c1e8
-name: apb/wordpress-ha-apb
-description: high availability wordpress deployment
+name: wordpress-ha-apb
+image: ansibleplaybookbundle/wordpress-ha-apb
+description: "High Availability Wordpress APB"
 bindable: true
-async: "optional"
+async: optional
+metadata:
+  displayName: "Wordpress-HA (APB)"
+  longDescription: "An apb that deploys High Availability Wordpress"
+  console.openshift.io/iconClass: icon-wordpress
+  documentationUrl: "https://wordpress.org/"
 parameters:
-  - name: project_name
-    description: Namespace to deploy containers to
-    default: wordpress-ha
-  - name: root_password
-    description: root database password
-    default: k8spassword
-  - name: xtrabackup_password
-    description: password for something no idea what
-    default: k8spassword
-  - name: cluster_name
-    description: name of percona cluster
-    default: percona
-  - name: database_password
-    description: password for database
-    default: k8spassword
-  - name: database_user
-    description: user for database
-    default: root
-  - name: database_replicas
-    description: number of database nodes to bring up
-    default: 3
-  - name: min_wordpress_replicas
-    description: minimum number of wordpress replicas to run
-    default: 5
-  - name: max_wordpress_replicas
-    description: maximum number of wordpress replicas to run
-    default: 10
+  - root_password:
+      title: database root password
+      type: string
+      default: k8spassword
+  - xtrabackup_password:
+      title: backup password
+      type: string
+      default: k8spassword
+  - cluster_name:
+      title: percona cluster name
+      type: string
+      default: percona
+  - database_user:
+      title: database user name
+      type: string
+      default: root
+  - database_password:
+      title: database user password
+      type: string
+      default: k8spassword
+  - database_replicas:
+      title: number of database nodes
+      type: int
+      default: 3
+  - min_wordpress_replicas:
+      title: minimum wordpress replicas
+      type: int
+      default: 5
+  - max_wordpress_replicas:
+      title: maximum wordpress replicas
+      type: int
+      default: 10
+required:
+  - cluster_name
+  - database_user
+  - database_replicas
+  - min_wordpress_replicas
+  - max_wordpress_replicas

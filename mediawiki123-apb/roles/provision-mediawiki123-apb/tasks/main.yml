@@ -21,7 +21,7 @@
     namespace: '{{ namespace }}'
     state: present
     access_modes:
-      - ReadWriteMany
+      - ReadWriteOnce
     resources_requests:
       storage: '{{ mediawiki_volume_size }}'
 
