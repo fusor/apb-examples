@@ -63,7 +63,7 @@
         value: '{{ mysql_root_password }}'
       - name: MYSQL_DATABASE
         value: '{{ mysql_database }}'
-      image: {{ image }}
+      image: "{{ image }}"
       image_pull_policy: IfNotPresent
       name: rhscl-mariadb
       ports:
@@ -74,9 +74,7 @@
       termination_message_path: /dev/termination-log
       volume_mounts:
       - mount_path: /var/lib/mysql
-        name: rhscl-mariadb-home
-      - mount_path: /var/lib/mysql/data
-        name: rhscl-mariadb-data
+        name: rhscl-mariadb
       working_dir: /
     dns_policy: ClusterFirst
     restart_policy: Always
