@@ -28,7 +28,7 @@ For convenience, the parameters above can be set/overriden via environment varia
 
 There are 2 plans available:
 
-* Development (*dev*): deploys a single MySQL server with ephemeral storage, i.e. no storage persistence: when the container stops its data is lost.
+* Development (*dev*) (default): deploys a single MySQL server with ephemeral storage, i.e. no storage persistence: when the container stops its data is lost.
 * Production (*prod*'): deploys a singgle MySQL server with persistent storage. The storage is allocated via a Persistent Volume Claim of `volume_size`.
 
 ## Running the application
@@ -39,10 +39,13 @@ There are 2 plans available:
 
 You can pass additional parameters to `ansible-playbook` by adding them at the end; for example, you can request more verbose output with one or more `-v` and pass additional variables with `--extra-vars`.
 
+For example, this will request a *prod* plan and specify a custom database name and volume size:
+
     docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" \
                -e "OPENSHIFT_TOKEN=<token>" \
                ansibleplaybookbundle/mysql-apb provision \
-               --extra-vars mysql_database=devel \
+               --extra-vars mysql_database=prod \
+               --extra-vars plan=prod \
                --extra-vars volume_size=2Gi
 
 ## Tearing down the application
