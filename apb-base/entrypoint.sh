@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
 # for any of the s2i builder base images.  Our 's2i-apb' builder uses the
@@ -24,8 +26,6 @@ USER_ID=$(id -u)
 shift
 playbooks=/opt/apb/actions
 CREDS="/etc/apb/bind-creds"
-
-set -x
 
 if [ ${USER_UID} != ${USER_ID} ]; then
   sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:${USER_ID}:@g" ${BASE_DIR}/etc/passwd.template > /etc/passwd
