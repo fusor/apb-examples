@@ -30,8 +30,10 @@
 - name: encode bind credentials
   shell: 'echo "{\"MYSQL_HOST\": \"{{ mysql_service.service.spec.cluster_ip }}\", \"MYSQL_PORT\": \"3306\", \"MYSQL_USER\": \"{{ mysql_user }}\", \"MYSQL_PASSWORD\": \"{{ mysql_password }}\", \"MYSQL_DATABASE\": \"{{ mysql_database }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
+  when: state == 'present'
 
 - name: save credentials
   copy:
     content: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
     dest: /etc/apb/bind-creds
+  when: state == 'present'
