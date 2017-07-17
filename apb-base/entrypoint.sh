@@ -1,4 +1,25 @@
 #!/bin/bash
+
+# Work-Around
+# The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
+# for any of the s2i builder base images.  Our 's2i-apb' builder uses the
+# apb-base as it's base image.  But since the apb-base defines its own
+# entrypoint.sh, it is not compatible with the current source-to-image.
+#
+# The below work-around checks if the entrypoint was called within the
+# s2i's 'assemble' script of if it was during a APB's run process.
+# If it's from an assemble process, it skips the APB's entrypoints procedures,
+# and vice versa.
+#
+# Details of the issue in the link below:
+# https://github.com/openshift/source-to-image/issues/475
+#
+if [[ $@ == *"s2i/assemble"* ]]; then
+  echo "---> Performing S2I build... Skipping server startup"
+  exec "$@"
+  exit $?
+fi
+
 ACTION=$1
 USER_ID=$(id -u)
 shift
