@@ -31,5 +31,7 @@
   shell: 'echo "{\"MYSQL_HOST\": \"{{ mysql_service.service.spec.cluster_ip }}\", \"MYSQL_PORT\": \"3306\", \"MYSQL_USER\": \"{{ mysql_user }}\", \"MYSQL_PASSWORD\": \"{{ mysql_password }}\", \"MYSQL_DATABASE\": \"{{ mysql_database }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
 
-- debug:
-    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+- name: save credentials
+  copy:
+    content: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+    dest: /etc/apb/bind-creds
