@@ -1,4 +1,0 @@
----
-namespace: "{{ lookup('env','NAMESPACE') | default('rhscl-mysql-apb', true) }}"
-service_name: "{{ lookup('env','SERVICE_NAME') | default('mysql', true) }}"
-plan: dev

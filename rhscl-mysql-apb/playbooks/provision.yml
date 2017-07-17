@@ -5,5 +5,5 @@
   roles:
   - role: ansible.kubernetes-modules
     install_python_requirements: no
-  - role: provision-mysql-apb
+  - role: rhscl-mysql-apb-openshift
     playbook_debug: false

@@ -1,18 +1,5 @@
 ---
-- name: create a volume claim
-  k8s_v1_persistent_volume_claim:
-    name: "{{ service_name }}"
-    namespace: "{{ namespace }}"
-    labels:
-      app: rhscl-mysql-apb
-      service: "{{ service_name }}"
-    state: present
-    access_modes:
-      - ReadWriteOnce
-    resources_requests:
-      storage: "{{ volume_size }}"
-
-- name: create MySQL deployment using Persistent Volume
+- name: set MySQL deployment with ephemeral storage to {{ state }}
   openshift_v1_deployment_config:
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
@@ -59,8 +46,8 @@
         name: mysql-data
     volumes:
     - name: mysql-data
-      persistent_volume_claim:
-        claim_name: "{{ service_name }}"
+      emptyDir: []
     triggers:
     - type: ConfigChange
-    # TODO: use ImageChange trigger / Image Streams?
+    state: "{{ state }}"
+    # TODO: use ImageChange trigger / ImageStreams?

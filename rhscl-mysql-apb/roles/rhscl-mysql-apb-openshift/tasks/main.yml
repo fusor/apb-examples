@@ -2,6 +2,7 @@
 - name: create namespace if it does not exist
   openshift_v1_project:
     name: "{{ namespace }}"
+  when: state == 'present'
 
 - include: dev.yml
   when: plan == "dev"
@@ -9,7 +10,7 @@
 - include: prod.yml
   when: plan == "prod"
 
-- name: create a service
+- name: Set {{ service_name }} service state to {{ state }}
   k8s_v1_service:
     name: "{{ service_name }}"
     namespace: "{{ namespace }}"
@@ -23,6 +24,7 @@
     - name: mysql
       port: 3306
       target_port: 3306
+    state: "{{ state }}"
   register: mysql_service
 
 - name: encode bind credentials
