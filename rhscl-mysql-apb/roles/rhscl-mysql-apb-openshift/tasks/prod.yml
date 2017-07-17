@@ -6,7 +6,6 @@
     labels:
       app: rhscl-mysql-apb
       service: "{{ service_name }}"
-    state: present
     access_modes:
       - ReadWriteOnce
     resources_requests:
