@@ -88,5 +88,5 @@
   register: encoded_bind_credentials
 
 - copy:
-   content="<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+   content="{{ encoded_bind_credentials.stdout }}"
    dest=/etc/apb/bind-creds

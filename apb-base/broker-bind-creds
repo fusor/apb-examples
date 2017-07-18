@@ -2,9 +2,14 @@
 
 CREDS="/etc/apb/bind-creds"
 
+# Broker will pickup exit codes during retries
+#
+# Exit code 0 - Credentials found
+# Exit code 2 - Credentials not available
+#
 if [ ! -s $CREDS ]; then
     echo "Bind credentials not available."
-    exit 1
+    exit 2
 else
     cat $CREDS
     rm $CREDS
