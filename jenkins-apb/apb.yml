@@ -1,7 +1,7 @@
 ---
 id: e731d13e-22b2-44e2-9d49-f6796a9ed21d
 name: jenkins-apb
-image: ansibleplaybookbund/jenkins-apb
+image: ansibleplaybookbundle/jenkins-apb
 description: Jenkins service with optional persistent storage and S2I build
 tags:
   - jenkins
