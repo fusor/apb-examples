@@ -11,10 +11,6 @@
 # There are a number of workarounds required which are noted in comments
 # near the action.
 # ----------------------------
-- name: Create Namespace
-  openshift_v1_project:
-    name: '{{ namespace }}'
-  when: state == 'present'
 
 # ----------------------------
 # Create Jenkins Services
