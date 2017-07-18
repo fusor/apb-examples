@@ -2,7 +2,7 @@
 
 # Pod will stay up for 5 minutes
 RETRIES=150
-CREDS="/etc/apb/bind-creds"
+CREDS="/var/tmp/bind-creds"
 
 for r in $(seq 1 $RETRIES); do
     if [ -f $CREDS ]; then

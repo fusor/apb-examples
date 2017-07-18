@@ -23,7 +23,7 @@ ACTION=$1
 USER_ID=$(id -u)
 shift
 playbooks=/opt/apb/actions
-CREDS="/etc/apb/bind-creds"
+CREDS="/var/tmp/bind-creds"
 
 set -x
 
