@@ -1,0 +1,4 @@
+---
+namespace: "{{ lookup('env','NAMESPACE') | default('s2i-example-apb', true) }}"
+image_name: "{{ lookup('env','IMAGENAME') | default('docker.io/nginx:latest', true) }}"
+

@@ -1,0 +1,74 @@
+##############################################################################
+## Provision s2i-example-apb
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+
+##############################################################################
+## An OpenShift Origin deployment configuration provides a replication
+## controller, spins up pods, and also provides the ability to transition from
+## one deployment of an image to a new one.
+## https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#deployments-and-deployment-configurations
+##############################################################################
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: s2i-example-apb
+    namespace: '{{ namespace }}'
+    labels:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    replicas: 1
+    selector:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    spec_template_metadata_labels:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    containers:
+    - env:
+      image: '{{ image_name }}' # replace with your application image
+      name: s2i-example-apb
+      ports:
+      - container_port: 80
+        protocol: TCP
+
+
+##############################################################################
+## A Kubernetes service serves as an internal load balancer.  It identifies a
+## set of replicated pods in order to proxy the connections it receives to them.
+## https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services
+##############################################################################
+- name: create s2i-example-apb service
+  k8s_v1_service:
+    name: s2i-example-apb
+    namespace: '{{ namespace }}'
+    labels:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    selector:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    ports:
+      - name: web
+        port: 80
+        target_port: 80
+
+
+##############################################################################
+## An OpenShift Origin route exposes a service at a host name, so that external
+## clients can reach it by name. Each route consists of a name, a service
+## selector, and an optional security configuration.
+## https://docs.openshift.org/latest/architecture/core_concepts/routes.html
+##############################################################################
+- name: create s2i-example-apb route
+  openshift_v1_route:
+    name: s2i-example-apb
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: s2i-example-apb
+      service: s2i-example-apb
+    to_name: s2i-example-apb

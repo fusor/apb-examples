@@ -1,0 +1,21 @@
+id: 294f172e-292c-4b8d-9249-447630b6772d
+name: s2i-example-apb
+image: ansibleplaybookbundle/s2i-example-apb
+description: This is a sample Ansible Playbook Bundle (APB) to be used for the 's2i-apb' builder
+bindable: False
+async: optional
+metadata:
+  documentationUrl: https://github.com/fusor/s2i-example-apb/blob/master/README.md
+  longDescription: Sample Ansible Playbook Bundle to be used for s2i-apb
+  dependencies: ['docker.io/nginx:latest']
+#  dependencies: ['docker.io/httpd:alpine']
+  displayName: Demo S2i Sample (APB)
+
+parameters: []
+#  - image_name:
+#      default: docker.io/httpd:alpine
+#      type: string
+#      title: Image Name
+  
+required: []
+#  - image_name

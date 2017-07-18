@@ -1,0 +1,9 @@
+- name: s2i-example-apb playbook to provision the application
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: provision-s2i-example-apb
+    playbook_debug: false
