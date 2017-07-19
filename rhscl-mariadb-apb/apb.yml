@@ -1,0 +1,41 @@
+id: a8e652c1-11e0-4202-b6df-09517f75ef9a
+name: rhscl-mariadb-apb
+image: ansibleplaybookbundle/rhscl-mariadb-apb
+description: Mariadb apb implementation
+bindable: true
+async: optional
+tags:
+  - databases
+  - mariadb
+metadata:
+  displayName: "RHSCL MariaDB (APB)"
+  longDescription: "Deploys a bindable mariadb instance"
+  console.openshift.io/iconClass: icon-mariadb
+  documentationUrl: "https://mariadb.com/kb/en/mariadb/documentation/"
+parameters:
+  - mysql_database:
+        title: MariaDB Database name
+        description: MariaDB default database name
+        type: string
+        default: admin
+  - mysql_root_password:
+        description: A random alphanumeric string if left blank
+        type: string
+        default: admin
+  - mysql_user:
+        description: MariaDB User
+        type: string
+        default: admin
+  - mysql_password:
+        description: A random alphanumeric string if left blank
+        type: string
+        default: admin
+  - mariadb_version:
+        title: MariaDB Version
+        type: enum
+        default: "10.0"
+        enum: ["10.0", "10.1"]
+required:
+  - mariadb_version
+  - mysql_database
+  - mysql_user

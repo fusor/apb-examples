@@ -1,0 +1,4 @@
+- openshift_v1_deployment_config:
+    name: rhscl-mariadb
+    namespace: '{{ namespace }}'
+    state: absent
