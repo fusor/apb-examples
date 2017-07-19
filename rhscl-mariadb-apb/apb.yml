@@ -34,7 +34,7 @@ parameters:
       description: A random alphanumeric string if left blank
       
   - mariadb_version:
-      default: 10.0
+      default: "10.0"
       enum: ['10.0', '10.1']
       type: enum
       title: MariaDB Version
