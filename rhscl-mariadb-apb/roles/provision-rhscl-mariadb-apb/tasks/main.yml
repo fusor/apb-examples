@@ -92,5 +92,6 @@
   shell: 'echo "{\"MARIADB_HOST\": \"{{ mariadb_service.service.spec.cluster_ip }}\", \"MARIADB_PORT\": \"3306\", \"MARIADB_USER\": \"{{ mysql_user }}\", \"MARIADB_PASSWORD\": \"{{ mysql_password }}\", \"MARIADB_DB\": \"{{ mysql_database }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
 
-- debug:
-    msg: "<BIND_CREDENTIALS>{{ encoded_bind_credentials.stdout }}</BIND_CREDENTIALS>"
+- copy:
+    content: "{{ encoded_bind_credentials.stdout }}"
+    dest: /var/tmp/bind-creds
