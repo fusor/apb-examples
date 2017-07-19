@@ -114,5 +114,5 @@
   when: state == 'present'
 
 - copy:
-   content="{{ encoded_bind_credentials.stdout }}"
-   dest=/etc/apb/bind-creds
+    content: "{{ encoded_bind_credentials.stdout }}"
+    dest: /var/tmp/bind-creds

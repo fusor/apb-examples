@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CREDS="/etc/apb/bind-creds"
+CREDS="/var/tmp/bind-creds"
 
 # Broker will pickup exit codes during retries
 #
