@@ -2,33 +2,43 @@ id: 6f180cb4-30d4-4a8a-975e-e91ca7ed2ed9
 name: etherpad-apb
 image: ansibleplaybookbundle/etherpad-apb
 description: Note taking web application
-bindable: true
+bindable: True
 async: optional
 metadata:
-  displayName: "Etherpad (APB)"
-  longDescription: "An apb that deploys Etherpad Lite"
-  imageUrl: "https://translatewiki.net/images/thumb/6/6f/Etherpad_lite.svg/200px-Etherpad_lite.svg.png"
-  documentationUrl: "https://github.com/ether/etherpad-lite/wiki"
+  displayName: Etherpad (APB)
+  longDescription: An apb that deploys Etherpad Lite
+  imageUrl: https://translatewiki.net/images/thumb/6/6f/Etherpad_lite.svg/200px-Etherpad_lite.svg.png
+  documentationUrl: https://github.com/ether/etherpad-lite/wiki
+  dependencies:
+    - docker.io/mariadb:latest
+    - docker.io/tvelocity/etherpad-lite:latest
+    
 parameters:
   - mariadb_name:
-      title: MariaDB Database Name
-      type: string
       default: etherpad
+      type: string
+      title: MariaDB Database Name
+      
   - mariadb_user:
+      default: etherpad
       title: MariaDB User
       type: string
-      default: etherpad
       maxlength: 63
+      
   - mariadb_password:
-      title: MariaDB Password
+      default: admin
+      type: string
       description: A random alphanumeric string if left blank
-      type: string
-      default: admin
+      title: MariaDB Password
+      
   - mariadb_root_password:
-      title: Root Password
-      description: root password for mariadb 
-      type: string
       default: admin
+      type: string
+      description: root password for mariadb
+      title: Root Password
+      
+  
 required:
   - mariadb_name
   - mariadb_user
+  
