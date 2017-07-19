@@ -35,40 +35,25 @@ openshift-test:
 
 ####### Test 1: Provision the "dev" plan (no storage)
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- provision -e namespace=${APB_APP} -e plan=dev
-# With --restart=OnFailure it creates a Job instead of a DC, so the following won't work:
-#	oc rollout status -w dc/${IMAGE_NAME}
-#	oc describe dc/${IMAGE_NAME}
-#	oc logs -f dc/${IMAGE_NAME}
-# FIXME: it's creating a pod, not a Job. Also fix the 'delete pod's below
-# FIXME: wait for the Job to complete with something better than a sleep/logs
-	sleep 3
-	oc logs -f pod/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e plan=dev
 	oc delete pod/${IMAGE_NAME}
 	oc project ${APB_APP}
 	oc rollout status -w dc/${APB_APP}
 	oc status
 	oc describe `oc get pod -o name`
-# not needed as the DC has health checks built in:
-#	curl `oc get svc/${APB_APP} --template '{{.spec.clusterIP}}:{{index .spec.ports 0 "port"}}'`
 	oc describe dc/${APB_APP}
 	oc logs dc/${APB_APP}
 	oc exec `oc get pod --template '{{(index .items 0).metadata.name }}'` ps aux
 
 ####### Test 2: Derovision the "dev" plan
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- deprovision -e namespace=${APB_APP} -e plan=dev
-	sleep 3
-	oc logs -f pod/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- deprovision -e namespace=${APB_APP} -e plan=dev
 	oc delete pod/${IMAGE_NAME}
 # Give some time for the pod to get cleaned up
 	sleep 3
 
 ####### Test 3: Provision the "prod" plan (persistent storage via PVC)
-	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- provision -e namespace=${APB_APP} -e plan=prod
-	sleep 3
-	oc logs -f pod/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e plan=prod
 	oc delete pod/${IMAGE_NAME}
 	oc project ${APB_APP}
 	oc rollout status -w dc/${APB_APP}
@@ -79,9 +64,7 @@ openshift-test:
 
 ####### Test 2: Derovision the "prod" plan
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- deprovision -e namespace=${APB_APP} -e plan=prod
-	sleep 3
-	oc logs -f pod/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- --attach=true deprovision -e namespace=${APB_APP} -e plan=prod
 	oc delete pod/${IMAGE_NAME}
 
 #run:
