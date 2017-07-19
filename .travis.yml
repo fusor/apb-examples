@@ -5,7 +5,7 @@ group: deprecated-2017Q2
 env:
   - VARIANT=apb-base TARGET=centos7
   - VARIANT=hello-world-apb TARGET=centos7
-#  - VARIANT=rhscl-postgresql-apb TARGET=centos7
+  - VARIANT=rhscl-mariadb-apb TARGET=centos7
 
 services:
  - docker

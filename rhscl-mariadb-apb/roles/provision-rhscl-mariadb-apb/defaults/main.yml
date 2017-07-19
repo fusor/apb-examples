@@ -6,5 +6,5 @@ mysql_root_password: "{{ lookup('mysql_root_password', '/tmp/rootpass chars=asci
 mysql_user: "{{ lookup('env','MYSQL_USER') | default('admin', true) }}"
 mariadb_volume_size: "1Gi"
 mariadb_version: "{{ lookup('env','MARIADB_VERSION') | default('10.0', true) }}"
-image: "mariadb-{{ mariadb_version | replace('.', '') }}-rhel7"
+image: "rhscl/mariadb-{{ mariadb_version | replace('.', '') }}-rhel7"
 state: present

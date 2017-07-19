@@ -33,7 +33,7 @@ parameters:
   - mariadb_version:
         title: MariaDB Version
         type: enum
-        default: 10.0
+        default: "10.0"
         enum: ["10.0", "10.1"]
 required:
   - mariadb_version
