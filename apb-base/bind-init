@@ -6,10 +6,10 @@ CREDS="/etc/apb/bind-creds"
 
 for r in $(seq 1 $RETRIES); do
     if [ -f $CREDS ]; then
-        echo "Waiting for Broker to gather the bind credendials..."
+        echo "Waiting for broker to gather the bind credentials..."
         sleep 2
     else
-        echo "Broker has received bind credendials."
+        echo "Broker has received bind credentials."
         exit 0
     fi
 done
