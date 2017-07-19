@@ -1,5 +1,6 @@
 DIRS = \
 apb-base \
+jenkins-apb \
 hello-world-apb
 
 # Allow user to pass in OS build options
@@ -11,7 +12,7 @@ else
 endif
 
 all: build
-build: 
+build:
 	@for d in ${DIRS}; do ${MAKE} -C $$d TARGET=${TARGET}; done
 
 lint:

@@ -1,0 +1,54 @@
+---
+- name: Delete Jenkins Service
+  k8s_v1_service:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete JNLP Service
+  k8s_v1_service:
+    name: "{{ jnlp_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete Route
+  openshift_v1_route:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete PersistentVolumeClaim
+  k8s_v1_persistent_volume_claim:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete ServiceAccount
+  k8s_v1_service_account:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+  ignore_errors: True
+
+- name: Delete RoleBinding
+  command: "oc delete rolebinding {{ jenkins_service_name }}_edit"
+  ignore_errors: True
+
+- name: Delete ImageStream
+  openshift_v1_image_stream:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete BuildConfig
+  openshift_v1_build_config:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+
+- name: Delete DeploymentConfig
+  openshift_v1_deployment_config:
+    name: "{{ jenkins_service_name }}"
+    namespace: "{{ namespace }}"
+    state: "{{ state }}"
+

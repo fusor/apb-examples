@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: RoleBinding
+metadata:
+  name: "{{ jenkins_service_name }}_edit"
+roleRef:
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: {{ jenkins_service_name }}

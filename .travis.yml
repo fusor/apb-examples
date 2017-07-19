@@ -5,7 +5,7 @@ group: deprecated-2017Q2
 env:
   - VARIANT=apb-base TARGET=centos7
   - VARIANT=hello-world-apb TARGET=centos7
-#  - VARIANT=rhscl-postgresql-apb TARGET=centos7
+  - VARIANT=jenkins-apb TARGET=centos7
 
 services:
  - docker
@@ -40,4 +40,4 @@ script:
   - if [ ${BUILD} ]; then export REGISTRY_IP=`oc get svc/docker-registry -o json -n default | jq -r '.spec.clusterIP'`; fi
   - if [ ${BUILD} ]; then make openshift-test -C ${VARIANT} TARGET=${TARGET} REGISTRY=${REGISTRY_IP} OC_USER=${OC_USER} OC_PASS=${OC_PASS}; fi
   - if [ ${BUILD} ]; then oc version; fi
-  
+
