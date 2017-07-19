@@ -35,5 +35,5 @@
 - name: save credentials
   copy:
     content: "{{ encoded_bind_credentials.stdout }}"
-    dest: /etc/apb/bind-creds
+    dest: /var/tmp/bind-creds
   when: state == 'present'
