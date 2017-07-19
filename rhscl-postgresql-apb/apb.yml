@@ -40,7 +40,3 @@ required:
   - postgresql_user
   - postgresql_version
   
-dependencies: 
-  - postgresql_version
-  - registry.access.redhat.com/rhscl/{{
-  

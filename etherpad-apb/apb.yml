@@ -4,16 +4,14 @@ image: ansibleplaybookbundle/etherpad-apb
 description: Note taking web application
 bindable: True
 async: optional
-metadata:
+metadata: 
+  documentationUrl: https://github.com/ether/etherpad-lite/wiki
+  imageUrl: https://translatewiki.net/images/thumb/6/6f/Etherpad_lite.svg/200px-Etherpad_lite.svg.png
+  dependencies: ['docker.io/mariadb:latest', 'docker.io/tvelocity/etherpad-lite:latest']
   displayName: Etherpad (APB)
   longDescription: An apb that deploys Etherpad Lite
-  imageUrl: https://translatewiki.net/images/thumb/6/6f/Etherpad_lite.svg/200px-Etherpad_lite.svg.png
-  documentationUrl: https://github.com/ether/etherpad-lite/wiki
-  dependencies:
-    - docker.io/mariadb:latest
-    - docker.io/tvelocity/etherpad-lite:latest
-    
-parameters:
+  
+parameters: 
   - mariadb_name:
       default: etherpad
       type: string
@@ -38,7 +36,7 @@ parameters:
       title: Root Password
       
   
-required:
+required: 
   - mariadb_name
   - mariadb_user
   
