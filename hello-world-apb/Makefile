@@ -31,9 +31,7 @@ openshift-test:
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc adm policy add-role-to-user admin -z default
-	oc run ${IMAGE_NAME} --restart=Never --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} -- provision --extra-vars 'namespace=${PROJ_RANDOM}'
-	while [ -z $${POD_STATE} ]; do sleep 2; POD_STATE=$$(oc get pod ${IMAGE_NAME} --template '{{(index .status.containerStatuses 0).state.terminated.exitCode}}' | grep -w '^[0-9]*$$'); done
-	oc describe po/${IMAGE_NAME}
+	oc run ${IMAGE_NAME} --restart=Never --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --attach=true -- provision -e namespace=${PROJ_RANDOM}
 	oc logs po/${IMAGE_NAME}
 	oc rollout status -w dc/${APB_APP}
 	oc status
