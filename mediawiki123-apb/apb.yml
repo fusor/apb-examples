@@ -44,6 +44,3 @@ required:
   - mediawiki_admin_user
   - mediawiki_admin_pass
   
-dependencies: 
-  - docker.io/jmontleon/mediawiki123:latest
-  

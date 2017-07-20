@@ -4,16 +4,14 @@ image: ansibleplaybookbundle/rocketchat-apb
 description: This APB deploys RocketChat backed by MongoDB
 bindable: False
 async: optional
-metadata:
+metadata: 
+  documentationUrl: https://rocket.chat
+  imageUrl: https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true
+  dependencies: ['rocket.chat:latest', 'mongo:3.2']
   displayName: RocketChat (APB)
   longDescription: An APB that deploys RocketChat to OpenShift backed by MongoDB
-  imageUrl: https://github.com/RocketChat/Rocket.Chat.Artwork/blob/master/Logos/rocketcat.png?raw=true
-  documentationUrl: https://rocket.chat
-  dependencies:
-    - rocket.chat:latest
-    - mongo:3.2
-    
-parameters:
+  
+parameters: 
   - mongodb_user:
       default: rocketchat
       type: string
@@ -47,7 +45,7 @@ parameters:
       title: RocketChat Version
       
   
-required:
+required: 
   - mongodb_user
   - mongodb_pass
   - mongodb_name

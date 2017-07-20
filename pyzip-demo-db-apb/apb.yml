@@ -33,6 +33,3 @@ required:
   - database_name
   - database_user
   
-dependencies: 
-  - docker.io/fabianvf/postgresql:postgis
-  

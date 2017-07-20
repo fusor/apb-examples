@@ -10,7 +10,3 @@ metadata:
 parameters: []
   
 required: []
-  
-dependencies: 
-  - docker.io/ansibleplaybookbundle/hello-world:latest
-  
