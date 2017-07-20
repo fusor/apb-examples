@@ -137,20 +137,20 @@ To run `my-apb`, make sure that a test OpenShift/Origin cluster is accessible.
 For example, assuming the below environment...
 ```bash
 OpenShift URL        : `https://172.17.0.1.nip.io:8443`
-OpenShift User       : foo
-OpenShift Pwd        : bar
+OpenShift Token      : WoCG534Mh9O2AyT_mFn3uKQ6R9-fuk_Rsr-oF4K8Pqw
 OpenShift Namespace  : my-apb (via `--extra-vars`)
 APB Image Entrypoint : /usr/bin/entrypoint.sh
 APB Action           : provision
 ```
+
+To get your OpenShift Token, type `oc whoami -t`
 
 The following command can be executed to `provision` the `my-apb`:
 ```bash
 $ docker run \
 --entrypoint /usr/bin/entrypoint.sh \
 -e "OPENSHIFT_TARGET=https://172.17.0.1.nip.io:8443" \
--e "OPENSHIFT_USER=foo" \
--e "OPENSHIFT_PASS=bar"  \
+-e "OPENSHIFT_TOKEN=WoCG534Mh9O2AyT_mFn3uKQ6R9-fuk_Rsr-oF4K8Pqw" \
    my-apb \
    provision \
    --extra-vars 'namespace=my-apb'
