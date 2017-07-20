@@ -32,7 +32,6 @@ openshift-test:
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc adm policy add-role-to-user admin -z default
 	oc run ${IMAGE_NAME} --restart=Never --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --attach=true -- provision -e namespace=${PROJ_RANDOM}
-	oc logs po/${IMAGE_NAME}
 	oc rollout status -w dc/${APB_APP}
 	oc status
 	sleep 5
