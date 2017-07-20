@@ -30,8 +30,9 @@ openshift-test:
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}:5000
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
-	oc adm policy add-role-to-user admin -z default
-	oc run ${IMAGE_NAME} --restart=Never --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --attach=true -- provision -e namespace=${PROJ_RANDOM}
+	oc create sa apb
+	oc adm policy add-role-to-user admin -z apb
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true --overrides='{"apiVersion":"v1","spec":{"serviceAccountName":"apb"}}' -- provision -e namespace=`oc project -q`
 	oc rollout status -w dc/${APB_APP}
 	oc status
 	sleep 5
