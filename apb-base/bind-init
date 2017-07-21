@@ -10,7 +10,7 @@ for r in $(seq 1 $RETRIES); do
         sleep 2
     else
         echo "Broker has received bind credentials."
-        echo "Sleeping here to wait for broker exec to exit safely..."
+        echo "Waiting for broker exec to complete..."
         sleep 5
         exit 0
     fi
