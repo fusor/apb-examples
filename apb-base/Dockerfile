@@ -15,11 +15,10 @@ RUN yum -y install epel-release centos-release-openshift-origin \
 
 RUN mkdir -p /usr/share/ansible/openshift \
              /etc/ansible /opt/ansible \
-             ${BASE_DIR} ${BASE_DIR}/etc \
-             ${BASE_DIR}/.kube ${BASE_DIR}/.ansible/tmp && \
-             useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} && \
-             chown -R ${USER_NAME}:0 /opt/{ansible,apb} && \
-             chmod -R g+rw /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
+             ${BASE_DIR}/{etc,.kube,.ansible/tmp} \
+             && useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} \
+             && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
+             && chmod -R g=u /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
 
 RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
     && echo '[defaults]' > /etc/ansible/ansible.cfg \
@@ -27,5 +26,5 @@ RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
 
 COPY oc-login.sh entrypoint.sh broker-bind-creds bind-init /usr/bin/
 
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > ${BASE_DIR}/etc/passwd.template
+RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
 ENTRYPOINT ["entrypoint.sh"]

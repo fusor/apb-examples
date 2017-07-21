@@ -9,8 +9,9 @@ IG9wdGlvbmFsCm1ldGFkYXRhOiAKICBkZXBlbmRlbmNpZXM6IFsnZG9ja2VyLmlvL2Fuc2libGVw\
 bGF5Ym9va2J1bmRsZS9oZWxsby13b3JsZDpsYXRlc3QnXQogIApwYXJhbWV0ZXJzOiBbXQogIApy\
 ZXF1aXJlZDogW10KICA="
 
-
 ADD playbooks /opt/apb/actions
 ADD roles /opt/ansible/roles
+RUN chown -R apb /opt/{ansible,apb} \
+    && chmod -R g=u /opt/{ansible,apb}
 
 USER apb
