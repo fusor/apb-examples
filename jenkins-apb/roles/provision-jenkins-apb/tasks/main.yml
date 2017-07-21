@@ -132,23 +132,18 @@
         source_git_ref is defined and
         source_context_dir is defined
 
+- name: Template - Create BuildConfig
+  template:
+    src: buildconfig.yaml.j2
+    dest: /tmp/buildconfig.yaml
+  register: buildconfig
+  when: source_git_uri is defined and
+        source_git_ref is defined and
+        source_context_dir is defined
+
 - name: Create BuildConfig
-  openshift_v1_build_config:
-    name: "{{ jenkins_service_name }}"
-    namespace: "{{ namespace }}"
-    spec_output_to_kind: "ImageStreamTag"
-    spec_output_to_name: "jenkins:latest"
-    spec_source_context_dir: "{{ source_context_dir }}"
-    spec_source_git_uri: "{{ source_git_uri }}"
-    spec_source_git_ref: "{{ source_git_ref }}"
-    spec_source_type: "Git"
-    spec_strategy_source_strategy__from_kind: "ImageStreamTag"
-    spec_strategy_source_strategy__from_name: "jenkins:2"
-    spec_strategy_source_strategy__from_namespace: "openshift"
-    spec_triggers:
-      - type: ConfigChange
-      - type: ImageChange
-    state: "{{ state }}"
+  command: "oc create -f {{ buildconfig.dest | default(buildconfig.path) }} -n {{ namespace }}"
+  ignore_errors: True
   when: source_git_uri is defined and
         source_git_ref is defined and
         source_context_dir is defined
