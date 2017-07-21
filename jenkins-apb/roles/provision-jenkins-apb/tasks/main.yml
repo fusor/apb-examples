@@ -92,7 +92,7 @@
       serviceaccounts.openshift.io/oauth-redirectreference.jenkins: "{{ oauth_redirect_reference_jenkins | to_json }}"
     state: "{{ state }}"
   ignore_errors: True
-  
+
 - name: Create RoleBinding from Ansible Template
   template:
     src: rolebinding.yaml.j2
