@@ -20,11 +20,9 @@ RUN mkdir -p /usr/share/ansible/openshift \
              && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
              && chmod -R g=u /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
 
-RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
-    && echo '[defaults]' > /etc/ansible/ansible.cfg \
-    && echo 'roles_path = /etc/ansible/roles:/opt/ansible/roles' >> /etc/ansible/ansible.cfg
-
-COPY oc-login.sh entrypoint.sh broker-bind-creds bind-init /usr/bin/
+COPY files/etc/ansible/* /etc/ansible/
+COPY files/opt/apb/library/* /opt/apb/library/
+COPY files/usr/bin/* /usr/bin/
 
 RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
 ENTRYPOINT ["entrypoint.sh"]
