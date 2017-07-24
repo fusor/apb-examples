@@ -10,36 +10,39 @@ metadata:
   dependencies: ['rhscl/mariadb-10-rhel7']
   displayName: RHSCL MariaDB (APB)
   console.openshift.io/iconClass: icon-mariadb
-  
-parameters: 
-  - mysql_database:
-      default: admin
-      type: string
-      description: MariaDB default database name
-      title: MariaDB Database name
-      
-  - mysql_root_password:
-      default: admin
-      type: string
-      description: A random alphanumeric string if left blank
-      
-  - mysql_user:
-      default: admin
-      type: string
-      description: MariaDB User
-      
-  - mysql_password:
-      default: admin
-      type: string
-      description: A random alphanumeric string if left blank
-      
-  - mariadb_version:
-      default: "10.0"
-      enum: ['10.0', '10.1']
-      type: enum
-      title: MariaDB Version
-      
-  
+plans:
+  - name: default
+    description: This plan deploys a single MariaDB instance
+    free: True
+    metadata:
+      displayName: Default
+      cost: $0.00
+    parameters:
+      - name: mysql_database
+        default: admin
+        type: string
+        description: MariaDB default database name
+        title: MariaDB Database name
+        required: True
+      - name: mysql_root_password
+        default: admin
+        type: string
+        description: A random alphanumeric string if left blank
+      - name: mysql_user
+        default: admin
+        type: string
+        description: MariaDB User
+        required: True
+      - name: mysql_password
+        default: admin
+        type: string
+        description: A random alphanumeric string if left blank
+      - name: mariadb_version
+        default: "10.0"
+        enum: ['10.0', '10.1']
+        type: enum
+        title: MariaDB Version
+        required: True
 required: 
   - mariadb_version
   - mysql_database
