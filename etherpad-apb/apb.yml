@@ -1,4 +1,3 @@
-id: 6f180cb4-30d4-4a8a-975e-e91ca7ed2ed9
 name: etherpad-apb
 image: ansibleplaybookbundle/etherpad-apb
 description: Note taking web application
@@ -10,33 +9,33 @@ metadata:
   dependencies: ['docker.io/mariadb:latest', 'docker.io/tvelocity/etherpad-lite:latest']
   displayName: Etherpad (APB)
   longDescription: An apb that deploys Etherpad Lite
-  
-parameters: 
-  - mariadb_name:
-      default: etherpad
-      type: string
-      title: MariaDB Database Name
-      
-  - mariadb_user:
-      default: etherpad
-      title: MariaDB User
-      type: string
-      maxlength: 63
-      
-  - mariadb_password:
-      default: admin
-      type: string
-      description: A random alphanumeric string if left blank
-      title: MariaDB Password
-      
-  - mariadb_root_password:
-      default: admin
-      type: string
-      description: root password for mariadb
-      title: Root Password
-      
-  
-required: 
-  - mariadb_name
-  - mariadb_user
-  
+plans:
+  - name: default
+    description: A single etherpad application with no DB
+    free: true
+    metadata:
+      displayName: Default
+      longDescription: This plan provides a single Etherpad application with no database
+      cost: $0.00
+    parameters:
+      - name: mariadb_name
+        required: true
+        default: etherpad
+        type: string
+        title: MariaDB Database Name
+      - name: mariadb_user
+        required: true
+        default: etherpad
+        title: MariaDB User
+        type: string
+        maxlength: 63
+      - name: mariadb_password
+        default: admin
+        type: string
+        description: A random alphanumeric string if left blank
+        title: MariaDB Password
+      - name: mariadb_root_password
+        default: admin
+        type: string
+        description: root password for mariadb
+        title: Root Password
