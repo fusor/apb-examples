@@ -1,35 +1,35 @@
-id: 64297e88-657c-46ab-bb50-2af7f84e5ec6
+id: 3ea4b594-08fe-421d-bd0c-9f0ba3784883
 name: pyzip-demo-db-apb
 image: ansibleplaybookbundle/pyzip-demo-db-apb
 description: Python Zip Demo Database APB Implementation
 bindable: True
 async: optional
-metadata: 
+metadata:
   documentationUrl: https://github.com/fusor/apb-examples/tree/master/pyzip-demo-db-apb
   dependencies: ['docker.io/fabianvf/postgresql:postgis']
   displayName: Pyzip Demo Database (APB)
   longDescription: A database with GIS support and seeded data for a demonstration python webapp, https://github.com/fusor/py-zip-demo
-  
-parameters: 
-  - database_name:
-      default: admin
-      type: string
-      title: Database Name
-      
-  - database_password:
-      default: admin
-      type: string
-      description: A random alphanumeric string if left blank
-      title: Database Password
-      
-  - database_user:
-      default: admin
-      title: Database User
-      type: string
-      maxlength: 63
-      
-  
-required: 
-  - database_name
-  - database_user
-  
+plans:
+  - name: default
+    description: This plan deploys a DB to be used with the pyzip-demo APB
+    free: True
+    metadata:
+      displayName: Default
+      cost: $0.00
+    parameters:
+      - name: database_name
+        default: admin
+        type: string
+        title: Database Name
+        required: True
+      - name: database_password
+        default: admin
+        type: string
+        description: A random alphanumeric string if left blank
+        title: Database Password
+      - name: database_user
+        default: admin
+        title: Database User
+        type: string
+        maxlength: 63
+        required: True
