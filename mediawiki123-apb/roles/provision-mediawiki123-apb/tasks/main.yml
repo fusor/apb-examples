@@ -51,11 +51,9 @@
         value: "{{ mediawiki_admin_user }}"
       - name: MEDIAWIKI_ADMIN_PASS
         value: "{{ mediawiki_admin_pass }}"
-      - name: MEDIAWIKI_DB_TYPE
-        value: postgres
       - name: MEDIAWIKI_SITE_SERVER
         value: '{{ route.route.spec.host }}'
-      image: docker.io/jmontleon/mediawiki123:latest
+      image: docker.io/dymurray/mediawiki123:latest
       name: mediawiki123
       ports:
       - container_port: 8080
