@@ -40,3 +40,19 @@ required:
   - postgresql_user
   - postgresql_version
   
+plans:
+  - dev:
+      description: A single DB server with no storage
+      free: true
+      default: true
+      metadata:
+        displayName: Development
+        longDescription: This plan provides a single non-HA PostgreSQL server without persistent storage
+        cost: $0.00
+  - prod:
+      description: HA DB Server with 1TB of Storage
+      free: false
+      metadata:
+        displayName: Production
+        longDescription: This plan provides a single non-HA PostgreSQL server with persistent storage
+        cost: $5.99 monthly
