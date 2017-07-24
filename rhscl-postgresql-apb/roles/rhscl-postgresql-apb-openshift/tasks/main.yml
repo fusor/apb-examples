@@ -33,10 +33,10 @@
   when: state == 'absent'
 
 - include: dev.yml
-  when: plan == "dev"
+  when: _apb_plan_id == "dev"
 
 - include: prod.yml
-  when: plan == "prod"
+  when: _apb_plan_id == "prod"
 
 - name: delete replication controller
   k8s_v1_replication_controller:
