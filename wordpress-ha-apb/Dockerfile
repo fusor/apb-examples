@@ -31,5 +31,7 @@ Y2x1c3Rlcl9uYW1lCiAgLSBkYXRhYmFzZV91c2VyCiAgLSBkYXRhYmFzZV9yZXBsaWNhcwogIC0g\
 bWluX3dvcmRwcmVzc19yZXBsaWNhcwogIC0gbWF4X3dvcmRwcmVzc19yZXBsaWNhcwogIA=="
 COPY roles /opt/ansible/roles
 COPY playbooks /opt/apb/actions
+RUN chown -R apb /opt/{ansible,apb} \
+    && chmod -R g=u /opt/{ansible,apb}
 
 USER apb
