@@ -158,12 +158,15 @@ $ docker run \
    --extra-vars 'namespace=my-apb'
 ```
 
-# Contributing to `apb-examples`
-  * Complete all the [requirements](#requirements)
+# Contributing a new APB to apb-examples
+  * Create a new directory for the app and add playbooks
   * Make a [pull request](https://help.github.com/articles/using-pull-requests)
-  * Fix any conflicts (if any)
   * Someone will ACK your PR in the review thread
   * Someone will then Merge your PR
+  * After merging, create an automated build for the APB in [dockerhub](https://docs.docker.com/docker-hub/builds/)
+  * Under Build Settings, create a build tagged 'latest' and 'canary'
+  * Link the APB build to the apb-base container by adding 'ansibleplaybookbundle/apb-base' as a Repository Link
+
 
 # Getting Help
   * #asbroker - freenode

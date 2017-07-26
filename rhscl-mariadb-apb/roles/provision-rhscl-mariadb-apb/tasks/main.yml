@@ -89,7 +89,7 @@
     state: "{{ state }}"
 
 - name: encode bind credentials
-  shell: 'echo "{\"MARIADB_HOST\": \"{{ mariadb_service.service.spec.cluster_ip }}\", \"MARIADB_PORT\": \"3306\", \"MARIADB_USER\": \"{{ mysql_user }}\", \"MARIADB_PASSWORD\": \"{{ mysql_password }}\", \"MARIADB_DB\": \"{{ mysql_database }}\"}" | base64 -w 0'
+  shell: 'echo "{\"DB_TYPE\": \"mysql\", \"DB_HOST\": \"{{ mariadb_service.service.spec.cluster_ip }}\", \"DB_PORT\": \"3306\", \"DB_USER\": \"{{ mysql_user }}\", \"DB_PASSWORD\": \"{{ mysql_password }}\", \"DB_NAME\": \"{{ mysql_database }}\"}" | base64 -w 0'
   register: encoded_bind_credentials
 
 - copy:

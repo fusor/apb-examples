@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
 # for any of the s2i builder base images.  Our 's2i-apb' builder uses the
