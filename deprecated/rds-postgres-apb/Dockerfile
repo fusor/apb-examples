@@ -53,6 +53,8 @@ MTdkZW1vL0RhdGFiYXNlX0FtYXpvblJEU19Qb3N0Z3JlU1FMaW5zdGFuY2UucG5nIgogIGRvY3Vt\
 ZW50YXRpb25Vcmw6ICJodHRwczovL2F3cy5hbWF6b24uY29tL3Jkcy8iCg=="
 COPY roles /opt/ansible/roles
 COPY playbooks /opt/apb/actions
+RUN chown -R apb /opt/{ansible,apb} \
+    && chmod -R g=u /opt/{ansible,apb}
 
 RUN yum -y install python-boto postgresql && yum clean all
 

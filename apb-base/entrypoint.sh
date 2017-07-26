@@ -22,13 +22,16 @@ if [[ $@ == *"s2i/assemble"* ]]; then
 fi
 
 ACTION=$1
-USER_ID=$(id -u)
 shift
 playbooks=/opt/apb/actions
 CREDS="/var/tmp/bind-creds"
 
-if [ ${USER_UID} != ${USER_ID} ]; then
-  sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:${USER_ID}:@g" ${BASE_DIR}/etc/passwd.template > /etc/passwd
+set -x
+
+if [ -w /etc/passwd ]; then
+  if ! whoami &> /dev/null; then
+    sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:$(id -u):@g" /etc/passwd.template > /etc/passwd
+  fi
 fi
 oc-login.sh
 

@@ -25,6 +25,8 @@ lint:
 openshift-test:
 	${MAKE} -C ../hello-world-apb TARGET=${TARGET}
 	${MAKE} openshift-test -C ../hello-world-apb TARGET=${TARGET}
+	${MAKE} -C ../jenkins-apb TARGET=${TARGET}
+	${MAKE} openshift-test -C ../jenkins-apb TARGET=${TARGET}
 
 clean:
 	rm -f build
