@@ -109,11 +109,12 @@
   when: state == 'present'
 
 - name: encode bind credentials
-  shell: 'echo "{\"DB_TYPE\": \"postgres\", \"DB_HOST\": \"postgresql\", \"DB_PORT\": \"5432\", \"DB_USER\": \"{{ postgresql_user }}\", \"DB_PASSWORD\": \"{{ postgresql_password }}\", \"DB_NAME\": \"{{ postgresql_database }}\"}" | base64 -w 0'
-  register: encoded_bind_credentials
+  asb_encode_binding:
+    fields:
+      DB_TYPE: postgres
+      DB_HOST: postgresql
+      DB_PORT: "5432"
+      DB_USER: "{{ postgresql_user }}"
+      DB_PASSWORD: "{{ postgresql_password }}"
+      DB_NAME: "{{ postgresql_database }}"
   when: state == 'present'
-
-- copy:
-    content: "{{ encoded_bind_credentials.stdout }}"
-    dest: /var/tmp/bind-creds
-

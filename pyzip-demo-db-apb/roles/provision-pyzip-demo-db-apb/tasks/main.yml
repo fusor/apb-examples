@@ -114,9 +114,11 @@
     - zipcodes.sql
 
 - name: encode bind credentials
-  shell: 'echo "{\"POSTGRES_HOST\": \"{{ dbservice_name }}\", \"POSTGRES_PORT\": \"5432\", \"POSTGRES_USER\": \"{{ database_user }}\", \"POSTGRES_PASSWORD\": \"{{ database_password }}\", \"POSTGRES_DB\": \"{{ database_name }}\"}" | base64 -w 0'
-  register: encoded_bind_credentials
+  asb_encode_binding:
+    fields:
+      POSTGRES_HOST: "{{ dbservice_name }}"
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: "{{ database_user }}"
+      POSTGRES_PASSWORD: "{{ database_password }}"
+      POSTGRES_DB: "{{ database_name }}"
 
-- copy:
-    content: "{{ encoded_bind_credentials.stdout }}"
-    dest: /var/tmp/bind-creds

@@ -20,8 +20,7 @@ ZXJpYyBzdHJpbmcgaWYgbGVmdCBibGFuawogICAgICB0aXRsZTogRGF0YWJhc2UgUGFzc3dvcmQK\
 ICAgICAgCiAgLSBkYXRhYmFzZV91c2VyOgogICAgICBkZWZhdWx0OiBhZG1pbgogICAgICB0aXRs\
 ZTogRGF0YWJhc2UgVXNlcgogICAgICB0eXBlOiBzdHJpbmcKICAgICAgbWF4bGVuZ3RoOiA2Mwog\
 ICAgICAKICAKcmVxdWlyZWQ6IAogIC0gZGF0YWJhc2VfbmFtZQogIC0gZGF0YWJhc2VfdXNlcgog\
-IApkZXBlbmRlbmNpZXM6IAogIC0gZG9ja2VyLmlvL2ZhYmlhbnZmL3Bvc3RncmVzcWw6cG9zdGdp\
-cwogIAo="
+IAo="
 
 COPY roles /opt/ansible/roles
 COPY playbooks /opt/apb/actions
