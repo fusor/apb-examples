@@ -1,4 +1,3 @@
-id: dc2189ac-0e42-4523-a8c2-0a9b9ba51d05
 name: rocketchat-apb
 image: ansibleplaybookbundle/rocketchat-apb
 description: This APB deploys RocketChat backed by MongoDB
@@ -10,46 +9,44 @@ metadata:
   dependencies: ['rocket.chat:latest', 'mongo:3.2']
   displayName: RocketChat (APB)
   longDescription: An APB that deploys RocketChat to OpenShift backed by MongoDB
-  
-parameters: 
-  - mongodb_user:
-      default: rocketchat
-      type: string
-      title: MongoDB Username
-      
-  - mongodb_pass:
-      default: changeme
-      type: string
-      title: MongoDB Password
-      
-  - mongodb_name:
-      default: rocketchat
-      type: string
-      title: MongoDB Database Name
-      
-  - mongodb_admin_pass:
-      default: changeme
-      type: string
-      title: MongoDB Admin Password
-      
-  - mongodb_version:
-      default: 3.2
-      enum: ['3.2', '3.4', '3.5']
-      type: enum
-      title: MongoDB Version
-      
-  - rocketchat_version:
-      default: latest
-      enum: ['latest', '0.56.0']
-      type: enum
-      title: RocketChat Version
-      
-  
-required: 
-  - mongodb_user
-  - mongodb_pass
-  - mongodb_name
-  - mongodb_admin_pass
-  - mongodb_version
-  - rocketchat_version
-  
+plans:
+  - name: default
+    description: This plan deploys a single RocketChat application backed by MongoDB
+    free: True
+    metadata:
+      displayName: Default
+      longDescription: This plan provides a RocketChat application backed by MongoDB
+      cost: $0.00
+    parameters: 
+      - name: mongodb_user
+        default: rocketchat
+        type: string
+        title: MongoDB Username
+        required: True
+      - name: mongodb_pass
+        default: changeme
+        type: string
+        title: MongoDB Password
+        required: True
+      - name: mongodb_name
+        default: rocketchat
+        type: string
+        title: MongoDB Database Name
+        required: True
+      - name: mongodb_admin_pass
+        default: changeme
+        type: string
+        title: MongoDB Admin Password
+        required: True
+      - name: mongodb_version
+        default: "3.2"
+        enum: ['3.2', '3.4', '3.5']
+        type: enum
+        title: MongoDB Version
+        required: True
+      - name: rocketchat_version
+        default: latest
+        enum: ['latest', '0.56.0']
+        type: enum
+        title: RocketChat Version
+        required: True

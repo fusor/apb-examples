@@ -1,42 +1,54 @@
-id: 8a049637-8c70-4434-993c-a15c3d310513
+################################################################################
+# Shared Parameters
+################################################################################
+_p: &_p
+  - name: postgresql_database
+    default: admin
+    type: string
+    title: PostgreSQL Database Name
+    required: true
+  - name: postgresql_password
+    type: string
+    description: A random alphanumeric string if left blank
+    title: PostgreSQL Password
+  - name: postgresql_user
+    default: admin
+    title: PostgreSQL User
+    type: string
+    maxlength: 63
+    required: true
+  - name: postgresql_version
+    default: 9.5
+    enum: ['9.5', '9.4']
+    type: enum
+    title: PostgreSQL Version
+    required: true
+################################################################################
 name: rhscl-postgresql-apb
 image: ansibleplaybookbundle/rhscl-postgresql-apb
 description: SCL PostgreSQL apb implementation
-bindable: True
+bindable: true
 async: optional
-metadata: 
+metadata:
   documentationUrl: https://www.postgresql.org/docs/
   longDescription: An apb that deploys postgresql 9.4 or 9.5.
   dependencies: ['registry.access.redhat.com/rhscl/postgresql-95-rhel7']
   displayName: PostgreSQL (APB)
   console.openshift.io/iconClass: icon-postgresql
-  
-parameters: 
-  - postgresql_database:
-      default: admin
-      type: string
-      title: PostgreSQL Database Name
-      
-  - postgresql_password:
-      type: string
-      description: A random alphanumeric string if left blank
-      title: PostgreSQL Password
-      
-  - postgresql_user:
-      default: admin
-      title: PostgreSQL User
-      type: string
-      maxlength: 63
-      
-  - postgresql_version:
-      default: 9.5
-      enum: ['9.5', '9.4']
-      type: enum
-      title: PostgreSQL Version
-      
-  
-required: 
-  - postgresql_database
-  - postgresql_user
-  - postgresql_version
-  
+plans:
+  - name: dev
+    description: A single DB server with no storage
+    free: true
+    metadata:
+      displayName: Development
+      longDescription: This plan provides a single non-HA PostgreSQL server without persistent storage
+      cost: $0.00
+    parameters: *_p
+  - name: prod
+    description: HA DB Server with 1TB of Storage
+    free: false
+    metadata:
+      dispayName: Production
+      longDescription: This plan provides a single non-HA PostgreSQL server with persistent storage
+      cost: $5.99 monthly
+    parameters: *_p

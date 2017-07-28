@@ -1,4 +1,41 @@
-id: e731d13e-22b2-44e2-9d49-f6796a9ed21d
+##################################################################
+# Shared Parameters
+##################################################################
+_p: &_p
+  - name: persistent
+    default: False
+    type: boolean
+    title: Persistent
+  - name: enable_oauth
+    default: True
+    type: boolean
+    title: Enable OpenShift OAuth
+  - name: memory_limit
+    default: 512Mi
+    type: string
+    title: Memory Limit
+  - name: source_git_uri
+    type: string
+    title: Source Git Uri
+  - name: source_git_ref
+    type: string
+    title: Source Git Branch
+  - name: source_context_dir
+    type: string
+    title: Source Context Directory
+  - name: jenkins_image_stream_tag
+    default: jenkins:latest
+    type: string
+    title: Jenkins ImageStreamTag
+  - name: jenkins_service_name
+    default: jenkins
+    type: string
+    title: Jenkins Service Name
+  - name: jnlp_service_name
+    default: jenkins-jnlp
+    type: string
+    title: JNLP Service Name
+##################################################################
 name: jenkins-apb
 image: ansibleplaybookbundle/jenkins-apb
 description: Jenkins service with optional persistent storage and S2I build
@@ -10,50 +47,12 @@ metadata:
   displayName: Jenkins (APB)
   console.openshift.io/iconClass: icon-jenkins
   longDescription: This APB deploys a Jenkins server capable of managing OpenShift Pipeline builds and supporting OpenShift-based oauth login.
-  
-parameters: 
-  - persistent:
-      default: False
-      type: boolean
-      title: Persistent
-      
-  - enable_oauth:
-      default: True
-      type: boolean
-      title: Enable OpenShift OAuth
-      
-  - memory_limit:
-      default: 512Mi
-      type: string
-      title: Memory Limit
-      
-  - source_git_uri:
-      type: string
-      title: Source Git Uri
-      
-  - source_git_ref:
-      type: string
-      title: Source Git Branch
-      
-  - source_context_dir:
-      type: string
-      title: Source Context Directory
-      
-  - jenkins_image_stream_tag:
-      default: jenkins:latest
-      type: string
-      title: Jenkins ImageStreamTag
-      
-  - jenkins_service_name:
-      default: jenkins
-      type: string
-      title: Jenkins Service Name
-      
-  - jnlp_service_name:
-      default: jenkins-jnlp
-      type: string
-      title: JNLP Service Name
-      
-  
-required: []
-  
+plans:
+  - name: default
+    description: This plan deploys a single Jenkins server
+    free: True
+    metadata:
+      displayName: Default
+      longDescription: This plan deploys a Jenkins server capable of managing OpenShift pipeline builds
+      cost: $0.00
+    parameters: *_p
