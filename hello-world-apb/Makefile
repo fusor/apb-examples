@@ -32,7 +32,7 @@ openshift-test:
 	docker push ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
 	oc create sa apb
 	oc adm policy add-role-to-user admin -z apb
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true --overrides='{"apiVersion":"v1","spec":{"serviceAccountName":"apb"}}' -- provision -e namespace=${PROJ_RANDOM}
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true --as=apb -- provision -e namespace=${PROJ_RANDOM}
 	oc rollout status -w dc/${APB_APP}
 	oc status
 	sleep 5
