@@ -18,7 +18,7 @@ RUN mkdir -p /usr/share/ansible/openshift \
              ${BASE_DIR}/{etc,.kube,.ansible/tmp} \
              && useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} \
              && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
-             && chmod -R g=u /opt/{ansible,apb} ${BASE_DIR} /etc/passwd
+             && chmod -R g=u /opt/{ansible,apb} /etc/passwd
 
 COPY files/etc/ansible/* /etc/ansible/
 COPY files/usr/bin/* /usr/bin/

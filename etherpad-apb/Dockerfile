@@ -31,7 +31,6 @@ ICAgIHRpdGxlOiBSb290IFBhc3N3b3JkCg=="
 
 ADD playbooks /opt/apb/actions
 ADD roles /opt/ansible/roles
-RUN chown -R apb /opt/{ansible,apb} \
-    && chmod -R g=u /opt/{ansible,apb}
+RUN chmod -R g=u /opt/{ansible,apb}
 
 USER apb

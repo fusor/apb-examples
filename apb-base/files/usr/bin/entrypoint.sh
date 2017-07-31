@@ -26,8 +26,6 @@ shift
 playbooks=/opt/apb/actions
 CREDS="/var/tmp/bind-creds"
 
-set -x
-
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
     echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
