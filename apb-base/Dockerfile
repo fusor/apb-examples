@@ -23,5 +23,4 @@ RUN mkdir -p /usr/share/ansible/openshift \
 COPY files/etc/ansible/* /etc/ansible/
 COPY files/usr/bin/* /usr/bin/
 
-RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
 ENTRYPOINT ["entrypoint.sh"]

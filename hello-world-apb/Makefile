@@ -25,7 +25,7 @@ lint:
 
 openshift-test:
 	$(eval PROJ_RANDOM=test-$(shell shuf -i 100000-999999 -n 1))
-	oc login -u ${OC_USER} -p ${OC_PASS}
+	oc login --token=${OC_PASS}
 	oc new-project ${PROJ_RANDOM}
 	docker login -u ${OC_USER} -p ${OC_PASS} ${REGISTRY}:5000
 	docker tag ${CONTEXT}/${IMAGE_NAME}:${TARGET}-${VERSION} ${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME}
