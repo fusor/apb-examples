@@ -26,11 +26,9 @@ shift
 playbooks=/opt/apb/actions
 CREDS="/var/tmp/bind-creds"
 
-set -x
-
-if [ -w /etc/passwd ]; then
-  if ! whoami &> /dev/null; then
-    sed "s@${USER_NAME}:x:\${USER_ID}:@${USER_NAME}:x:$(id -u):@g" /etc/passwd.template > /etc/passwd
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
 oc-login.sh

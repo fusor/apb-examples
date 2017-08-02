@@ -27,8 +27,7 @@ MwogICAgICAgIHJlcXVpcmVkOiBUcnVlCg=="
 
 COPY roles /opt/ansible/roles
 COPY playbooks /opt/apb/actions
-RUN chown -R apb /opt/{ansible,apb} \
-    && chmod -R g=u /opt/{ansible,apb}
+RUN chmod -R g=u /opt/{ansible,apb}
 
 RUN yum install -y postgresql && yum clean all
 
