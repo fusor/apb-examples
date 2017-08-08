@@ -45,10 +45,10 @@ plans:
       cost: $0.00
     parameters: *_p
   - name: prod
-    description: HA DB Server with 1TB of Storage
-    free: false
+    description: A single DB server with peristent storage
+    free: true
     metadata:
-      dispayName: Production
+      displayName: Production
       longDescription: This plan provides a single non-HA PostgreSQL server with persistent storage
-      cost: $5.99 monthly
+      cost: $0.00
     parameters: *_p
