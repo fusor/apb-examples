@@ -45,7 +45,7 @@ plans:
       cost: $0.00
     parameters: *_p
   - name: prod
-    description: A single DB server with peristent storage
+    description: A single DB server with persistent storage
     free: true
     metadata:
       displayName: Production
