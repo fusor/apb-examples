@@ -33,18 +33,21 @@ if ! whoami &> /dev/null; then
 fi
 oc-login.sh
 
-if [[ -e "$playbooks/$ACTION.yaml" || -e "$playbooks/$ACTION.yml" ]]; then
-  ansible-playbook $playbooks/$ACTION.yml "$@" || ansible-playbook $playbooks/$ACTION.yaml "$@"
-
-  # If we are provisioning an APB, but it's not bindable then the bind-creds
-  # will never be created. Therefore, if bind-creds exists, we are running
-  # either provision or bind and the APB is bindable.
-  #
-  # bind-init keeps the container running until the broker gathers the bind
-  # credentials by exec'ing into the container.
-  if [ -f $CREDS ]; then
-     bind-init
-  fi
+if [[ -e "$playbooks/$ACTION.yaml" ]]; then
+  ansible-playbook $playbooks/$ACTION.yaml "$@"
+elif [[ -e "$playbooks/$ACTION.yml" ]]; then
+  ansible-playbook $playbooks/$ACTION.yml "$@"
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
+  exit 0
+fi
+
+# If we are provisioning an APB, but it's not bindable then the bind-creds
+# will never be created. Therefore, if bind-creds exists, we are running
+# either provision or bind and the APB is bindable.
+#
+# bind-init keeps the container running until the broker gathers the bind
+# credentials by exec'ing into the container.
+if [ -f $CREDS ]; then
+   bind-init
 fi
