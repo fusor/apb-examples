@@ -17,6 +17,16 @@
     to_name: rocketchat
   register: route
 
+- name: create persistent volume claim for mongo
+  k8s_v1_persistent_volume_claim:
+    name: mongo-storage
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+
 - name: create deployment config
   openshift_v1_deployment_config:
     name: rocketchat
@@ -53,11 +63,18 @@
       - name: MONGODB_ADMIN_PASSWORD
         value: "{{ mongodb_admin_pass }}"
       image: mongo:{{ mongodb_version }}
+      volume_mounts:
+      - mount_path: /data/db
+        name: mongo-storage
       name: db
       ports:
       - container_port: 27017
         protocol: TCP
         name: mongo-27017
+    volumes:
+    - name: mongo-storage
+      persistent_volume_claim:
+        claim_name: mongo-storage
 
 - name: create rocketchat service
   k8s_v1_service:
