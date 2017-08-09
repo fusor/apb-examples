@@ -1,11 +1,11 @@
 name: hello-world-apb
 image: ansibleplaybookbundle/hello-world-apb
-description: hello-world-apb description
+description: deploys hello-world web application
 bindable: False
 async: optional
 metadata:
   displayName: Hello World (APB)
-  longDescription: A sample APB to deploy Hello World
+  longDescription: A sample APB which deploys a containerized Hello World web application
   dependencies: ['docker.io/ansibleplaybookbundle/hello-world:latest']
 plans:
   - name: default

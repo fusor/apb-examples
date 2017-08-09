@@ -1,0 +1,28 @@
+name: hello-world-db-apb
+image: ansibleplaybookbundle/hello-world-db-apb
+description: A sample APB which deploys Hello World Database
+bindable: True
+async: optional
+metadata:
+  displayName: Hello World Database (APB)
+plans:
+  - name: default
+    description: A sample APB which deploys Hello World Database
+    free: True
+    metadata:
+      displayName: Default
+      longDescription: This plan deploys a Postgres Database the Hello World application can connect to
+      cost: $0.00
+    parameters:
+      - name: postgresql_database
+        title: PostgreSQL Database Name
+        type: string
+        default: admin
+      - name: postgresql_user
+        title: PostgreSQL User
+        type: string
+        default: admin
+      - name: postgresql_password
+        title: PostgreSQL Password
+        type: string
+        default: admin

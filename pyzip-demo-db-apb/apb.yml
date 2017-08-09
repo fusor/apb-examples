@@ -1,4 +1,3 @@
-id: 3ea4b594-08fe-421d-bd0c-9f0ba3784883
 name: pyzip-demo-db-apb
 image: ansibleplaybookbundle/pyzip-demo-db-apb
 description: Python Zip Demo Database APB Implementation
