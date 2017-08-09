@@ -1,10 +1,9 @@
-id: a8e652c1-11e0-4202-b6df-09517f75ef9a
 name: rhscl-mariadb-apb
 image: ansibleplaybookbundle/rhscl-mariadb-apb
 description: Mariadb apb implementation
 bindable: True
 async: optional
-metadata: 
+metadata:
   documentationUrl: https://mariadb.com/kb/en/mariadb/documentation/
   longDescription: Deploys a bindable mariadb instance
   dependencies: ['rhscl/mariadb-10-rhel7']
@@ -43,8 +42,8 @@ plans:
         type: enum
         title: MariaDB Version
         required: True
-required: 
+required:
   - mariadb_version
   - mysql_database
   - mysql_user
-  
+

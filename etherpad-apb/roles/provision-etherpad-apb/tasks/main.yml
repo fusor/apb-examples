@@ -1,8 +1,3 @@
-- name: create namespace
-  openshift_v1_project:
-    name: '{{ namespace }}'
-  when: state == 'present'
-
 - name: mariadb storage volume claim
   k8s_v1_persistent_volume_claim:
     name: mariadb-storage
@@ -25,7 +20,7 @@
       storage: 1Gi
     state: "{{ state }}"
 
-- name: mariadb service 
+- name: mariadb service
   k8s_v1_service:
     name: mariadb
     namespace: '{{ namespace }}'
@@ -42,7 +37,7 @@
         protocol: TCP
         target_port: 3306
 
-- name: etherpad service 
+- name: etherpad service
   k8s_v1_service:
     name: etherpad
     namespace: '{{ namespace }}'

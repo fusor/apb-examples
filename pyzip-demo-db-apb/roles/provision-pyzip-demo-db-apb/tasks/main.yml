@@ -1,7 +1,3 @@
-- name: create namespace
-  openshift_v1_project:
-    name: '{{ namespace }}'
-
 - name: create volumes
   k8s_v1_persistent_volume_claim:
     name: demodb

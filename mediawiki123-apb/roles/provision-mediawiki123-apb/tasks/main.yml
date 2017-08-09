@@ -1,8 +1,4 @@
 ---
-- name: create namespace if it does not exist
-  openshift_v1_project:
-    name: '{{ namespace }}'
-
 - name: create mediawiki123 route
   openshift_v1_route:
     name: mediawiki123
