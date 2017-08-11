@@ -35,7 +35,7 @@ openshift-test:
 
 ####### Test 1: Provision the "dev" plan (no storage)
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e plan=dev
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e _apb_plan_id=dev
 	oc delete pod/${IMAGE_NAME}
 	oc project ${APB_APP}
 	oc rollout status -w dc/${APB_APP}
@@ -47,13 +47,13 @@ openshift-test:
 
 ####### Test 2: Derovision the "dev" plan
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- deprovision -e namespace=${APB_APP} -e plan=dev
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- deprovision -e namespace=${APB_APP} -e _apb_plan_id=dev
 	oc delete pod/${IMAGE_NAME}
 # Give some time for the pod to get cleaned up
 	sleep 3
 
 ####### Test 3: Provision the "prod" plan (persistent storage via PVC)
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e plan=prod
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never --attach=true -- provision -e namespace=${APB_APP} -e _apb_plan_id=prod
 	oc delete pod/${IMAGE_NAME}
 	oc project ${APB_APP}
 	oc rollout status -w dc/${APB_APP}
@@ -64,7 +64,7 @@ openshift-test:
 
 ####### Test 2: Derovision the "prod" plan
 	oc project ${PROJ_RANDOM}
-	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- --attach=true deprovision -e namespace=${APB_APP} -e plan=prod
+	oc run ${IMAGE_NAME} --image=${REGISTRY}:5000/${PROJ_RANDOM}/${IMAGE_NAME} --restart=Never -- --attach=true deprovision -e namespace=${APB_APP} -e _apb_plan_id=prod
 	oc delete pod/${IMAGE_NAME}
 
 #run:
