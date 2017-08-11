@@ -33,23 +33,35 @@ There are 2 plans available:
 
 ## Running the application
 
-    docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" \
-               -e "OPENSHIFT_TOKEN=<token>" \
-               ansibleplaybookbundle/mysql-apb provision
+You need to provide the OpenShift API URL and authentication token, as well as the target namespace:
+
+    openshift_url=https://my.openshift.example.com:8443
+    token=$(oc whoami -t)
+    namespace="myproject"
+
+With that you can:
+
+    docker run -e "OPENSHIFT_TARGET=$openshift_url" \
+               -e "OPENSHIFT_TOKEN=$token" \
+               -e "namespace=$namespace" \
+               ansibleplaybookbundle/rhscl-mysql-apb provision
 
 You can pass additional parameters to `ansible-playbook` by adding them at the end; for example, you can request more verbose output with one or more `-v` and pass additional variables with `--extra-vars`.
 
 For example, this will request a *prod* plan and specify a custom database name and volume size:
 
-    docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" \
-               -e "OPENSHIFT_TOKEN=<token>" \
-               ansibleplaybookbundle/mysql-apb provision \
+    docker run -e "OPENSHIFT_TARGET=$openshift_url" \
+               -e "OPENSHIFT_TOKEN=$token" \
+               -e "namespace=$namespace" \
+               ansibleplaybookbundle/rhscl-mysql-apb provision \
                --extra-vars mysql_database=prod \
-               --extra-vars plan=prod \
+               --extra-vars _apb_plan_id=prod \
                --extra-vars volume_size=2Gi
 
 ## Tearing down the application
 
-    docker run -e "OPENSHIFT_TARGET=<openshift_api_url>" \
-               -e "OPENSHIFT_TOKEN=<token>" \
-               ansibleplaybookbundle/mysql-apb deprovision
+    docker run -e "OPENSHIFT_TARGET=$openshift_url" \
+               -e "OPENSHIFT_TOKEN=$token" \
+               -e "namespace=$namespace" \
+               --extra-vars _apb_plan_id=prod \
+               ansibleplaybookbundle/rhscl-mysql-apb deprovision
