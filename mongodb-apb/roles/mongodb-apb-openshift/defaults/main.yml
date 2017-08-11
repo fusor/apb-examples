@@ -1,0 +1,11 @@
+---
+mongodb_admin_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
+mongodb_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
+mongodb_user: "admin"
+volume_capacity: "1Gi"
+mongodb_version: "3.2"
+state: present
+image: "centos/mongodb-{{ mongodb_version | replace('.', '') }}-centos7"
+_apb_plan_id: default
+database_service_name: mongodb
+mongodb_database: sampledb

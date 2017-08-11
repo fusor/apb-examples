@@ -1,0 +1,56 @@
+name: mongodb-apb
+image: ansibleplaybookbundle/mongodb-apb
+description: This template provides a standalone MongoDB server with a database created.  The database is stored on persistent storage.  The database name, username, and password are chosen via parameters when provisioning this service.
+bindable: True
+async: true
+metadata:
+  documentationUrl: https://access.redhat.com
+  displayName: MongoDB (Persistent)
+  console.openshift.io/iconClass: icon-mongodb
+  longDescription: This template provides a standalone MongoDB server with a database created.  The database is stored on persistent storage.  The database name, username, and password are chosen via parameters when provisioning this service.
+plans:
+  - name: default
+    description: This default plan deploys mongodb
+    free: true
+    metadata:
+      displayName: Default
+      longDescription: This plan deploys Mongodb
+      cost: $0.00
+    parameters:
+      - name: memory_limit
+        default: 512Mi
+        title: Maximum amount of memory the container can use.
+        type: string
+      - name: namespace
+        default:
+        title: The OpenShift Namespace where the ImageStream resides.
+        type: string
+      - name: database_service_name
+        default: mongodb
+        title: The name of the OpenShift Service exposed for the database.
+        type: string
+      - name: mongodb_user
+        default: 
+        title: Username for MongoDB user that will be used for accessing the database.
+        type: string
+      - name: mongodb_password
+        default: 
+        title: Password for the MongoDB connection user.
+        type: string
+      - name: mongodb_database
+        default: sampledb
+        title: Name of the MongoDB database accessed.
+        type: string
+      - name: mongodb_admin_password
+        default: 
+        title: Password for the database admin user.
+        type: string
+      - name: volume_capacity
+        default: 1Gi
+        title: Volume space available for data, e.g. 512Mi, 2Gi.
+        type: string
+      - name: mongodb_version
+        default: 3.2
+        title: Version of MongoDB image to be used (2.4, 2.6, 3.2 or latest).
+        type: string
+  
