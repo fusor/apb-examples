@@ -1,4 +1,4 @@
-- name: remove owner privillages on database
+- name: remove owner privileges on database
   postgresql_privs:
     db: "{{ _apb_provision_creds.POSTGRESQL_DATABASE }}"
     port: "{{ _apb_provision_creds.POSTGRESQL_PORT }}"
