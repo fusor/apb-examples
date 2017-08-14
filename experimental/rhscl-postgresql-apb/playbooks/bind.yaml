@@ -3,6 +3,7 @@
   gather_facts: false
   connection: local
   roles:
+  - role: ansibleplaybookbundle.asb-modules
   - role: bind-rhscl-postgresql-apb-openshift
     playbook_debug: true
     when: _apb_provision_creds.USER_CREATION_TYPE == "multiple"

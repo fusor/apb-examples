@@ -33,9 +33,10 @@
     privs: ALL
 
 - name: encode bind credentials
-  shell: 'echo "{\"POSTGRESQL_HOST\": \"{{ _apb_provision_creds.POSTGRESQL_HOST }}\", \"POSTGRESQL_PORT\": \"{{ _apb_provision_creds.POSTGRESQL_PORT }}\", \"POSTGRESQL_USER\": \"{{ generated_user }}\", \"POSTGRESQL_PASSWORD\": \"{{ generated_password }}\", \"POSTGRESQL_DATABASE\": \"{{ _apb_provision_creds.POSTGRESQL_DATABASE }}\"}" | base64 -w 0'
-  register: encoded_bind_credentials
-
-- copy:
-    content: "{{ encoded_bind_credentials.stdout }}"
-    dest: /var/tmp/bind-creds
+  asb_encode_binding: 
+    fields: 
+      POSTGRESQL_HOST: "{{ _apb_provision_creds.POSTGRESQL_HOST }}"
+      POSTGRESQL_PORT: "{{ _apb_provision_creds.POSTGRESQL_PORT }}" 
+      POSTGRESQL_USER: "{{ generated_user }}"
+      POSTGRESQL_PASSWORD: "{{ generated_password }}"
+      POSTGRESQL_DATABASE: "{{ _apb_provision_creds.POSTGRESQL_DATABASE }}"
