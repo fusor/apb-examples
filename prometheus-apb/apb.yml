@@ -1,0 +1,25 @@
+name: prometheus-apb
+image: toddbsanders/prometheus-apb
+description: This APB deploys Prometheus 
+bindable: False
+async: optional
+metadata:
+  documentationUrl: https://prometheus.io/
+  imageUrl: https://github.com/prometheus/prometheus.github.io/blob/master/assets/prometheus_logo-cb55bb5c346.png?raw=true
+  dependencies: ['prom/prometheus:v1.7.1']
+  displayName: Prometheus (APB)
+plans:
+  - name: default
+    description: This plan deploys a single Prometheus server 
+    free: True
+    metadata: 
+        displayName: Default
+        longDescription: This plan provides a single Prometheus server 
+        cost: $0.00
+    parameters:
+      - name: prometheus_version
+        default: latest
+        enum: ['latest', 'v1.7.1']
+        type: enum
+        title: Prometheus Version
+        required: True

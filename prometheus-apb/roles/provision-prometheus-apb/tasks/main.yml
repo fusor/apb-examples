@@ -1,0 +1,75 @@
+##############################################################################
+## Provision prometheus
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+- name: create prometheus route
+  openshift_v1_route:
+    name: prometheus 
+    namespace: '{{ namespace }}'
+    spec_port_target_port: prometheus-9090
+    labels:
+      app: prometheus 
+      service: prometheus 
+    to_name: prometheus 
+  register: route
+
+- name: create persistent volume claim 
+  k8s_v1_persistent_volume_claim:
+    name: prometheus-storage
+    namespace: '{{ namespace }}'
+    state: present
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: 1Gi
+
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: prometheus 
+    namespace: '{{ namespace }}'
+    labels:
+      app: prometheus 
+      service: prometheus 
+    replicas: 1
+    selector:
+      app: prometheus 
+      service: prometheus 
+    spec_template_metadata_labels:
+      app: prometheus 
+      service: prometheus 
+    containers:
+    - env:
+      - name: ROOT_URL
+        value: "http://{{ route.route.spec.host }}"
+      image: prom/prometheus:{{ prometheus_version }}
+      name: prometheus 
+      volume_mounts:
+      - mount_path: /prometheus
+        name: prometheus-storage
+      ports:
+      - container_port: 9090 
+        name: prometheus-9090
+        protocol: TCP
+    volumes:
+    - name: prometheus-storage
+      persistent_volume_claim:
+        claim_name: prometheus-storage
+
+- name: create prometheus service
+  k8s_v1_service:
+    name: prometheus 
+    namespace: '{{ namespace }}'
+    labels:
+      app: prometheus 
+      service: prometheus 
+    selector:
+      app: prometheus 
+      service: prometheus 
+    ports:
+      - name: prometheus-9090
+        port: 9090 
+        target_port: 9090 
