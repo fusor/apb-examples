@@ -11,7 +11,7 @@ Summary:	Scripts for the apb-base container image
 
 License:	ASL 2.0
 URL:		https://github.com/fusor/apb-examples
-Source0:	https://github.com/fusor/apb-examples/archive/apb-examples-%{version}.tar.gz
+Source0:	https://github.com/fusor/apb-examples/archive/%{name}-%{version}.tar.gz
 BuildArch:  noarch
 
 %description
@@ -22,10 +22,10 @@ BuildArch:  noarch
 
 %install
 mkdir -p %{buildroot}%{_bindir}
-install -m 755 apb-base/files/usr/bin/bind-init %{buildroot}%{_bindir}
-install -m 755 apb-base/files/usr/bin/broker-bind-creds %{buildroot}%{_bindir}
-install -m 755 apb-base/files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
-install -m 755 apb-base/files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/bind-init %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/broker-bind-creds %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 
 %files
 %doc

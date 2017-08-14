@@ -11,7 +11,7 @@ Summary:	Ansible Playbook for Mediawiki APB
 
 License:	ASL 2.0
 URL:		https://github.com/fusor/apb-examples
-Source0:	https://github.com/fusor/apb-examples/archive/apb-examples-%{version}.tar.gz
+Source0:	https://github.com/fusor/apb-examples/archive/%{name}-%{version}.tar.gz
 BuildArch:  noarch
 
 %description
@@ -22,8 +22,8 @@ BuildArch:  noarch
 
 %install
 mkdir -p %{buildroot}/opt/apb/ %{buildroot}/opt/ansible/
-mv mediawiki123-apb/playbooks %{buildroot}/opt/apb/actions
-mv mediawiki123-apb/roles %{buildroot}/opt/ansible/roles
+mv playbooks %{buildroot}/opt/apb/actions
+mv roles %{buildroot}/opt/ansible/roles
 
 %files
 %doc
