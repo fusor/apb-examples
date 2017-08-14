@@ -1,4 +1,3 @@
----
 mongodb_admin_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
 mongodb_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
 mongodb_user: "admin"
