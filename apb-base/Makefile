@@ -8,9 +8,9 @@ OC_PASS = developer
 
 # Allow user to pass in OS build options
 ifeq ($(TARGET),rhel7)
-	DFILE := Dockerfile.${TARGET}
+	DFILE := Dockerfile-latest.${TARGET}
 else
-	DFILE := Dockerfile
+	DFILE := Dockerfile-latest
 endif
 
 all: build

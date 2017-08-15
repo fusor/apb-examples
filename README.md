@@ -27,6 +27,22 @@ Review all of the documents linked [above](#apb-documentation).  It details how 
 ## APB Name Example
 The name `my-apb` will be used as an example for the rest of this document.
 
+## Dockerfiles and Tags
+There are three tags can expect to see on most APB repos under the ansibleplaybookbundle project.
+- **Canary**: Automated images build from source. These are generally intended to help work on development of the ansible-service-broker and can be expected to break frequently.
+- **Latest**: Stable images released less frequently and expected to work with the latest ansible-service-broker. A few of these are built using only RPMS while others are built from source.
+- **Nightly**: Automated image builds using automated RPM builds. This tag is intended to ensure RPM builds for those APB's roles being packaged work on an ongoing basis. As of right now this is limited to:
+  - apb-base
+  - mediawiki-apb
+  - rhscl-postgresql-apb
+- As time goes on and releases are made we may also create tags for specified versions, for example, 1.0, 1.1, etc.
+
+In some directories you will see just one Dockerfile. In general this will indicate images are being built for the latest and canary tags. In a few directories you will see multiple Dockerfiles. In these cases they will have a suffix like -canary, -latest, -nightly, etc. to differentiate which tag it is being used to build. Where there are multiple Dockerfiles, canary is likely to be preferable for rapid development.
+
+In these cases, be aware that to rebuild canary images using the canary apb-base image you'll need to update the from line to read `ansibleplaybookbundle/apb-base:canary` rather than `ansibleplaybookbundle/apb-base:latest`
+
+By default the Ansible Service Broker will deploy APB's using the latest tag, but it is possible to specify an alternate tag per registry. When using catasb this can be done by specifying apbtag in your my_vars.yaml config file.
+
 ## Directory Structure
 
 ### Required Minimal Structure
@@ -66,6 +82,10 @@ my-apb/
         └── templates             (optional)
             └── <template files>
 ```
+
+In most cases you will see just one Dockerfile. In general this will be used for the canary and latest tags. 
+
+In a few cases, where the apb role has been packaged as an rpm you will likely see multiple Dockerfiles with a suffix to differentiate which tags they are used to generate images for.
 
 ### Example Files
 #### `Dockerfile`
