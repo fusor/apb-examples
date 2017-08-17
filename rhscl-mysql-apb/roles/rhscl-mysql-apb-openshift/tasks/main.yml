@@ -1,0 +1,33 @@
+---
+- include: dev.yml
+  when: _apb_plan_id == "dev"
+
+- include: prod.yml
+  when: _apb_plan_id == "prod"
+
+- name: Set {{ service_name }} service state to {{ state }}
+  k8s_v1_service:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      app: rhscl-mysql-apb
+      service: "{{ service_name }}"
+    selector:
+      app: rhscl-mysql-apb
+      service: "{{ service_name }}"
+    ports:
+    - name: mysql
+      port: 3306
+      target_port: 3306
+    state: "{{ state }}"
+  register: mysql_service
+
+- name: encode bind credentials
+  asb_encode_binding:
+    fields:
+      MYSQL_HOST: "{{ mysql_service.service.spec.cluster_ip }}"
+      MYSQL_PORT: "3306"
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD: "{{ mysql_password }}"
+      MYSQL_DATABASE: "{{ mysql_database }}"
+  when: state == 'present'

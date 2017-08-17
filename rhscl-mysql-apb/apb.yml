@@ -1,0 +1,60 @@
+---
+## Shared parameters
+_params: &_params
+  - name: service_name
+    description: The name of the service. Used to name and label resources
+    type: string
+    default: mysql
+    required: true
+  - name: mysql_version
+    description: Version of MySQL to deploy
+    type: enum
+    enum: ["5.6", "5.7"]
+    default: "5.7"
+    required: true
+  - name: mysql_database
+    description: The name of the MySQL database
+    type: string
+    default: devel
+    required: true
+  - name: mysql_user
+    description: Username that will be used to connect to MySQL
+    type: string
+    default: devel
+    required: true
+  - name: mysql_password
+    description: Password to connect to MySQL (generated if blank)
+    type: string
+    required: false
+
+name: rhscl-mysql-apb
+image: ansibleplaybookbundle/rhscl-mysql-apb
+description: "Software Collections MySQL APB"
+bindable: true
+async: optional
+tags:
+  - databases
+  - mysql
+metadata:
+  displayName: "MySQL (APB)"
+  longDescription: "An Ansible Playbook Bundle (APB) that deploys MySQL"
+  console.openshift.io/iconClass: icon-mysql-database
+  documentationUrl: "https://github.com/sclorg/mysql-container/"
+plans:
+  - name: dev
+    description: A MySQL server with ephemeral storage
+    free: true
+    default: true
+    metadata:
+      displayName: Development
+      longDescription: This plan provides a single non-HA MySQL server without persistent storage
+      cost: $0.00
+    parameters: *_params
+  - name: prod
+    description: A MySQL server with persistent storage
+    free: false
+    metadata:
+      displayName: Production
+      longDescription: This plan provides a single non-HA MySQL server with 10 GiB of persistent storage
+      cost: $5.99 monthly
+    parameters: *_params

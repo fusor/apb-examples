@@ -1,0 +1,12 @@
+---
+# TODO:
+#  - centos vs rhel
+#  - reference standard image streams?
+service_name: "{{ lookup('env','SERVICE_NAME') | default('mysql', true) }}"
+volume_size: "{{ lookup('env','VOLUME_SIZE') | default('10Gi', true) }}"
+mysql_user: "{{ lookup('env','MYSQL_USER') | default('devel', true) }}"
+mysql_database: "{{ lookup('env','MYSQL_DATABASE') | default('devel', true) }}"
+mysql_version: "{{ lookup('env','MYSQL_VERSION') | default('5.7', true) }}"
+mysql_password: "{{ lookup('password', '/tmp/pass chars=ascii_letters,digits') }}"
+image: "centos/mysql-{{ mysql_version | replace('.', '')}}-centos7"
+state: present
