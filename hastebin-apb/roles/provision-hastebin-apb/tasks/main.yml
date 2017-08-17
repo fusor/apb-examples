@@ -1,0 +1,99 @@
+##############################################################################
+## Provision hastebin
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+- name: Create hastebin config from template
+  template:
+    src: config.js.j2
+    dest: /tmp/config.js
+
+- name: Create hastebin configmap
+  shell: oc create configmap haste-config --from-file=haste-config=/tmp/config.js
+
+##############################################################################
+## An OpenShift Origin deployment configuration provides a replication
+## controller, spins up pods, and also provides the ability to transition from
+## one deployment of an image to a new one.
+## https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#deployments-and-deployment-configurations
+##############################################################################
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: hastebin
+    namespace: '{{ namespace }}'
+    labels:
+      app: hastebin
+      service: hastebin
+    replicas: 1
+    selector:
+      app: hastebin
+      service: hastebin
+    spec_template_metadata_labels:
+      app: hastebin
+      service: hastebin
+    containers:
+    - env:
+      image: docker.io/dymurray/hastebin:latest
+      name: hastebin
+      ports:
+      - container_port: 7777
+        protocol: TCP
+      volumeMounts:
+        - mountPath: /usr/src/haste-server/config
+          name: config
+    - env:
+      image: docker.io/modularitycontainers/memcached:latest
+      name: memcached
+      ports:
+      - container_port: 11211
+        protocol: TCP
+    volumes:
+      - name: config
+        configMap:
+          name: haste-config
+          items:
+            - key: haste-config
+              path: config.js
+
+
+##############################################################################
+## A Kubernetes service serves as an internal load balancer.  It identifies a
+## set of replicated pods in order to proxy the connections it receives to them.
+## https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services
+##############################################################################
+- name: create hastebin service
+  k8s_v1_service:
+    name: hastebin
+    namespace: '{{ namespace }}'
+    labels:
+      app: hastebin
+      service: hastebin
+    selector:
+      app: hastebin
+      service: hastebin
+    ports:
+      - name: web
+        port: 80
+        target_port: 7777
+
+
+##############################################################################
+## An OpenShift Origin route exposes a service at a host name, so that external
+## clients can reach it by name. Each route consists of a name, a service
+## selector, and an optional security configuration.
+## https://docs.openshift.org/latest/architecture/core_concepts/routes.html
+##############################################################################
+- name: create hastebin route
+  openshift_v1_route:
+    name: hastebin
+    namespace: '{{ namespace }}'
+    labels:
+      app: hastebin
+      service: hastebin
+    to_name: hastebin
+    spec_port_target_port: web
+
+
