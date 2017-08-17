@@ -1,0 +1,121 @@
+##############################################################################
+## Provision nginx-php-fpm
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+
+##############################################################################
+## An OpenShift Origin deployment configuration provides a replication
+## controller, spins up pods, and also provides the ability to transition from
+## one deployment of an image to a new one.
+## https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#deployments-and-deployment-configurations
+##############################################################################
+- name: create deployment config
+  openshift_v1_deployment_config:
+    name: nginx-php-fpm
+    namespace: '{{ namespace }}'
+    labels:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    replicas: 1
+    selector:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    spec_template_metadata_labels:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    containers:
+    - env:
+      image: php:7.1-fpm-alpine
+      imagePullPolicy: IfNotPresent
+      name: php-fpm
+      ports:
+      - container_port: 9000
+        protocol: TCP
+      volumeMounts:
+      - mountPath: /var/www/html
+        name: site
+    - env:
+      image: toccoag/openshift-nginx
+      imagePullPolicy: IfNotPresent
+      name: nginx
+      ports:
+      - container_port: 80
+        protocol: TCP
+      volumeMounts:
+      - mountPath: /etc/nginx/conf.d
+        name: configuration
+      - mountPath: /var/www/html
+        name: site
+    restart_policy: Always
+    volumes:
+    - name: site
+      configMap:
+        name: site-files
+        items:
+        - key: index-php
+          path: index.php
+    - name: configuration
+      configMap:
+        name: nginx-conf
+        items:
+        - key: nginx-conf
+          path: default.conf
+
+##############################################################################
+## A Kubernetes service serves as an internal load balancer.  It identifies a
+## set of replicated pods in order to proxy the connections it receives to them.
+## https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services
+##############################################################################
+- name: create nginx-php-fpm service
+  k8s_v1_service:
+    name: nginx-php-fpm
+    namespace: '{{ namespace }}'
+    labels:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    selector:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    ports:
+      - name: nginx
+        port: 80
+        target_port: 8080
+      - name: php-fpm
+        port: 9000
+        target_port: 9000
+
+##############################################################################
+## An OpenShift Origin route exposes a service at a host name, so that external
+## clients can reach it by name. Each route consists of a name, a service
+## selector, and an optional security configuration.
+## https://docs.openshift.org/latest/architecture/core_concepts/routes.html
+##############################################################################
+- name: create nginx-php-fpm route
+  openshift_v1_route:
+    name: nginx-php-fpm
+    namespace: '{{ namespace }}'
+    labels:
+      app: '{{ namespace }}'
+      service: nginx-php-fpm
+    to_name: nginx-php-fpm
+    spec_port_target_port: nginx
+
+- name: Copy default.conf
+  copy:
+    src: default.conf
+    dest: /tmp/default.conf
+
+- name: Create NGINX configmap for nginx.conf
+  shell: oc create configmap nginx-conf --from-file=nginx-conf=/tmp/default.conf -n {{ namespace }}
+
+- name: Copy index.php
+  copy:
+    src: index.php
+    dest: /tmp/index.php
+
+- name: Create NGINX configmap for index.php
+  shell: oc create configmap site-files --from-file=index-php=/tmp/index.php -n {{ namespace }}
