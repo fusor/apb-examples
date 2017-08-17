@@ -7,13 +7,13 @@ An apb for deploying nginx and php-fpm containers.
 * Deploys 1 nginx container and 1 php-fpm container and links them.
 
 ## Requirements
-* N/A
+* Existing project
 
 ## Parameters
-* N/A
+* namespace: name of an existing namespace / project
 
 ## Running the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/nginx-php-fpm-apb provision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_TOKEN"=<openshift_token>" ansibleplaybookbundle/nginx-php-fpm-apb provision --extra-vars "namespace=<your project name/namespace>"`
 
 ## Tearing down the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/nginx-php-fpm-apb deprovision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_TOKEN"=<openshift_token>" ansibleplaybookbundle/nginx-php-fpm-apb deprovision --extra-vars "namespace=<your project name/namespace>"`
