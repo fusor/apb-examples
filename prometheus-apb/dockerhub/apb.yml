@@ -1,6 +1,8 @@
 name: prometheus-apb
 image: toddbsanders/prometheus-apb
 description: This APB deploys Prometheus 
+tags:
+  - Monitoring 
 bindable: False
 async: optional
 metadata:

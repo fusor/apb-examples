@@ -27,13 +27,17 @@
     resources_requests:
       storage: 1Gi
 
+#- name: create prometheus config map
+#  shell: "oc create -f {{ role_path }}/files/prom-configmap.yml"
+
 - name: create deployment config
   openshift_v1_deployment_config:
     name: prometheus 
     namespace: '{{ namespace }}'
     labels:
       app: prometheus 
-      service: prometheus 
+      service: prometheus
+    spec_strategy_type: Recreate 
     replicas: 1
     selector:
       app: prometheus 
@@ -50,6 +54,8 @@
       volume_mounts:
       - mount_path: /prometheus
         name: prometheus-storage
+#      - mount_path: /etc/prometheus
+#        name: prometheus-config
       ports:
       - container_port: 9090 
         name: prometheus-9090
@@ -58,6 +64,9 @@
     - name: prometheus-storage
       persistent_volume_claim:
         claim_name: prometheus-storage
+#    - name: prometheus-config
+#      configMap:
+#        name: prom-k8s
 
 - name: create prometheus service
   k8s_v1_service:
