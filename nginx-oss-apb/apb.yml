@@ -1,0 +1,38 @@
+id: c13a9b2b-8f92-4865-9fd7-33669511d49c
+name: nginx-oss-apb
+image: nginxinc/nginx-oss-apb
+description: An open source reverse proxy web server
+bindable: false
+async: optional
+metadata:
+  documentationUrl: https://www.nginx.com/resources/admin-guide/
+  imageUrl: https://cdn-1.wp.nginx.com/wp-content/uploads/2017/08/N-hex-black-512x512.png
+  displayName: NGINX
+  longDescription: Nginx (pronounced "engine-x") is an open source reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer, HTTP cache, and a web server (origin server). The nginx project started with a strong focus on high concurrency, high performance and low memory usage.
+plans:
+  - name: default
+    description: Default plan
+    free: true
+    metadata:
+      displayName: Default
+      longDescription: This plan deploys a simple NGINX web server
+      cost: $0.00
+    parameters:
+      - name: nginx_oss_image
+        default: openshift-nginx
+        type: string
+        title: Name of NGINX OSS Docker image
+        required: true
+      - name: lb
+        default: false
+        type: boolean
+        title: Enable Proxy Servers
+      - name: server
+        default:
+        type: string
+        title: Proxy Servers (Input as a Comma Separated List)
+      - name: lb_method
+        default: 'round_robin'
+        type: enum
+        enum: ['round_robin', 'least_conn', 'ip_hash', 'hash']
+        title: Load Balancing Algorithm

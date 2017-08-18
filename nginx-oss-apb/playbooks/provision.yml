@@ -1,0 +1,9 @@
+- name: NGINX OSS APB playbook to provision the application
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - role: ansible.kubernetes-modules
+      install_python_requirements: no
+    - role: provision-nginx-oss-apb
+      playbook_debug: false
