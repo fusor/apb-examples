@@ -34,9 +34,9 @@ fi
 oc-login.sh
 
 if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-  ansible-playbook $playbooks/$ACTION.yaml "$@"
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yaml "$@"
 elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-  ansible-playbook $playbooks/$ACTION.yml "$@"
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yml "$@"
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 0
