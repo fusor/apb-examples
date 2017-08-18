@@ -1,0 +1,21 @@
+- name: test media wiki abp 
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+
+  post_tasks:
+  - name: Load default variables for testing
+    include_vars: test_defaults.yaml
+  - name: create project for namespace
+    openshift_v1_project:
+      name: '{{ namespace }}'
+  - name: Run the provision role.
+    include_role:
+      name: provision-mediawiki123-apb
+  - name: Run the verify role.
+    include_role:
+      name: verify-mediawiki123-apb
