@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.0.0
+Version:	1.0.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -35,3 +35,6 @@ install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 %{_bindir}/oc-login.sh
 
 %changelog
+* Fri Aug 18 2017 Jason Montleon <jmontleo@redhat.com> 1.0.1-1
+- new package built with tito
+
