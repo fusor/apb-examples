@@ -20,7 +20,4 @@ RUN mkdir -p /usr/share/ansible/openshift \
              && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
              && chmod -R g=u /opt/{ansible,apb} /etc/passwd
 
-COPY files/etc/ansible/* /etc/ansible/
-COPY files/usr/bin/* /usr/bin/
-
 ENTRYPOINT ["entrypoint.sh"]
