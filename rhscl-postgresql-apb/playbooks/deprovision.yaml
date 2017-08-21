@@ -7,5 +7,6 @@
   roles:
   - role: ansible.kubernetes-modules
     install_python_requirements: no
+  - role: ansibleplaybookbundle.asb-modules
   - role: rhscl-postgresql-apb-openshift
     playbook_debug: false
