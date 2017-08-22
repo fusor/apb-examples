@@ -10,7 +10,7 @@
     privs: ALL
     state: absent
 
-- name: delte database user
+- name: delete database user
   postgresql_user:
     db: "{{ _apb_provision_creds.POSTGRESQL_DATABASE }}"
     name: "{{ _apb_bind_creds.POSTGRESQL_USER }}"

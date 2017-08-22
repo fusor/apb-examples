@@ -11,7 +11,8 @@ An APB for deploying [PostgreSQL](https://www.postgresql.org).
 
 ## Requirements
 * ```launch_apb_on_bind: true``` must be set for the broker if you want to create multiple users for each bind.
-* NOTE: because of the lack of async bind, this APB could cause failures during bind that the service catalog can not recover from.
+* NOTE: Because of the lack of async bind, this APB could cause failures during bind that the service catalog can not recover from.
+* NOTE: That to use this APB you must build it and deploy it to your own org. 
 
 ## Parameters
 * postgresql_database, default 'admin', Postgresql database name.
@@ -20,7 +21,7 @@ An APB for deploying [PostgreSQL](https://www.postgresql.org).
 * postgresql_version, Postgresql version. 9.4 and 9.5 are supported.
 
 ## Running the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/rhscl-postgresql-apb provision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_TOKEN=<token>" shurley/bind-postgresql-apb provision`
 
 ## Tearing down the application
-`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_USER=<user>" -e "OPENSHIFT_PASS=<password>" ansibleplaybookbundle/rhscl-postgresql-apb deprovision`
+`docker run -e "OPENSHIFT_TARGET=<openshift_target>" -e "OPENSHIFT_TOKEN=<token>" shurley/bind-postgresql-apb deprovision`

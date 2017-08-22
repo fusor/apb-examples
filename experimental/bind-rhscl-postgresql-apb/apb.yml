@@ -1,6 +1,6 @@
 id: 75e3c0a7-f7b1-47d7-b137-3283f6fc736d
 name: bind-postgresql-apb
-image: shurley/rhscl-postgresql-apb
+image: shurley/bind-postgresql-apb
 description: SCL PostgreSQL apb implementation
 bindable: True
 async: optional
