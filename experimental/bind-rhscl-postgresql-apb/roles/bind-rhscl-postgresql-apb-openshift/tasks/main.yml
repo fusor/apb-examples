@@ -29,7 +29,8 @@
     login_host: "{{ _apb_provision_creds.POSTGRESQL_HOST }}"
     login_user: "{{ _apb_provision_creds.POSTGRESQL_USER }}"
     login_password: "{{ _apb_provision_creds.POSTGRESQL_PASSWORD }}"
-    type: database
+    type: schema 
+    objs: todo_app
     privs: ALL
 
 - name: encode bind credentials

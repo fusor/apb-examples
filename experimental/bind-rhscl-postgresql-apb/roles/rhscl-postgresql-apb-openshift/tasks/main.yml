@@ -121,7 +121,6 @@
     login_host: postgresql
     login_user: postgres
     login_password: "{{ postgresql_password }}"
-  when: postgresql_single_user == "single"
 
 - name: create database user
   postgresql_user:
@@ -146,7 +145,17 @@
     type: database
     privs: ALL
   when: postgresql_single_user == "single"
-    
+
+- name: create database schema
+  postgresql_schema:
+    login_host: postgresql
+    login_user: postgres
+    login_password: "{{ postgresql_password }}"
+    database: "{{ postgresql_database }}"
+    name: todo_app
+    owner: postgres
+    state: present
+
 - name: encode bind credentials
   asb_encode_binding:
     fields: 

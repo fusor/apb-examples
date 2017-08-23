@@ -6,18 +6,7 @@
     login_host: "{{ _apb_provision_creds.POSTGRESQL_HOST }}"
     login_user: "{{ _apb_provision_creds.POSTGRESQL_USER }}"
     login_password: "{{ _apb_provision_creds.POSTGRESQL_PASSWORD }}"
-    type: database
+    type: schema
+    objs: todo_app
     privs: ALL
-    state: absent
-
-- name: delete database user
-  postgresql_user:
-    db: "{{ _apb_provision_creds.POSTGRESQL_DATABASE }}"
-    name: "{{ _apb_bind_creds.POSTGRESQL_USER }}"
-    password: "{{ _apb_bind_creds.POSTGRESQL_PASSWORD }}"
-    port: "{{ _apb_provision_creds.POSTGRESQL_PORT }}"
-    login_host: "{{ _apb_provision_creds.POSTGRESQL_HOST }}"
-    login_user: "{{ _apb_provision_creds.POSTGRESQL_USER }}"
-    login_password: "{{ _apb_provision_creds.POSTGRESQL_PASSWORD }}"
-    encrypted: yes
     state: absent
