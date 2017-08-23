@@ -29,6 +29,9 @@ before_script:
 
 script:
   - if [ ${BUILD} ]; then make -C ${VARIANT} TARGET=${TARGET}; fi
+  - if [ ${BUILD} ] && [ -f ${VARIANT}/apb.yml ]; then export B64_SPEC=`base64 ${VARIANT}/apb.yml | tr -d '\n'`; fi
+  - if [ ${BUILD} ] && [ ${B64_SPEC} ]; then export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq '."com.redhat.apb.spec"' | cut -d'"' -f2 | tr -d '\n'`; fi
+  - if [ ${BUILD} ] && [ ${APB_LABEL} ]; then [ "$B64_SPEC" = "$APB_LABEL" ] || { echo "APB Spec Label doesn't match"; exit 1; }; fi
 #  - if [ ${BUILD} ]; then make test -C ${VARIANT} TARGET=${TARGET}; fi
   - if [ ${BUILD} ]; then wget `curl -s https://api.github.com/repos/openshift/origin/releases/latest | jq -r ".assets[] | select(.name | test(\"linux-64bit\")) | .browser_download_url" | grep -i client-tools`; fi
   - if [ ${BUILD} ]; then tar xvfz `ls openshift-origin-client-tools-*.tar.gz` --strip-components=1 -C $HOME/bin; fi

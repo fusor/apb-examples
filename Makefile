@@ -1,5 +1,6 @@
 DIRS = \
 apb-base \
+hello-world-apb \
 jenkins-apb \
 rhscl-mysql-apb
 
