@@ -12,6 +12,7 @@ services:
 
 before_install:
   - export BUILD=`git diff --name-only HEAD~1 | awk -F '/' '{print $1}' | uniq | grep -w ^${VARIANT}$`
+  - export B64_SPEC=`cat apb.yml | base64 | tr -d '\n'`
 
 install:
   - if [ ${BUILD} ]; then sudo apt-get -qq update; fi
