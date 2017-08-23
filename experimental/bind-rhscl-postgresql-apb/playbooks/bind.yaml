@@ -1,0 +1,23 @@
+- name: bind rhscl-postgresql-apb to application
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: ansibleplaybookbundle.asb-modules
+  - role: bind-rhscl-postgresql-apb-openshift
+    playbook_debug: true
+    when: _apb_provision_creds.USER_CREATION_TYPE == "multiple"
+  
+  tasks:
+    - name: Return bind credentials when single user
+      shell: 'echo "{\"POSTGRESQL_HOST\": \"{{ _apb_provision_creds.POSTGRESQL_HOST}}\",\"POSTGRESQL_PORT\": \"{{ _apb_provision_creds.POSTGRESQL_PORT }}\",\"POSTGRESQL_USER\":\"{{ _apb_provision_creds.POSTGRESQL_USER }}\",\"POSTGRESQL_PASSWORD\":\"{{ _apb_provision_creds.POSTGRESQL_PASSWORD}}\",\"POSTGRESQL_DATABASE\":\"{{ _apb_provision_creds.POSTGRESQL_DATABASE}}\",\"USER_CREATION_TYPE\":\"{{ _apb_provision_creds.USER_CREATION_TYPE}}\"}" | base64 -w 0'
+      register: encoded_bind_credentials
+      when: _apb_provision_creds.USER_CREATION_TYPE == "single"
+    
+    - copy:
+        content: "{{ encoded_bind_credentials.stdout }}"
+        dest: /var/tmp/bind-creds
+      when: _apb_provision_creds.USER_CREATION_TYPE == "single"
+
+      
+    

@@ -1,0 +1,167 @@
+- name: create namespace
+  openshift_v1_project:
+    name: '{{ namespace }}'
+  when: state == 'present'
+
+- name: set volume state to {{ state }}
+  k8s_v1_persistent_volume_claim:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: '{{ postgresql_volume_size }}'
+    state: "{{ state }}"
+
+- name: set service state to {{ state }}
+  k8s_v1_service:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    ports:
+    - name: port-5432
+      port: 5432
+      protocol: TCP
+      target_port: 5432
+    state: "{{ state }}"
+  register: postgres_service
+
+- name: scale deployment down
+  openshift_v1_deployment_config:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    replicas: 0
+    state: present
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+  when: state == 'absent'
+
+- name: set deployment config state to {{ state }}
+  openshift_v1_deployment_config:
+    name: postgresql
+    namespace: '{{ namespace }}'
+    labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    replicas: 1
+    selector:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    strategy_type: Rolling
+    strategy_rolling_params:
+      interval_seconds: 1
+      max_surge: 25%
+      max_unavailable: 25%
+      timeout_seconds: 600
+      update_period_seconds: 1
+    spec_template_metadata_labels:
+      app: rhscl-postgresql-apb
+      service: postgresql
+    containers:
+    - env:
+      - name: POSTGRESQL_ADMIN_PASSWORD
+        value: '{{ postgresql_password }}'
+      image: registry.access.redhat.com/rhscl/{{ image }}
+      image_pull_policy: IfNotPresent
+      name: postgresql
+      ports:
+      - container_port: 5432
+        protocol: TCP
+      termination_message_path: /dev/termination-log
+      volume_mounts:
+      - mount_path: /var/lib/pgsql/data
+        name: postgresql
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    volumes:
+    - name: postgresql
+      persistent_volume_claim:
+        claim_name: postgresql
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"
+
+- name: delete replication controller
+  k8s_v1_replication_controller:
+    name: postgresql-1
+    namespace: '{{ namespace }}'
+    state: absent
+  when: state == 'absent'
+
+- name: Wait for postgres to come up
+  wait_for:
+    port: 5432
+    host: "{{ postgres_service.service.spec.cluster_ip }}"
+    timeout: 300
+  when: state == 'present'
+
+- set_fact: 
+    generated_user: "{{ lookup('password', '/tmp/gen_user chars=ascii_letters,digits length=8') }}"
+    generated_password: "{{ lookup('password', '/tmp/gen_pass chars=ascii_letters,digits') }}"
+  when: postgresql_single_user == "single"
+
+- set_fact: 
+    generated_user: postgres
+    generated_password: "{{ postgresql_password }}"
+  when: postgresql_single_user == "multiple"
+
+- name: ensure database is created
+  postgresql_db:
+    name: "{{ postgresql_database }}"
+    port: 5432
+    login_host: postgresql
+    login_user: postgres
+    login_password: "{{ postgresql_password }}"
+
+- name: create database user
+  postgresql_user:
+    db: "{{ postgresql_database }}"
+    name: "{{ generated_user }}"
+    password: "{{ generated_password }}"
+    port: 5432
+    login_host: postgresql
+    login_user: postgres
+    login_password: "{{ postgresql_password }}"
+    encrypted: yes
+  when: postgresql_single_user == "single"
+
+- name: grant owner privillages on database
+  postgresql_privs:
+    db: "{{ postgresql_database }}"
+    port: 5432
+    role: "{{ generated_user }}"
+    login_host: postgresql
+    login_user: postgres
+    login_password: "{{ postgresql_password }}"
+    type: database
+    privs: ALL
+  when: postgresql_single_user == "single"
+
+- name: create database schema
+  postgresql_schema:
+    login_host: postgresql
+    login_user: postgres
+    login_password: "{{ postgresql_password }}"
+    database: "{{ postgresql_database }}"
+    name: todo_app
+    owner: postgres
+    state: present
+
+- name: encode bind credentials
+  asb_encode_binding:
+    fields: 
+      POSTGRESQL_HOST: postgresql
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USER: "{{ generated_user }}"
+      POSTGRESQL_PASSWORD: "{{ generated_password }}"
+      POSTGRESQL_DATABASE: "{{ postgresql_database }}"
+      USER_CREATION_TYPE: "{{ postgresql_single_user }}"

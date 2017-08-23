@@ -1,0 +1,12 @@
+- name: remove owner privileges on database
+  postgresql_privs:
+    db: "{{ _apb_provision_creds.POSTGRESQL_DATABASE }}"
+    port: "{{ _apb_provision_creds.POSTGRESQL_PORT }}"
+    role: "{{ _apb_bind_creds.POSTGRESQL_USER }}"
+    login_host: "{{ _apb_provision_creds.POSTGRESQL_HOST }}"
+    login_user: "{{ _apb_provision_creds.POSTGRESQL_USER }}"
+    login_password: "{{ _apb_provision_creds.POSTGRESQL_PASSWORD }}"
+    type: schema
+    objs: todo_app
+    privs: ALL
+    state: absent
