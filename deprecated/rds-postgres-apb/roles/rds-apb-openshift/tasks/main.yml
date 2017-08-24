@@ -29,22 +29,10 @@
   shell: "dig +short {{ rds.instance.endpoint }} | tail -n 1"
   register: rds_endpoint_ip
 
-- name: seed database
-  shell: "PGPASSWORD={{ db_password }} psql -U {{ db_username }} -d {{ db_name }} -p {{ port }} -h {{ rds_endpoint_ip.stdout }} -f {{ role_path }}/files/{{ item }}"
-  with_items:
-    - parkcoord.sql
-    - airports.ddl
-    - zipcodes.ddl
-    - airports.sql
-    - zipcodes.sql
-
-- name: create namespace
-  openshift_v1_project:
-    name: '{{ namespace }}'
-
 - name: create openshift endpoint
-  k8s_v1_endpoint:
+  k8s_v1_endpoints:
     name: "rds-{{ tds }}"
+    namespace: "{{ namespace }}"
     subsets:
     - addresses:
         - ip: "{{ rds_endpoint_ip.stdout }}"
@@ -55,6 +43,7 @@
 - name: create openshift service
   k8s_v1_service:
     name: "rds-{{ tds }}"
+    namespace: "{{ namespace }}"
     ports:
     - name: "{{ db_engine }}"
       protocol: "TCP"
@@ -67,9 +56,10 @@
   register: endpoint_ip
 
 - name: encode bind credentials
-  shell: 'echo "{\"POSTGRES_HOST\": \"{{ endpoint_ip.stdout }}\", \"POSTGRES_PORT\": \"{{ port }}\", \"POSTGRES_USER\": \"{{ db_username }}\", \"POSTGRES_PASSWORD\": \"{{ db_password }}\", \"POSTGRES_DB\": \"{{ db_name }}\"}" | base64 -w 0'
-  register: encoded_bind_credentials
-
-- copy:
-    content: "{{ encoded_bind_credentials.stdout }}"
-    dest: /var/tmp/bind-creds
+  asb_encode_binding:
+    fields:
+      POSTGRES_HOST: "{{ endpoint_ip.stdout }}"
+      POSTGRES_PORT: "{{ port }}"
+      POSTGRES_USER: "{{ db_username }}"
+      POSTGRES_PASSWORD: "{{ db_password }}"
+      POSTGRES_DB: "{{ db_name }}"
