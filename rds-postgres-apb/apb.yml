@@ -55,7 +55,7 @@ _p: &_p
     type: string
 ###############################################################################
 name: rds-postgres-apb
-image: dymurray/rds-postgres-apb
+image: ansibleplaybookbundle/rds-postgres-apb
 description: Managed relational database service with a choice of six popular database engines.  Set up, operate, and scale a relational database in the cloud with just a few clicks.
 tags:
   - amazon
