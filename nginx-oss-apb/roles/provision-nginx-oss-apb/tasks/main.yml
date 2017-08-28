@@ -28,11 +28,12 @@
       app: '{{ namespace }}'
       service: nginx-oss-apb
     containers:
-      - image: '{{ nginx_oss_image }}'
-        imagePullPolicy: IfNotPresent
+      - image: docker.io/alessfg/openshift-nginx
         name: nginx-oss-apb
+        securityContext:
+          runAsUser: 1000090000
         ports:
-          - container_port: 80
+          - container_port: 8080
             protocol: TCP
         volumeMounts:
           - mountPath: /etc/nginx/conf.d
@@ -60,7 +61,7 @@
       app: '{{ namespace }}'
     ports:
       - name: web
-        port: 80
+        port: 8080
         target_port: 8080
 
 ##############################################################################
