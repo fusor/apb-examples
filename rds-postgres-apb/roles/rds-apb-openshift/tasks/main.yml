@@ -1,0 +1,51 @@
+- set_fact:
+    tds: "{{ ansible_date_time.epoch }}"
+
+- rds:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    command: create
+    backup_retention: "{{ backup_retention }}"
+    instance_name: "{{ ansible_user_id }}-{{ db_engine }}-{{ tds }}"
+    region: "{{ region }}"
+    wait: yes
+    wait_timeout: 1200
+    db_engine: "{{ db_engine }}"
+    size: "{{ db_size }}"
+    instance_type: "{{ instance_type }}"
+    username: "{{ db_username }}"
+    password: "{{ db_password }}"
+    db_name: "{{ db_name }}"
+    port: "{{ port }}"
+    vpc_security_groups: "{{ vpc_security_groups }}"
+    publicly_accessible: yes
+    subnet: "{{ subnet }}"
+    tags:
+      Application: ansible-rds
+      Description: "{{ ansible_user_id }} RDS {{ db_engine }} {{ tds }}"
+  register: rds
+
+- name: retrieve rds endpoint IP
+  shell: "getent hosts {{ rds.instance.endpoint }} | awk '{ print $1 }'"
+  register: rds_endpoint_ip
+
+- name: create openshift service
+  k8s_v1_service:
+    name: "rds-{{ tds }}"
+    namespace: "{{ namespace }}"
+    ports:
+    - name: "{{ db_engine }}"
+      protocol: "TCP"
+      port: "{{ port }}"
+      target_port: "{{ port }}"
+      node_port: 0
+
+- name: encode bind credentials
+  asb_encode_binding:
+    fields:
+      DB_HOST: "{{ rds_endpoint_ip.stdout }}"
+      DB_PORT: "{{ port }}"
+      DB_USER: "{{ db_username }}"
+      DB_PASSWORD: "{{ db_password }}"
+      DB_NAME: "{{ db_name }}"
+      DB_TYPE: postgres
