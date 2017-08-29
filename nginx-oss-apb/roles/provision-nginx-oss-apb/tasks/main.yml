@@ -30,8 +30,6 @@
     containers:
       - image: docker.io/alessfg/openshift-nginx
         name: nginx-oss-apb
-        securityContext:
-          runAsUser: 1000090000
         ports:
           - container_port: 8080
             protocol: TCP
