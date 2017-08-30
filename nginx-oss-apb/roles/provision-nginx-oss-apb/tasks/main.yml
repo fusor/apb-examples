@@ -1,0 +1,96 @@
+##############################################################################
+## Provision NGINX OSS APB
+## This role executes much of the needed functionality to provision an
+## application using an Ansible Playbook Bundle.  Included in the comments
+## below are some sample resources for getting started deploying an application
+## to OpenShift.
+##############################################################################
+
+##############################################################################
+## An OpenShift Origin deployment configuration provides a replication
+## controller, spins up pods, and also provides the ability to transition from
+## one deployment of an image to a new one.
+## https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#deployments-and-deployment-configurations
+##############################################################################
+- name: Create NGINX OSS APB deployment config
+  openshift_v1_deployment_config:
+    name: nginx-oss-apb
+    namespace: '{{ namespace }}'
+    state: present
+    labels:
+      app: '{{ namespace }}'
+      service: nginx-oss-apb
+    replicas: 1
+    selector:
+      app: '{{ namespace }}'
+      service: nginx-oss-apb
+    spec_template_metadata_labels:
+      app: '{{ namespace }}'
+      service: nginx-oss-apb
+    containers:
+      - image: docker.io/alessfg/openshift-nginx
+        name: nginx-oss-apb
+        ports:
+          - container_port: 8080
+            protocol: TCP
+        volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: configuration
+    restart_policy: Always
+    volumes:
+      - name: configuration
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx-conf
+              path: default.conf
+
+##############################################################################
+## A Kubernetes service serves as an internal load balancer.  It identifies a
+## set of replicated pods in order to proxy the connections it receives to them.
+## https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services
+##############################################################################
+- name: Create NGINX OSS APB service
+  k8s_v1_service:
+    name: nginx-oss-apb
+    namespace: '{{ namespace }}'
+    state: present
+    selector:
+      app: '{{ namespace }}'
+    ports:
+      - name: web
+        port: 80
+        target_port: 8080
+
+##############################################################################
+## An OpenShift Origin route exposes a service at a host name, so that external
+## clients can reach it by name. Each route consists of a name, a service
+## selector, and an optional security configuration.
+## https://docs.openshift.org/latest/architecture/core_concepts/routes.html
+##############################################################################
+- name: Create NGINX OSS APB route
+  openshift_v1_route:
+    name: nginx-oss-apb
+    namespace: '{{ namespace }}'
+    spec_port_target_port: web
+    labels:
+      app: '{{ namespace }}'
+      service: nginx-oss-apb
+    to_name: nginx-oss-apb
+
+##############################################################################
+## Creates an NGINX default.conf file based on a Jinja2 template and the
+## values provided by a user when launching the APB.
+## http://docs.ansible.com/ansible/latest/template_module.html
+##############################################################################
+- name: Create NGINX config from template
+  template:
+    src: default.conf.j2
+    dest: /tmp/default.conf
+
+##############################################################################
+## Creates a configMap mapping the default.conf created by the Jinja2 template.
+## https://docs.openshift.com/enterprise/3.2/dev_guide/configmaps.html#configmaps-use-case-consuming-in-volumes
+##############################################################################
+- name: Create NGINX configMap
+  shell: oc create configmap nginx-conf --from-file=nginx-conf=/tmp/default.conf
