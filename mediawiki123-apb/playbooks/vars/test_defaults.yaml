@@ -1,0 +1,6 @@
+mediawiki_db_schema: mediawiki
+mediawiki_site_name: MediaWiki
+mediawiki_site_lang: en
+mediawiki_admin_user: admin
+mediawiki_admin_pass: admin
+namespace: demo-app

@@ -1,0 +1,7 @@
+---
+- name: url check for media wiki
+  uri:
+    url: "http://{{ route.route.spec.host }}"
+    return_content: yes
+  register: webpage
+  failed_when: webpage.status != 200
