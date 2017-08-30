@@ -24,11 +24,15 @@ BuildArch:  noarch
 mkdir -p %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/bind-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/broker-bind-creds %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
+install -m 755 files/usr/bin/test-retrieval%{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 
 %files
 %doc
+%{_bindir}/test-retrieval-init
+%{_bindir}/test-retrieval
 %{_bindir}/bind-init
 %{_bindir}/broker-bind-creds
 %{_bindir}/entrypoint.sh

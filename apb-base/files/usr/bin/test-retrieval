@@ -1,0 +1,19 @@
+#!/bin/bash
+
+TEST_RESULT="/var/tmp/test-result"
+CREDS="/var/tmp/bind-creds"
+
+# Broker will pickup exit codes during retries
+#
+# Exit code 0 - Credentials found
+# Exit code 2 - Credentials not available
+#
+if [ ! -s $TEST_RESULT ]; then
+    echo "test results are not available."
+    exit 2
+else
+    cat $TEST_RESULT
+    rm $CREDS
+    rm $TEST_RESULT
+    exit 0
+fi

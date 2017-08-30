@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -x
 
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
@@ -25,6 +25,7 @@ ACTION=$1
 shift
 playbooks=/opt/apb/actions
 CREDS="/var/tmp/bind-creds"
+TEST_RESULT="/var/tmp/test-result"
 
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
@@ -42,6 +43,11 @@ else
   exit 0
 fi
 
+EXIT_CODE=$?
+
+if [ -f $TEST_RESULT ]; then
+   test-retrieval-init
+fi
 # If we are provisioning an APB, but it's not bindable then the bind-creds
 # will never be created. Therefore, if bind-creds exists, we are running
 # either provision or bind and the APB is bindable.
@@ -51,3 +57,5 @@ fi
 if [ -f $CREDS ]; then
    bind-init
 fi
+
+exit $EXIT_CODE
