@@ -53,12 +53,13 @@ RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
 COPY files/etc/ansible/* /etc/ansible/
 COPY files/usr/bin/* /usr/bin/
 
- RUN mkdir -p /usr/share/ansible/openshift \
+RUN mkdir -p /usr/share/ansible/openshift \
               /etc/ansible /opt/ansible \
               ${BASE_DIR}/{etc,.kube,.ansible/tmp} \
               && useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} \
               && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
               && chmod -R g=u /opt/{ansible,apb} /etc/passwd
 
+RUN mkdir /etc/apb-secrets
 
 ENTRYPOINT ["entrypoint.sh"]

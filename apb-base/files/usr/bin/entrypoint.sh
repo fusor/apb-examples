@@ -34,10 +34,30 @@ if ! whoami &> /dev/null; then
 fi
 oc-login.sh
 
+
+set +x
+
+SECRETS_DIR=/etc/apb-secrets
+mounted_secrets=$(ls $SECRETS_DIR)
+
+extra_args=""
+if [[ ! -e "$mounted_secrets" ]] ; then
+
+    echo '---' > /tmp/secrets
+
+    for key in ${mounted_secrets} ; do
+      for file in $(ls ${SECRETS_DIR}/${key}/..data); do
+        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+      done
+    done
+    extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
+fi
+set -x
+
 if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yaml "$@"
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yaml "${@}" ${extra_args}
 elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yml "$@"
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yml  "${@}" ${extra_args}
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 0
@@ -45,9 +65,14 @@ fi
 
 EXIT_CODE=$?
 
+set +ex
+rm -f /tmp/secrets
+set -ex
+
 if [ -f $TEST_RESULT ]; then
    test-retrieval-init
 fi
+
 # If we are provisioning an APB, but it's not bindable then the bind-creds
 # will never be created. Therefore, if bind-creds exists, we are running
 # either provision or bind and the APB is bindable.
