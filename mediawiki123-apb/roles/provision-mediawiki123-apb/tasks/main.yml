@@ -28,6 +28,7 @@
     labels:
       app: mediawiki123
       service: mediawiki123
+    spec_strategy_type: Recreate
     replicas: 1
     selector:
       app: mediawiki123
