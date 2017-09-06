@@ -1,4 +1,4 @@
-- name: set service state to {{ state }}
+- name: "set service state to {{ state }}"
   k8s_v1_service:
     name: mongodb
     namespace: "{{ namespace }}"
@@ -27,15 +27,18 @@
       service: mongodb
   when: state == "absent"
 
-- include: dev.yml
-  when: _apb_plan_id == "default"
-
 - name: delete replication controller
   k8s_v1_replication_controller:
     name: mongodb-1
     namespace: "{{ namespace }}"
     state: absent
   when: state == "absent"
+
+- include: dev.yml
+  when: _apb_plan_id == "dev"
+
+- include: prod.yml
+  when: _apb_plan_id == "prod"
 
 - name: Wait for mongodb to come up
   wait_for:
@@ -44,13 +47,13 @@
     timeout: 300
   when: state == "present"
 
-#- name: encode bind credentials
-#  asb_encode_binding:
-#    fields:
-#      DB_TYPE: mongodb
-#      DB_HOST: mongodb
-#      DB_PORT: "27017"
-#      DB_USER: "{{ mongodb_user }}"
-#      DB_PASSWORD: "{{ mongodb_password }}"
-#      DB_NAME: "{{ mongodb_database }}"
-#  when: state == "present"
+- name: encode bind credentials
+  asb_encode_binding:
+    fields:
+      DB_TYPE: mongodb
+      DB_HOST: mongodb
+      DB_PORT: 27017
+      DB_USER: "{{ mongodb_user }}"
+      DB_PASSWORD: "{{ mongodb_password }}"
+      DB_NAME: "{{ mongodb_database }}"
+  when: state == "present"

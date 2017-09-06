@@ -1,0 +1,10 @@
+- name: Deploy mongodb-apb to openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - role: ansible.kubernetes-modules
+      install_python_requirements: no
+    - role: ansible-asb-modules
+    - role: mongodb-apb-openshift
+      playbook_debug: true

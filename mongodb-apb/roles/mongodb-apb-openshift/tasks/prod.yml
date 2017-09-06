@@ -1,3 +1,16 @@
+- name: set volume claim state to {{ state }}
+  k8s_v1_persistent_volume_claim:
+    name: "{{ service_name }}"
+    namespace: "{{ namespace }}"
+    labels:
+      app: mongodb-apb
+      service: "{{ service_name }}"
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: "{{ volume_size }}"
+    state: "{{ state }}"
+
 - name: set development deployment config state to "{{ state }}"
   openshift_v1_deployment_config:
     name: mongodb
