@@ -1,2 +1,0 @@
----
-mongodb_image: "rhscl/mongodb-{{ mongodb_version | replace('.', '') }}-rhel7"
