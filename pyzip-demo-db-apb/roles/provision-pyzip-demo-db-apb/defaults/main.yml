@@ -1,9 +1,0 @@
----
-# defaults for provision-pyzip-demo-db-apb
-
-playbook_debug: no
-namespace: "{{ lookup('env','NAMESPACE') | default('pyzip-demo-apb', true) }}"
-dbservice_name: "{{ lookup('env','DBSERVICE_NAME') | default('dbservice', true) }}"
-database_name: "{{ lookup('env','POSTGRESQL_DATABASE') | default('admin', true) }}"
-database_password: "{{ lookup('env','POSTGRESQL_PASSWORD') | default('admin', true) }}"
-database_user: "{{ lookup('env','POSTGRESQL_USER') | default('admin', true) }}"

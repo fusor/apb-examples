@@ -1,3 +1,0 @@
----
-namespace: "{{ lookup('env','NAMESPACE') | default('pyzip-demo', true) }}"
-state: present
