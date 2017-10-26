@@ -1,0 +1,60 @@
+- name: set development deployment config state to "{{ state }}"
+  openshift_v1_deployment_config:
+    name: mongodb
+    namespace: "{{ namespace }}"
+    labels:
+      app: mongodb-apb
+      service: mongodb
+    replicas: 1
+    selector:
+      app: mongodb-apb
+      service: mongodb
+    strategy_type: Rolling
+    strategy_rolling_params:
+      interval_seconds: 1
+      max_surge: 25%
+      max_unavailable: 25%
+      timeout_seconds: 600
+      update_period_seconds: 1
+    spec_template_metadata_labels:
+      app: mongodb-apb
+      service: mongodb
+    containers:
+    - env:
+      - name: MONGODB_ADMIN_PASSWORD
+        value: "{{ mongodb_admin_password }}"
+      - name: MONGODB_PASSWORD
+        value: "{{ mongodb_password }}"
+      - name: MONGODB_USER
+        value: "{{ mongodb_user }}"
+      - name: MONGODB_DATABASE
+        value: "{{ mongodb_database }}"
+      image: "{{ image }}"
+      image_pull_policy: IfNotPresent
+      liveness_probe:
+        initial_delay_seconds: 30
+        tcp_socket:
+          port: 27017
+        timeout_seconds: 1
+      readiness_probe:
+        exec:
+          command:
+            - "/bin/sh"
+            - "-i"
+            - "-c"
+            - "mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD --eval=\"quit()\""
+        initial_delay_seconds: 3
+        timeout_seconds: 1
+      name: mongodb
+      ports:
+      - container_port: 27017
+        protocol: TCP
+      termination_message_path: /dev/termination-log
+      working_dir: /
+    dns_policy: ClusterFirst
+    restart_policy: Always
+    termination_grace_period_seconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    state: "{{ state }}"

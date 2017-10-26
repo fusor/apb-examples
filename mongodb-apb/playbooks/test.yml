@@ -1,0 +1,12 @@
+- name: Test mongodb-apb on openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    target: all
+  tasks:
+  - name: Test entrypoint
+    make:
+      chdir: .
+      target: "{{ target }}"
+    become: yes

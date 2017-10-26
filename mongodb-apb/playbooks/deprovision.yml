@@ -1,0 +1,12 @@
+- name: Remove mongodb-apb from openshift
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    - state: absent
+  roles:
+    - role: ansible.kubernetes-modules
+      install_python_requirements: no
+    - role: ansible-asb-modules
+    - role: mongodb-apb-openshift
+      playbook_debug: true
