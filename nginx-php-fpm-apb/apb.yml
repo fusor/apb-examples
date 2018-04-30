@@ -1,0 +1,13 @@
+name: nginx-php-fpm-apb
+image: ansibleplaybookbundle/nginx-php-fpm-apb
+description: This is an application with two containers nginx and php-fpm.
+bindable: False
+async: optional
+metadata:
+  displayName: nginx-php-fpm
+plans:
+  - name: default
+    description: This default plan deploys nginx-php-fpm-apb
+    free: True
+    metadata: {}
+    parameters: []
